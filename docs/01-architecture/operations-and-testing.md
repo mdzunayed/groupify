@@ -50,4 +50,4 @@ These references show where the approved [Phase 0 requirements](../00-product/pr
 | PR-19: Freemium and free essentials | [Entitlement boundary](system-architecture.md#cross-cutting-flows); [ADR-010](architecture-decisions/ADR-010-subscriptions.md). |
 | PR-20: Infrastructure planning allowance | [Cost and capacity model](research-cost-capacity.md); [ADR-003](architecture-decisions/ADR-003-hosting.md). |
 
-Architecture research completion does not approve any provider. Phase 2 repository foundation work was subsequently authorized; later phases require separate authorization.
+Architecture research completion does not approve any provider. The owner requested work through the roadmap on separate phase branches for review; unresolved choices still need decisions before dependent implementation relies on them.

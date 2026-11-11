@@ -22,4 +22,4 @@ Records labeled **Proposed** are recommendations for evaluation, not selections 
 | [ADR-016](ADR-016-operations-testing.md) | Proposed | Operations, environments, testing and release |
 | [ADR-017](ADR-017-ci.md) | Proposed | GitHub-hosted repository CI checks |
 
-The [system architecture](../system-architecture.md), [flows](../flows-and-security.md), [operations](../operations-and-testing.md), and [research/cost model](../research-cost-capacity.md) use these records as their decision register. Phase 2 repository foundation work is authorized; later phases and the proposed decisions still require explicit authorization.
+The [system architecture](../system-architecture.md), [flows](../flows-and-security.md), [operations](../operations-and-testing.md), and [research/cost model](../research-cost-capacity.md) use these records as their decision register. The owner requested work through the roadmap on separate phase branches for review; that request does not itself approve the proposed decisions.

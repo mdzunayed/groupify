@@ -6,8 +6,8 @@ All recommendations and workload models here are **Proposed** or **Assumptions r
 
 - **Approved decision:** Initial infrastructure planning allowance is ৳2,000–৳3,000 per month, not a quoted total or guaranteed service level.
 - **Repository observation:** The checked-in manifest currently resolves Expo 58.0.23, React Native 0.88.1 and `@expo/ui` 58.0.27 in the existing local installation. `expo install --check` passed during Phase 1; this is local compatibility evidence, not approval of exact release versions or proof of device behavior.
-- **Open question:** The connected [Groupify Development Master Plan](https://docs.google.com/document/d/1ngIhr3lzCA0Tstr1SZY4HcmcKkEp8T3ylyTEqX1PwwQ) describes an approximate 100–500-user planning population as an approved baseline, while Phase 0 did not record a population and the Phase 1 brief leaves capacity assumptions for research. Preserve this as a historical source claim for reconciliation; do not treat it as an approved capacity, concurrency target, or service guarantee without confirmation.
-- **Open question:** The master plan additionally describes background/screen-off GPS and a legal-retention qualification for detailed location. Phase 0 explicitly requires active-ride/offline tracking and 30-day detailed retention but does not resolve those extra details. Confirm the relationship instead of silently expanding scope or extending retention.
+- **Approved decision:** The owner confirmed the [Groupify Development Master Plan](https://docs.google.com/document/d/1ngIhr3lzCA0Tstr1SZY4HcmcKkEp8T3ylyTEqX1PwwQ) baseline of approximately 100–500 users for planning. This is not a concurrency target, membership limit, measured capacity, or service guarantee.
+- **Approved decision:** Background/screen-off GPS is required subject to Android constraints, and detailed-location retention is 30 days subject to legally required retention. Applicable obligations and implementation remain open; the exception does not establish a blanket extension.
 
 ## Cost components
 

@@ -12,22 +12,22 @@ Each bullet below is explicitly labeled as an **Approved decision** or **Open qu
 ## Active-ride location and data lifecycle
 
 - **Approved decision:** Location sharing takes place only during an active ride. Members explicitly join the active ride and enable tracking before their location is shared.
-- **Approved decision:** GPS updates are adaptive. Location recording can continue locally while offline, last-known location can be displayed, and recorded data can be synchronized later.
-- **Approved decision:** A locally recorded location is not proof that the server received it. Distinguish local recording from server-confirmed synchronization when validating this behavior.
-- **Approved decision:** Detailed location history is retained for 30 days and removed after that retention period.
+- **Approved decision:** GPS updates adapt to movement, speed, battery, and network conditions. Enabled active-ride tracking continues in the background and with the screen off, subject to Android permissions and platform constraints. Location can be recorded locally while offline, last-known location can be displayed, and recorded data can be synchronized later.
+- **Approved decision:** A locally recorded location is not proof that the server or another participant received it. Distinguish locally recorded, successfully uploaded, and remotely received states using evidence of each state.
+- **Approved decision:** Detailed location history is retained for 30 days and removed after that period except where retention is legally required. Applicable obligations and enforcement remain undecided.
 - **Approved decision:** On an account deletion request, the account is deactivated immediately. Recovery is available for 30 days; afterward personal data is permanently deleted subject to legal retention requirements.
 - **Approved decision:** Location, SOS, authentication, and account-deletion data are sensitive. This specification does not prescribe an unapproved schema, API, or access policy.
 - **Open question:** GPS thresholds, the event starting location retention, local-copy enforcement, delayed synchronization, recovery mechanics, retained-data categories, permission boundaries, and interactions with community and ride records remain undecided.
 
 ## PTT, chat, and emergency rules
 
-- **Approved decision:** In native Groupify PTT, tap once to start speaking and tap again to stop. Speaking duration alone must not trigger an automatic timeout.
+- **Approved decision:** In native Groupify PTT, tap once to start speaking and tap again to stop. Speaking duration alone must not trigger an automatic timeout. A disconnected or terminated audio session can release a stale lock without interrupting healthy transmission.
 - **Approved decision:** Only one PTT speaker is active at a time. All active ride members may speak; Leader and Co-leader receive priority.
 - **Approved decision:** Background and locked-screen PTT is required, subject to Android validation.
-- **Approved decision:** Group text chat has delivery/read status and Leader announcements.
-- **Approved decision:** SOS is manually activated for an active ride and alerts active ride members with live or last-known location. A Leader or Co-leader can resolve an emergency. Emergency history is retained.
+- **Approved decision:** Active-ride group text chat has delivery/read status, Leader announcements, and offline queuing and synchronization where required.
+- **Approved decision:** SOS is manually activated for an active ride and alerts active ride members with live or last-known location when available. Its status remains visible until resolved; a Leader or Co-leader can resolve the emergency. Emergency history is retained.
 - **Approved decision:** SOS, essential communication, and basic navigation remain free under the hybrid-freemium direction.
-- **Open question:** PTT interruption, queuing, and stale-session recovery; permissions for other announcements and chat access; and emergency-history retention duration remain undecided.
+- **Open question:** PTT interruption, queuing, and the stale-session recovery mechanism; permissions for other announcements and chat access; and emergency-history retention duration remain undecided.
 
 ## Role and permission matrix
 

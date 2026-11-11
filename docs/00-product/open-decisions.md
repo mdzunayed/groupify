@@ -31,15 +31,16 @@ Every question in the tables is an **Open question**. None is an approved produc
 | OD-19 | Which design references and visual details are approved? In particular, resolve the differing logo/typeface treatments, the reference's “Admin” label, and any interpretation of “Nearby riders” that would breach the active-ride location boundary. The reference's PTT “Release to stop” conflicts with the approved tap-again interaction. |
 | OD-20 | What are the approved profile details, OTP interaction parameters, and country-code defaults? Existing screen behavior does not by itself approve them. |
 | OD-21 | What are the precise ride lifecycle, route/breakpoint, and basic-navigation behaviors beyond the capabilities already approved? |
-| OD-22 | How should the connected master plan's approximately 100–500-user planning population be treated? It is not a confirmed concurrency, membership, or capacity target in Phase 0. |
-| OD-23 | Is background/screen-off GPS, described as approved in the connected master plan but not explicit in Phase 0, part of the confirmed product baseline? |
-| OD-24 | Does any legally required retention qualify the 30-day detailed-location rule? The connected master plan includes that qualification; Phase 0 does not specify it. Do not extend retention without an explicit decision. |
 | OD-25 | What Expo-native boundary will retain Room, Coroutines, Flow and the Kotlin direction, and what Material 3 implementation and Android device range will be approved? |
 | OD-26 | What observability, backup/restore, release, support and incident responsibilities and evidence are required for the eventual deployment? No owners or targets are assigned. |
 | OD-27 | Is the prepared GitHub Actions workflow and its branch-protection use approved for the observed GitHub repository? A hosted run has not yet verified it. |
 
-## Dependency on decisions
+## Resolved decisions
 
 **Approved decision — OD-01 resolved:** The product owner selected Expo/React Native and authorized changing Kotlin/Compose as the primary application direction. Retained native directions and their integration remain subject to further decisions; see [ADR-001](../01-architecture/architecture-decisions/ADR-001-client-stack.md).
+
+**Approved decisions — OD-22–OD-24 resolved on 2026-11-11:** The owner confirmed the supplied master plan's approximate 100–500-user planning population, background/screen-off GPS subject to Android constraints, and legally required exceptions to the 30-day detailed-location retention rule. Population is not a concurrency or membership limit. Numeric capacity scenarios, Android implementation, the retention trigger, applicable legal obligations, and enforcement remain open under OD-09, OD-10, OD-16, OD-17 and OD-25.
+
+## Dependency on decisions
 
 **Risk:** Unselected providers and architecture, unresolved permissions, retained-native integration, and unvalidated Android PTT can block later implementation or acceptance. No application, infrastructure, schema, or provider changes are authorized by resolving questions in this document alone.
