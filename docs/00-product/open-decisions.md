@@ -36,6 +36,7 @@ Every question in the tables is an **Open question**. None is an approved produc
 | OD-24 | Does any legally required retention qualify the 30-day detailed-location rule? The connected master plan includes that qualification; Phase 0 does not specify it. Do not extend retention without an explicit decision. |
 | OD-25 | What Expo-native boundary will retain Room, Coroutines, Flow and the Kotlin direction, and what Material 3 implementation and Android device range will be approved? |
 | OD-26 | What observability, backup/restore, release, support and incident responsibilities and evidence are required for the eventual deployment? No owners or targets are assigned. |
+| OD-27 | Is the prepared GitHub Actions workflow and its branch-protection use approved for the observed GitHub repository? A hosted run has not yet verified it. |
 
 ## Dependency on decisions
 

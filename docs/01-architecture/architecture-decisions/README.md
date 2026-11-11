@@ -20,5 +20,6 @@ Records labeled **Proposed** are recommendations for evaluation, not selections 
 | [ADR-014](ADR-014-realtime-notifications.md) | Proposed | Chat, real-time events and FCM notification boundary |
 | [ADR-015](ADR-015-security-retention.md) | Proposed | Security, retention and deletion enforcement |
 | [ADR-016](ADR-016-operations-testing.md) | Proposed | Operations, environments, testing and release |
+| [ADR-017](ADR-017-ci.md) | Proposed | GitHub-hosted repository CI checks |
 
 The [system architecture](../system-architecture.md), [flows](../flows-and-security.md), [operations](../operations-and-testing.md), and [research/cost model](../research-cost-capacity.md) use these records as their decision register. Phase 2 repository foundation work is authorized; later phases and the proposed decisions still require explicit authorization.

@@ -41,6 +41,8 @@ This runs lint, TypeScript checking, and the existing automated tests. The authe
 
 For an Android JavaScript and asset bundle, run `npm run bundle:android`. This does not produce an installable APK or validate native device behavior.
 
+A GitHub Actions workflow is prepared for the repository's GitHub origin; its first hosted run and owner review are still pending.
+
 ### Other setup steps
 
 - To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
