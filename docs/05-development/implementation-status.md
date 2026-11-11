@@ -4,7 +4,7 @@ This is a snapshot of evidence in the repository and current development environ
 
 | Phase | Repository evidence and current status |
 | --- | --- |
-| P0 — Product specification | **In review:** requirements, feature matrix, business rules, journeys, assumptions, risks, and open decisions are documented. The owner confirmed Expo/React Native and reconciled the planning population, background GPS, and legal-retention baseline. Role permissions and other decisions remain open. |
+| P0 — Product specification | **In review:** requirements, feature matrix, business rules, journeys, assumptions, risks, and open decisions are documented. The owner confirmed Expo/React Native, the planning population, background GPS, legal-retention baseline, and starter permissions. Detailed role assignment and other decisions remain open. |
 | P1 — Research and architecture | **In progress:** architecture and proposed ADRs are documented. Backend, hosting, OTP, maps, PTT transport, and other choices remain unapproved. PTT and background-GPS physical-device proofs have not been run. |
 | P2 — Development foundation | **In review:** the repository contains a locked install, checks, Android JavaScript bundle command, and a CI workflow. Local lint, typecheck, 15 mocked authentication tests, and Android bundling passed. A hosted CI run and a live Clerk session have not been verified. |
 | P3–P16 — Design through release | **Not assessed against the live tracker:** the checked-in app has an existing phone/OTP flow and placeholder home screen; those do not establish completion of later phases. Check each phase's dependencies and evidence before implementation or acceptance. |

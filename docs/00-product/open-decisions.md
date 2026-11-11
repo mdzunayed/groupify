@@ -23,8 +23,8 @@ Every question in the tables is an **Open question**. None is an approved produc
 | OD-11 | What are subscription prices and feature limits, and what is the final free/premium feature matrix? SOS, essential communication, and basic navigation remain free. |
 | OD-12 | How are offline synchronization conflicts detected and resolved, including delayed location data? |
 | OD-13 | How does PTT priority work, including interruption or queuing, and how are stale or disconnected speaking sessions recovered without an automatic speaking-duration timeout? |
-| OD-14 | How are community and ride membership, leadership assignment, role changes, succession, and invitations handled? Are community and ride leadership separate? Which roles can create, start, or end a ride? |
-| OD-15 | Which roles can trigger SOS, send or receive group chat, make announcements beyond the approved Leader capability, or resolve emergencies beyond the approved Leader and Co-leader capabilities? What are the access boundaries for live and historical locations? |
+| OD-14 | How are community and ride membership, leadership assignment, role changes, succession, and invitations handled? Are community and ride leadership separate? How do the approved Leader/Co-leader ride-management permissions apply to the exact ride lifecycle? |
+| OD-15 | Which roles can make announcements beyond the approved Leader capability or resolve emergencies beyond the approved Leader and Co-leader capabilities? What are the access boundaries for historical locations? Active ride participants may use chat, trigger SOS, and view opted-in live locations. |
 | OD-16 | What event starts the 30-day detailed-location retention period? How are local copies, last-known location, already recorded data, and delayed synchronization handled, including after a member leaves or a ride ends, while preserving the approved active-ride sharing boundary? |
 | OD-17 | How does account recovery work, what data must be retained for legal reasons, and how do deletion and recovery affect shared community, ride, and emergency records? |
 | OD-18 | What happens when a manual SOS has neither a live nor a last-known location, what is the retention duration of emergency history, and what does “Cancel SOS” in the design reference mean relative to emergency resolution? |
@@ -40,6 +40,8 @@ Every question in the tables is an **Open question**. None is an approved produc
 **Approved decision — OD-01 resolved:** The product owner selected Expo/React Native and authorized changing Kotlin/Compose as the primary application direction. Retained native directions and their integration remain subject to further decisions; see [ADR-001](../01-architecture/architecture-decisions/ADR-001-client-stack.md).
 
 **Approved decisions — OD-22–OD-24 resolved on 2026-11-11:** The owner confirmed the supplied master plan's approximate 100–500-user planning population, background/screen-off GPS subject to Android constraints, and legally required exceptions to the 30-day detailed-location retention rule. Population is not a concurrency or membership limit. Numeric capacity scenarios, Android implementation, the retention trigger, applicable legal obligations, and enforcement remain open under OD-09, OD-10, OD-16, OD-17 and OD-25.
+
+**Approved starter permissions — OD-14 and OD-15 partially resolved on 2026-11-11:** The community creator becomes Leader; Leaders manage roles and membership; Leaders and Co-leaders manage rides and invitations; active ride participants can use chat/PTT, trigger SOS, and view each other's opted-in live location; Leaders and Co-leaders can resolve SOS. Other role assignments, historical access, and detailed lifecycle behavior remain open.
 
 ## Dependency on decisions
 

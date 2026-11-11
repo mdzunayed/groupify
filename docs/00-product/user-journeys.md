@@ -13,9 +13,9 @@ These journeys illustrate **Approved decisions** from the [product requirements]
 
 1. A permanent community can have multiple rides. **Approved decision — PR-04.**
 2. A community's rides can be immediate or scheduled and can represent routes and breakpoints. **Approved decision — PR-06, PR-07.**
-3. The role vocabulary is Leader, Co-leader, and Member. **Approved decision — PR-05.**
+3. The role vocabulary is Leader, Co-leader, and Member; the community creator becomes Leader. Leaders manage roles and membership, and Leaders and Co-leaders manage rides and invitations. **Approved decision — PR-05.**
 
-**Open question:** Who may create communities or rides, how roles are assigned, and whether community and ride leadership are separate are not settled. The creator becoming Leader is an [assumption requiring confirmation](assumptions.md), not a step in an approved workflow.
+**Open question:** Who may create communities beyond the creator rule, detailed role assignment and ride transitions, invitation methods, and whether community and ride leadership are separate are not settled.
 
 ## Join an active ride and share location
 
@@ -24,7 +24,7 @@ These journeys illustrate **Approved decisions** from the [product requirements]
 3. If connectivity is unavailable during enabled active-ride tracking, locations can be recorded locally; last-known location can be displayed, and recorded data can be synchronized later. Locally recorded, successfully uploaded, and remotely received are distinct outcomes. **Approved decision — PR-10.**
 4. Detailed location history follows a 30-day retention period, subject to legally required retention. **Approved decision — PR-11.**
 
-**Open question:** Ride-entry eligibility, who can see location information, the behavior on leaving a ride, retention-clock details, and synchronization conflict handling remain undecided.
+**Approved decision:** Active ride participants can view each other's opted-in live location. **Open question:** Ride-entry eligibility, historical-location access, the behavior on leaving a ride, retention-clock details, and synchronization conflict handling remain undecided.
 
 ## Speak with the active ride
 
@@ -40,7 +40,7 @@ These journeys illustrate **Approved decisions** from the [product requirements]
 2. During an active ride, an SOS can be activated manually. It alerts active ride members and attaches live or last-known location when available. **Approved decision — PR-16.**
 3. The emergency remains visible until resolved, and remains in emergency history. A Leader or Co-leader can resolve it. SOS and essential communication remain free. **Approved decision — PR-16, PR-19.**
 
-**Open question:** Triggering eligibility, behavior when no live or last-known location is available, emergency-history retention, and other chat permissions remain undecided. External emergency-contact integration is approved for later scope, not V1.
+**Approved decision:** Active ride participants can use chat and trigger SOS. **Open question:** Behavior when no live or last-known location is available, emergency-history retention, and additional chat permissions remain undecided. External emergency-contact integration is approved for later scope, not V1.
 
 ## Review a completed ride and delete an account
 
