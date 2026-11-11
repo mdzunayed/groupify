@@ -20,6 +20,8 @@ Use constraints and transactions to prevent duplicate external-identity links an
 4. Recovery must follow an owner-approved reauthentication procedure. After the recovery period, remove personal data subject only to applicable legal obligations, including provider-held data, media, backups, and shared records according to approved rules. Record completion and failures separately; do not claim deletion from a local action alone.
 5. Grant profile visibility and editing only under an approved policy. The current starter permissions do not decide general profile visibility or who may edit another rider's information.
 
+The published `@clerk/backend` 3.27.0 type documentation recommends `authenticateRequest()` over the lower-level `verifyToken()` for request authentication. Its verification options also state that the issuer is not checked when it is omitted. Any implementation must explicitly configure and test the trusted issuer and intended client/audience, reject pending sessions, and separately enforce Groupify account status; a valid signature alone is not the complete authorization decision. The actual development application and session claims have not been verified in this environment.
+
 ## Verification required before acceptance
 
 - Exercise valid, expired, invalid-signature, wrong-issuer, pending-session, revoked/deactivated-account, and unauthorized requests. Do not log credentials or real phone numbers.
