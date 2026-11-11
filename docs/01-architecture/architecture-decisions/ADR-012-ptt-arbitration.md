@@ -1,6 +1,6 @@
 # ADR-012: PTT priority and stale-session recovery
 
-**Status: Proposed.** One active speaker per ride, Leader/Co-leader priority, toggle interaction and no automatic speaking-duration timeout are approved. Interruption and recovery behavior are not.
+**Status: Proposed.** One active speaker per ride, Leader/Co-leader priority, toggle interaction, stale-session recovery and no automatic speaking-duration timeout are approved. The priority and recovery mechanisms remain open.
 
 **Options considered:** First-come queue with role priority; priority preemption; reject competing requests without a queue; liveness-bound grants with enforced fencing; no automatic stale-session cleanup.
 

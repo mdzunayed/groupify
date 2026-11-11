@@ -41,6 +41,8 @@ This runs lint, TypeScript checking, and the existing automated tests. The authe
 
 For an Android JavaScript and asset bundle, run `npm run bundle:android`. This does not produce an installable APK or validate native device behavior.
 
+A NestJS backend foundation with local PostGIS and Redis setup is documented in [backend/README.md](backend/README.md). Product APIs and authentication are not implemented there yet.
+
 A GitHub Actions workflow is prepared for the repository's GitHub origin; its first hosted run and owner review are still pending.
 
 ### Other setup steps

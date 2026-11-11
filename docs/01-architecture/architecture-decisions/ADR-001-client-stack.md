@@ -10,6 +10,6 @@
 
 **Reversibility:** Replacing the app stack again would entail migration and renewed approval; retaining native abstractions improves reversibility but does not eliminate that work.
 
-**Approval required:** [ADR-013](ADR-013-native-integration.md) proposes how to retain Room/Coroutines/Flow. Material 3 implementation, exact versions, backend and all providers remain unselected. Native audio and background behavior require device validation. The connected master plan and older tracker entries still describe the former stack; tracker D25 records this later change and D20 is retained as history.
+**Approval required:** [ADR-013](ADR-013-native-integration.md) proposes how to retain Room/Coroutines/Flow. Material 3 implementation, exact versions, hosting and production providers remain unselected. NestJS is selected for the backend and Clerk is approved for development; see [ADR-002](ADR-002-backend.md) and [ADR-004](ADR-004-otp-identity.md). Native audio and background behavior require device validation. The connected master plan and older tracker entries still describe the former stack; tracker D25 records this later change and D20 is retained as history.
 
 **Evidence:** [Expo native customization](https://docs.expo.dev/workflow/customizing/), [SDK 58 Expo UI](https://docs.expo.dev/versions/v58.0.0/sdk/ui/), [Phase 0 baseline](../../00-product/product-requirements.md).

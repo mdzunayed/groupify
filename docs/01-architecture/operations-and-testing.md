@@ -40,7 +40,7 @@ These references show where the approved [Phase 0 requirements](../00-product/pr
 | PR-03: Rider profile | [Profiles boundary](system-architecture.md#backend-modules-and-data-ownership). |
 | PR-04, PR-05: Communities and three roles | [Community and ride model](flows-and-security.md#communities-and-ride-lifecycle); [permission matrix](../00-product/business-rules.md#role-and-permission-matrix). |
 | PR-06, PR-07: Rides, routes and breakpoints | [Community and ride model](flows-and-security.md#communities-and-ride-lifecycle); [mapping candidates](architecture-decisions/ADR-005-mapping.md). |
-| PR-08, PR-09: Active-ride opt-in and adaptive GPS | [Location flow](flows-and-security.md#active-location-and-later-synchronization); [ADR-009](architecture-decisions/ADR-009-gps-sampling.md). |
+| PR-08, PR-09, PR-21: Active-ride opt-in, adaptive GPS and background/screen-off tracking | [Location flow](flows-and-security.md#active-location-and-later-synchronization); [ADR-009](architecture-decisions/ADR-009-gps-sampling.md); [device plan](device-validation-plan.md). |
 | PR-10, PR-11: Offline recording, synchronization and location retention | [Location flow](flows-and-security.md#active-location-and-later-synchronization); [ADR-011](architecture-decisions/ADR-011-offline-sync.md); [retention](flows-and-security.md#retention-deletion-and-privacy). |
 | PR-12, PR-13, PR-14: PTT interaction, priority and Android background operation | [PTT flow](flows-and-security.md#ptt-control-and-audio); [ADR-006](architecture-decisions/ADR-006-ptt-transport.md); [ADR-012](architecture-decisions/ADR-012-ptt-arbitration.md); [device plan](device-validation-plan.md). |
 | PR-15: Chat, receipts and Leader announcements | [Chat and push](flows-and-security.md#chat-push-and-sos); [ADR-014](architecture-decisions/ADR-014-realtime-notifications.md). |
@@ -50,4 +50,4 @@ These references show where the approved [Phase 0 requirements](../00-product/pr
 | PR-19: Freemium and free essentials | [Entitlement boundary](system-architecture.md#cross-cutting-flows); [ADR-010](architecture-decisions/ADR-010-subscriptions.md). |
 | PR-20: Infrastructure planning allowance | [Cost and capacity model](research-cost-capacity.md); [ADR-003](architecture-decisions/ADR-003-hosting.md). |
 
-Architecture research completion does not approve any provider. Phase 2 repository foundation work was subsequently authorized; later phases require separate authorization.
+Architecture research completion does not approve any provider. The owner requested work through the roadmap on separate phase branches for review; unresolved choices still need decisions before dependent implementation relies on them.

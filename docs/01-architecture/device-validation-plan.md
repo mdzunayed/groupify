@@ -1,6 +1,6 @@
 # Proposed Android feasibility validation
 
-**Status: Proposed; not run.** The connected master plan lists PTT and background-location proof-of-concept reports as Phase 1 deliverables. This is a plan for those investigations, not a proof-of-concept report or evidence of Android support. No spike, native code, production account, cloud resource, or physical-device test was created or executed during this phase. The current request authorizes research and documentation only; execution requires appropriate scope authorization and approved dependencies.
+**Status: Proposed; not run.** The connected master plan lists PTT and background-location proof-of-concept reports as Phase 1 deliverables. This is a plan for those investigations, not a proof-of-concept report or evidence of Android support. No spike, native code, production account, cloud resource, or physical-device test was created or executed during this phase. The owner has requested work through the roadmap; execution still needs the relevant dependencies, test facilities, and provider decisions.
 
 ## Shared test conditions
 
@@ -22,7 +22,7 @@ Choose a device and Android-version matrix only after the owner approves the sup
 3. Verify locally recorded, server-confirmed and remotely received states separately; observe duplicate/reordered retries and the eventually approved handling for records uploaded after a ride ends.
 4. Measure sampling accuracy, battery, data and storage for realistic motorcycle and bicycle scenarios before proposing numeric thresholds. Test the approved 30-day policy with controlled test clocks once the retention trigger is decided.
 
-**Open questions:** Whether background/screen-off GPS is an approved product requirement, sampling and accuracy thresholds, retained-data handling, membership visibility and valid behavior when the offline client cannot determine the ride's current state.
+**Open questions:** Sampling and accuracy thresholds, retained-data handling, membership visibility and valid behavior when the offline client cannot determine the ride's current state. Background/screen-off GPS is a confirmed requirement subject to Android constraints.
 
 ## Exit evidence
 

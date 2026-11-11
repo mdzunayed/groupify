@@ -1,13 +1,13 @@
 # Research, cost, and capacity model
 
-All recommendations and workload models here are **Proposed** or **Assumptions requiring confirmation**. Provider prices, terms, country coverage, capacity and the supported-device matrix must be checked again before a commitment. No provider, subscription price, rider limit, GPS threshold, or numerical capacity target is approved here.
+Recommendations and workload models here are **Proposed** or **Assumptions requiring confirmation** unless explicitly labeled otherwise. Provider prices, terms, country coverage, capacity and the supported-device matrix must be checked again before a commitment. Clerk is approved for development; no production provider, subscription price, rider limit, GPS threshold, or numerical concurrency target is approved here.
 
 ## Existing evidence and source conflict
 
 - **Approved decision:** Initial infrastructure planning allowance is ৳2,000–৳3,000 per month, not a quoted total or guaranteed service level.
 - **Repository observation:** The checked-in manifest currently resolves Expo 58.0.23, React Native 0.88.1 and `@expo/ui` 58.0.27 in the existing local installation. `expo install --check` passed during Phase 1; this is local compatibility evidence, not approval of exact release versions or proof of device behavior.
-- **Open question:** The connected [Groupify Development Master Plan](https://docs.google.com/document/d/1ngIhr3lzCA0Tstr1SZY4HcmcKkEp8T3ylyTEqX1PwwQ) describes an approximate 100–500-user planning population as an approved baseline, while Phase 0 did not record a population and the Phase 1 brief leaves capacity assumptions for research. Preserve this as a historical source claim for reconciliation; do not treat it as an approved capacity, concurrency target, or service guarantee without confirmation.
-- **Open question:** The master plan additionally describes background/screen-off GPS and a legal-retention qualification for detailed location. Phase 0 explicitly requires active-ride/offline tracking and 30-day detailed retention but does not resolve those extra details. Confirm the relationship instead of silently expanding scope or extending retention.
+- **Approved decision:** The owner confirmed the [Groupify Development Master Plan](https://docs.google.com/document/d/1ngIhr3lzCA0Tstr1SZY4HcmcKkEp8T3ylyTEqX1PwwQ) baseline of approximately 100–500 users for planning. This is not a concurrency target, membership limit, measured capacity, or service guarantee.
+- **Approved decision:** Background/screen-off GPS is required subject to Android constraints, and detailed-location retention is 30 days subject to legally required retention. Applicable obligations and implementation remain open; the exception does not establish a blanket extension.
 
 ## Cost components
 
@@ -45,7 +45,7 @@ Let `R` be concurrent active rides, `n_i` the number of active riders in ride `i
 - Offline reconnect: measure queued records per device, concurrent reconnects, duplicate retries and database write load; a successful local enqueue is not a server commit.
 - Storage and retention: measured accepted point volume × retention behavior, plus indexes, backups and legal/deletion constraints; exact retention clock and deletion implementation remain open.
 
-Choose realistic scenarios only after the owner confirms population, active-rider concurrency, ride/community sizes, network conditions, geographic distribution, GPS policy and availability objective. Test low/connectivity loss and reconnect bursts as well as steady load. Do not infer maximum membership, service-level objectives or costs from the historical planning population.
+Choose realistic scenarios using the confirmed planning population and owner-confirmed active-rider concurrency, ride/community sizes, network conditions, geographic distribution, GPS policy and availability objective. Test low/connectivity loss and reconnect bursts as well as steady load. Do not infer maximum membership, service-level objectives or costs from the planning population.
 
 ## Source and feasibility notes
 

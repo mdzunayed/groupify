@@ -1,6 +1,6 @@
 # ADR-015: Security, retention, and deletion
 
-**Status: Proposed.** Active-ride location boundaries, 30-day detailed-location retention, immediate account deactivation, 30-day recovery and subsequent personal-data deletion subject to legal retention are approved.
+**Status: Proposed.** Active-ride location boundaries, 30-day detailed-location retention subject to legally required retention, immediate account deactivation, 30-day recovery and subsequent personal-data deletion subject to legal retention are approved.
 
 **Options considered:** Client-enforced permissions and best-effort cleanup; centralized server authorization with data inventory, scheduled enforcement and provider/backup handling; indefinite retention pending manual cleanup.
 
@@ -10,6 +10,6 @@
 
 **Reversibility:** Deactivation can be reversed during the approved recovery window; permanent deletion is intentionally irreversible. Storage and identity migrations require retention-aware transfer and verification.
 
-**Approval required:** Location retention start and any legally required exception, local/backup/provider handling, encryption/key strategy, account recovery, shared records, SOS-history retention and the complete authorization model. Resolve the master plan's legal-retention wording against Phase 0 without silently extending location retention.
+**Approval required:** Location retention start, applicable legal obligations and their enforcement, local/backup/provider handling, encryption/key strategy, account recovery, shared records, SOS-history retention and the complete authorization model. The approved legal qualification does not establish a blanket extension of location retention.
 
 **Evidence:** [Android security best practices](https://developer.android.com/privacy-and-security/security-best-practices), [Expo SecureStore](https://docs.expo.dev/versions/v58.0.0/sdk/securestore/), [flows](../flows-and-security.md).

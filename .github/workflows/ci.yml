@@ -26,8 +26,17 @@ jobs:
           cache: npm
       - name: Install locked dependencies
         run: npm ci
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
       - name: Lint, typecheck, and test
         run: npm run check
+      - name: Test backend
+        working-directory: backend
+        run: npm test
+      - name: Test backend with PostGIS and Redis
+        working-directory: backend
+        run: npm run test:integration:docker
       # This checks JavaScript and assets only; it is not an installable Android build.
       - name: Bundle Android JavaScript
         run: npm run bundle:android

@@ -5,9 +5,9 @@ Records labeled **Proposed** are recommendations for evaluation, not selections 
 | Record | Status | Decision area |
 | --- | --- | --- |
 | [ADR-001](ADR-001-client-stack.md) | Approved | Expo/React Native application direction and retained native directions |
-| [ADR-002](ADR-002-backend.md) | Proposed | Backend language, framework and modular shape |
+| [ADR-002](ADR-002-backend.md) | Approved | TypeScript/NestJS modular-monolith direction |
 | [ADR-003](ADR-003-hosting.md) | Proposed | Hosting and deployment topology |
-| [ADR-004](ADR-004-otp-identity.md) | Proposed | OTP and identity provider evaluation |
+| [ADR-004](ADR-004-otp-identity.md) | Partially approved | Clerk for development; production OTP and identity remain open |
 | [ADR-005](ADR-005-mapping.md) | Proposed | Map rendering, tiles, routing and geocoding |
 | [ADR-006](ADR-006-ptt-transport.md) | Proposed | Native PTT media transport |
 | [ADR-007](ADR-007-versions.md) | Proposed | Dependency and platform version evaluation |
@@ -22,4 +22,4 @@ Records labeled **Proposed** are recommendations for evaluation, not selections 
 | [ADR-016](ADR-016-operations-testing.md) | Proposed | Operations, environments, testing and release |
 | [ADR-017](ADR-017-ci.md) | Proposed | GitHub-hosted repository CI checks |
 
-The [system architecture](../system-architecture.md), [flows](../flows-and-security.md), [operations](../operations-and-testing.md), and [research/cost model](../research-cost-capacity.md) use these records as their decision register. Phase 2 repository foundation work is authorized; later phases and the proposed decisions still require explicit authorization.
+The [system architecture](../system-architecture.md), [flows](../flows-and-security.md), [operations](../operations-and-testing.md), and [research/cost model](../research-cost-capacity.md) use these records as their decision register. The owner requested work through the roadmap on separate phase branches for review; that request does not itself approve the proposed decisions.
