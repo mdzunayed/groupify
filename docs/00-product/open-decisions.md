@@ -27,7 +27,7 @@ Every question in the tables is an **Open question**. None is an approved produc
 | OD-16 | What event starts the 30-day detailed-location retention period? How are local copies, last-known location, already recorded data, and delayed synchronization handled, including after a member leaves or a ride ends, while preserving the approved active-ride sharing boundary? |
 | OD-17 | How does account recovery work, what data must be retained for legal reasons, and how do deletion and recovery affect shared community, ride, and emergency records? |
 | OD-18 | What happens when a manual SOS has neither a live nor a last-known location, what is the retention duration of emergency history, and what does “Cancel SOS” in the design reference mean relative to emergency resolution? |
-| OD-19 | Which design references and visual details are approved? In particular, resolve the differing logo/typeface treatments, the reference's “Admin” label, and any interpretation of “Nearby riders” that would breach the active-ride location boundary. The reference's PTT “Release to stop” conflicts with the approved tap-again interaction. |
+| OD-19 | Which remaining design details are approved, including the reference's “Admin” label, dark mode, and any interpretation of “Nearby riders” that would breach the active-ride location boundary? The reference's PTT “Release to stop” conflicts with the approved tap-again interaction. The owner selected the helmet-and-road logo and Inter typography. |
 | OD-20 | What are the approved profile details, OTP interaction parameters, and country-code defaults? Existing screen behavior does not by itself approve them. |
 | OD-21 | What are the precise ride lifecycle, route/breakpoint, and basic-navigation behaviors beyond the capabilities already approved? |
 | OD-25 | What Expo-native boundary will retain Room, Coroutines, Flow and the Kotlin direction, and what Material 3 implementation and Android device range will be approved? |
@@ -45,6 +45,8 @@ Every question in the tables is an **Open question**. None is an approved produc
 **Approved decisions — OD-22–OD-24 resolved on 2026-11-11:** The owner confirmed the supplied master plan's approximate 100–500-user planning population, background/screen-off GPS subject to Android constraints, and legally required exceptions to the 30-day detailed-location retention rule. Population is not a concurrency or membership limit. Numeric capacity scenarios, Android implementation, the retention trigger, applicable legal obligations, and enforcement remain open under OD-09, OD-10, OD-16, OD-17 and OD-25.
 
 **Approved starter permissions — OD-14 and OD-15 partially resolved on 2026-11-11:** The community creator becomes Leader; Leaders manage roles and membership; Leaders and Co-leaders manage rides and invitations; active ride participants can use chat/PTT, trigger SOS, and view each other's opted-in live location; Leaders and Co-leaders can resolve SOS. Other role assignments, historical access, and detailed lifecycle behavior remain open.
+
+**Approved visual direction — OD-19 partially resolved on 2026-11-11:** The owner selected the helmet-and-road logo and Inter typography from the design-system reference. This does not change the approved PTT interaction, role vocabulary, or active-ride location boundary.
 
 ## Dependency on decisions
 
