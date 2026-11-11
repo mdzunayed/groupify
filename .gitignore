@@ -30,8 +30,10 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# local env files
-.env*.local
+# local env files; keep only the empty public-variable template
+.env*
+!.env.example
+.clerk/
 
 # typescript
 *.tsbuildinfo

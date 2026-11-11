@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "dependencies": {
+    "@clerk/expo": "^4.15.1",
     "@expo/ui": "~58.0.27",
     "expo": "~58.0.23",
     "expo-constants": "~58.0.15",
@@ -12,6 +13,7 @@
     "expo-image": "~58.0.18",
     "expo-linking": "~58.0.16",
     "expo-router": "~58.0.30",
+    "expo-secure-store": "~58.0.2",
     "expo-splash-screen": "~58.0.13",
     "expo-status-bar": "~58.0.4",
     "expo-symbols": "~58.0.4",
@@ -29,15 +31,21 @@
   },
   "devDependencies": {
     "@types/react": "~19.3.0",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~58.0.4",
     "typescript": "~6.0.3"
   },
   "scripts": {
     "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
+    "bundle:android": "expo export --platform android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "typecheck": "tsc --noEmit",
+    "test:auth": "node --test tests/phone-auth.test.mjs",
+    "test": "node --test",
+    "check": "npm run lint && npm run typecheck && npm test"
   },
   "private": true
 }

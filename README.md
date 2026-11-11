@@ -8,6 +8,8 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 1. Install dependencies
 
+   Use Node 26.13.0, as recorded in [.nvmrc](.nvmrc), then run:
+
    ```bash
    npm ci
    ```
@@ -36,6 +38,8 @@ npm run check
 ```
 
 This runs lint, TypeScript checking, and the existing automated tests. The authentication tests use mocks and do not send SMS or prove that a remote service is configured. See the [development foundation](docs/05-development/foundation.md) for environment, build, and secrets boundaries.
+
+For an Android JavaScript and asset bundle, run `npm run bundle:android`. This does not produce an installable APK or validate native device behavior.
 
 ### Other setup steps
 
