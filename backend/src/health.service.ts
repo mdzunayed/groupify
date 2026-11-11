@@ -1,4 +1,6 @@
 import { Injectable } from "@nestjs/common";
+import { getMigrationFilePaths } from "node-pg-migrate/migration";
+import { basename, extname, join } from "node:path";
 import { Client } from "pg";
 import { createClient } from "redis";
 
@@ -32,6 +34,14 @@ export class HealthService {
         (async () => {
           await db.connect();
           await db.query("SELECT postgis_full_version()");
+          const files = await getMigrationFilePaths(join(__dirname, "..", "migrations"));
+          if (files.length === 0) throw new Error("No migration files found");
+          const required = files.map((file) => basename(file, extname(file)));
+          const applied = await db.query<{ name: string }>("SELECT name FROM public.pgmigrations");
+          const appliedNames = new Set(applied.rows.map((row) => row.name));
+          if (!required.every((name) => appliedNames.has(name))) {
+            throw new Error("Pending database migrations");
+          }
         })(),
         (async () => {
           await redis.connect();

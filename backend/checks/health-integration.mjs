@@ -11,8 +11,9 @@ let baseUrl;
 
 before(async () => {
   assert.ok(
-    process.env.DATABASE_URL && process.env.REDIS_URL && process.env.DATABASE_URL_WITHOUT_POSTGIS,
-    "Set DATABASE_URL, REDIS_URL, and DATABASE_URL_WITHOUT_POSTGIS for integration tests",
+    process.env.DATABASE_URL && process.env.REDIS_URL && process.env.DATABASE_URL_WITHOUT_POSTGIS &&
+      process.env.DATABASE_URL_WITHOUT_MIGRATIONS && process.env.DATABASE_URL_WITH_PENDING_MIGRATIONS,
+    "Set all integration-test database URLs and REDIS_URL",
   );
   app = await NestFactory.create(AppModule, { logger: false });
   await app.listen(0, "127.0.0.1");
@@ -51,6 +52,23 @@ test("readiness fails closed when the database lacks PostGIS", async () => {
     assert.equal(response.status, 503);
     const body = await response.text();
     assert.ok(!body.includes(process.env.DATABASE_URL));
+  } finally {
+    process.env.DATABASE_URL = previousDatabaseUrl;
+  }
+});
+
+test("readiness fails when migration history is missing or a migration is pending", async () => {
+  const previousDatabaseUrl = process.env.DATABASE_URL;
+  try {
+    for (const databaseUrl of [
+      process.env.DATABASE_URL_WITHOUT_MIGRATIONS,
+      process.env.DATABASE_URL_WITH_PENDING_MIGRATIONS,
+    ]) {
+      process.env.DATABASE_URL = databaseUrl;
+      const response = await fetch(`${baseUrl}/health/ready`);
+      assert.equal(response.status, 503);
+      assert.ok(!(await response.text()).includes(databaseUrl));
+    }
   } finally {
     process.env.DATABASE_URL = previousDatabaseUrl;
   }

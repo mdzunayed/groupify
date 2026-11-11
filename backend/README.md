@@ -16,9 +16,9 @@ The checked-in Compose configuration is for local development. Its ports bind to
 ## Health and testing
 
 - `GET /health/live` returns `200` when the process serves requests.
-- `GET /health/ready` returns `200` only when PostgreSQL with PostGIS and Redis respond; missing, invalid, or unreachable dependencies return `503` without connection details. This check does not prove migrations are current or product behavior is working.
+- `GET /health/ready` returns `200` only when PostgreSQL with PostGIS and Redis respond and every local migration is recorded as applied. Missing, invalid, unreachable, or unmigrated dependencies return `503` without connection details. The database role needs read access to `public.pgmigrations`, and deployments must include the `migrations/` directory. This check compares migration names; it does not verify migration contents or product behavior.
 - `npm test` builds the backend and checks liveness, missing configuration, and malformed connection settings.
-- `npm run test:integration:docker` creates isolated temporary Compose services with a generated password, checks migration repeatability and rollback/reapply, and verifies readiness against healthy and failing dependencies. It removes only the containers and volume created for that test.
+- `npm run test:integration:docker` creates isolated temporary Compose services with a generated password, checks migration repeatability and rollback/reapply, and verifies readiness against healthy, unmigrated, and failing dependencies. It removes only the containers and volume created for that test.
 
 ## Migrations and authorization boundary
 
