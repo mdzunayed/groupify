@@ -10,6 +10,6 @@
 
 **Reversibility:** Provider adapters and durable event IDs make a push path replaceable, while device-token migration and receipt semantics still require coordination.
 
-**Approval required:** Push integration, message audiences, delivery/read definitions, offline chat behavior, SOS retry/receipt expectations and all unspecified role permissions.
+**Approval required:** Push integration, any message audiences beyond active ride participants, delivery/read definitions, detailed offline chat behavior, SOS retry/receipt expectations and all unspecified role permissions.
 
 **Evidence:** [Expo direct push](https://docs.expo.dev/push-notifications/sending-notifications-custom/), [FCM Android priority](https://firebase.google.com/docs/cloud-messaging/android-message-priority), [NestJS WebSocket gateways](https://docs.nestjs.com/websockets/gateways).
