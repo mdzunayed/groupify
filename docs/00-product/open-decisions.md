@@ -6,9 +6,8 @@ Every question in the tables is an **Open question**. None is an approved produc
 
 | ID | Open question |
 | --- | --- |
-| OD-02 | Which backend framework is approved? Is the modular-monolith assumption appropriate? |
 | OD-03 | Which hosting provider and hosting architecture are approved, and can they satisfy the infrastructure planning allowance? |
-| OD-04 | Which OTP/SMS provider and delivery arrangement are approved? How, if at all, does the existing Clerk integration fit that decision? Existing code and the [authentication guide](../authentication.md) do not establish final provider approval. |
+| OD-04 | Which production OTP/SMS provider and delivery arrangement are approved? Clerk is approved for development; existing code and the [authentication guide](../authentication.md) do not establish production provider approval. |
 | OD-05 | Which map rendering, tile, routing, and geocoding providers are approved, including licensing, usage limits, and cost? |
 | OD-06 | Which native PTT audio transport is approved? |
 | OD-07 | What exact dependency versions will be approved for the selected implementation? |
@@ -38,6 +37,10 @@ Every question in the tables is an **Open question**. None is an approved produc
 ## Resolved decisions
 
 **Approved decision — OD-01 resolved:** The product owner selected Expo/React Native and authorized changing Kotlin/Compose as the primary application direction. Retained native directions and their integration remain subject to further decisions; see [ADR-001](../01-architecture/architecture-decisions/ADR-001-client-stack.md).
+
+**Approved decision — OD-02 resolved on 2026-11-11:** The owner selected TypeScript/NestJS as a modular monolith with PostgreSQL/PostGIS, Redis and WebSockets; see [ADR-002](../01-architecture/architecture-decisions/ADR-002-backend.md). Hosting, schema, capacity scenarios and implementation details remain open.
+
+**Approved development choice — OD-04 partially resolved on 2026-11-11:** Use the existing Clerk integration for development; production identity and SMS delivery remain unselected pending coverage and pricing evidence.
 
 **Approved decisions — OD-22–OD-24 resolved on 2026-11-11:** The owner confirmed the supplied master plan's approximate 100–500-user planning population, background/screen-off GPS subject to Android constraints, and legally required exceptions to the 30-day detailed-location retention rule. Population is not a concurrency or membership limit. Numeric capacity scenarios, Android implementation, the retention trigger, applicable legal obligations, and enforcement remain open under OD-09, OD-10, OD-16, OD-17 and OD-25.
 

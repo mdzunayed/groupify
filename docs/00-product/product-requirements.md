@@ -52,7 +52,7 @@ These are directions, not authorization to select unapproved components or to be
 - Mapping: the OpenStreetMap-based ecosystem.
 - Audio: native in-app PTT; the transport is not selected.
 
-Backend framework, hosting provider and architecture, OTP/SMS provider, map rendering/tile/routing/geocoding providers, PTT audio transport, the way retained Android-native directions integrate with React Native, and exact dependency versions remain unselected. Record an ADR before downstream implementation depends on an architectural choice. Candidate comparisons are not approvals. See the [approved client-stack record](../01-architecture/architecture-decisions/ADR-001-client-stack.md).
+The owner selected a TypeScript/NestJS modular monolith and approved the existing Clerk integration for development. Hosting, the production OTP/SMS provider, map rendering/tile/routing/geocoding providers, PTT audio transport, the way retained Android-native directions integrate with React Native, and exact dependency versions remain unselected. Record an ADR before downstream implementation depends on an architectural choice. Candidate comparisons are not approvals. See the [client-stack](../01-architecture/architecture-decisions/ADR-001-client-stack.md) and [backend](../01-architecture/architecture-decisions/ADR-002-backend.md) records.
 
 ## Repository findings and conflicts
 

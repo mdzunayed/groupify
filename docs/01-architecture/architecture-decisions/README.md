@@ -5,9 +5,9 @@ Records labeled **Proposed** are recommendations for evaluation, not selections 
 | Record | Status | Decision area |
 | --- | --- | --- |
 | [ADR-001](ADR-001-client-stack.md) | Approved | Expo/React Native application direction and retained native directions |
-| [ADR-002](ADR-002-backend.md) | Proposed | Backend language, framework and modular shape |
+| [ADR-002](ADR-002-backend.md) | Approved | TypeScript/NestJS modular-monolith direction |
 | [ADR-003](ADR-003-hosting.md) | Proposed | Hosting and deployment topology |
-| [ADR-004](ADR-004-otp-identity.md) | Proposed | OTP and identity provider evaluation |
+| [ADR-004](ADR-004-otp-identity.md) | Partially approved | Clerk for development; production OTP and identity remain open |
 | [ADR-005](ADR-005-mapping.md) | Proposed | Map rendering, tiles, routing and geocoding |
 | [ADR-006](ADR-006-ptt-transport.md) | Proposed | Native PTT media transport |
 | [ADR-007](ADR-007-versions.md) | Proposed | Dependency and platform version evaluation |

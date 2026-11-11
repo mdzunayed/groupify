@@ -1,6 +1,6 @@
 # Research, cost, and capacity model
 
-All recommendations and workload models here are **Proposed** or **Assumptions requiring confirmation**. Provider prices, terms, country coverage, capacity and the supported-device matrix must be checked again before a commitment. No provider, subscription price, rider limit, GPS threshold, or numerical capacity target is approved here.
+Recommendations and workload models here are **Proposed** or **Assumptions requiring confirmation** unless explicitly labeled otherwise. Provider prices, terms, country coverage, capacity and the supported-device matrix must be checked again before a commitment. Clerk is approved for development; no production provider, subscription price, rider limit, GPS threshold, or numerical concurrency target is approved here.
 
 ## Existing evidence and source conflict
 
@@ -45,7 +45,7 @@ Let `R` be concurrent active rides, `n_i` the number of active riders in ride `i
 - Offline reconnect: measure queued records per device, concurrent reconnects, duplicate retries and database write load; a successful local enqueue is not a server commit.
 - Storage and retention: measured accepted point volume × retention behavior, plus indexes, backups and legal/deletion constraints; exact retention clock and deletion implementation remain open.
 
-Choose realistic scenarios only after the owner confirms population, active-rider concurrency, ride/community sizes, network conditions, geographic distribution, GPS policy and availability objective. Test low/connectivity loss and reconnect bursts as well as steady load. Do not infer maximum membership, service-level objectives or costs from the historical planning population.
+Choose realistic scenarios using the confirmed planning population and owner-confirmed active-rider concurrency, ride/community sizes, network conditions, geographic distribution, GPS policy and availability objective. Test low/connectivity loss and reconnect bursts as well as steady load. Do not infer maximum membership, service-level objectives or costs from the planning population.
 
 ## Source and feasibility notes
 
