@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">Groupify helmet and road mark</title>
+  <path fill="#0F172A" d="M19 75C14 48 27 24 52 18c23-6 45 5 54 25H87C80 32 68 28 56 31 42 35 33 47 33 62c12-9 27-12 44-9l18 4-13 9c-16-4-31-2-43 7l-10 9-10-7Z"/>
+  <path fill="#2563FF" d="M24 89c18-12 36-17 59-16l-10 9h30L72 111H52l20-20c-19-2-35 1-48 7v-9Z"/>
+  <path fill="#2563FF" d="M19 103c12-4 25-6 38-5l-8 8c-11-1-21-1-30 1v-4Z"/>
+</svg>
