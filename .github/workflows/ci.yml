@@ -26,11 +26,11 @@ jobs:
           cache: npm
       - name: Install locked dependencies
         run: npm ci
-      - name: Lint, typecheck, and test
-        run: npm run check
       - name: Install backend dependencies
         working-directory: backend
         run: npm ci
+      - name: Lint, typecheck, and test
+        run: npm run check
       - name: Test backend
         working-directory: backend
         run: npm test
