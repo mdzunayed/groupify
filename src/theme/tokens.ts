@@ -36,11 +36,11 @@ export const radius = {
 } as const;
 
 export const typography = {
-  family: "Inter",
-  heading1: { fontSize: 32, lineHeight: 40, fontWeight: "700" },
-  heading2: { fontSize: 24, lineHeight: 32, fontWeight: "600" },
-  heading3: { fontSize: 20, lineHeight: 28, fontWeight: "600" },
-  body: { fontSize: 16, lineHeight: 24, fontWeight: "400" },
-  bodySmall: { fontSize: 14, lineHeight: 20, fontWeight: "400" },
-  caption: { fontSize: 12, lineHeight: 16, fontWeight: "500" },
+  family: "Inter_400Regular",
+  heading1: { fontSize: 32, lineHeight: 40, fontFamily: "Inter_700Bold" },
+  heading2: { fontSize: 24, lineHeight: 32, fontFamily: "Inter_600SemiBold" },
+  heading3: { fontSize: 20, lineHeight: 28, fontFamily: "Inter_600SemiBold" },
+  body: { fontSize: 16, lineHeight: 24, fontFamily: "Inter_400Regular" },
+  bodySmall: { fontSize: 14, lineHeight: 20, fontFamily: "Inter_400Regular" },
+  caption: { fontSize: 12, lineHeight: 16, fontFamily: "Inter_500Medium" },
 } as const;

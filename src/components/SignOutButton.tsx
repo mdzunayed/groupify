@@ -2,6 +2,8 @@ import { useClerk } from "@clerk/expo";
 import { useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import { colors } from "../theme/tokens";
+
 import { getAuthError } from "../lib/phone-auth";
 
 export function SignOutButton() {
@@ -28,7 +30,7 @@ export function SignOutButton() {
 
   return (
     <View style={styles.container}>
-      <Pressable accessibilityRole="button" disabled={busy} onPress={handleSignOut} style={styles.button}>
+      <Pressable accessibilityRole="button" accessibilityState={{ disabled: busy, busy }} disabled={busy} onPress={handleSignOut} style={styles.button}>
         <Text style={styles.label}>{busy ? "Signing out…" : "Sign out"}</Text>
       </Pressable>
       {error ? <Text accessibilityRole="alert" style={styles.error}>{error}</Text> : null}
@@ -39,6 +41,6 @@ export function SignOutButton() {
 const styles = StyleSheet.create({
   container: { alignItems: "center", marginTop: 22 },
   button: { minHeight: 44, justifyContent: "center", paddingHorizontal: 16 },
-  label: { color: "#2563FF", fontSize: 14, fontWeight: "700" },
-  error: { color: "#D43B46", fontSize: 13, textAlign: "center" },
+  label: { color: colors.brand, fontSize: 14, fontFamily: "Inter_700Bold" },
+  error: { color: colors.dangerText, fontSize: 13, textAlign: "center" },
 });

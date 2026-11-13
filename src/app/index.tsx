@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
     color: "#D9E4F2",
     fontSize: 15,
     fontStyle: "italic",
-    fontWeight: "600",
+    fontFamily: "Inter_600SemiBold",
     letterSpacing: 0.3,
     marginTop: 17,
   },
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
   onboardingTitle: {
     color: "#FFFFFF",
     fontSize: 32,
-    fontWeight: "800",
+    fontFamily: "Inter_800ExtraBold",
     letterSpacing: -0.8,
     lineHeight: 34,
   },
@@ -436,12 +436,12 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: "#FFFFFF",
     fontSize: 15,
-    fontWeight: "800",
+    fontFamily: "Inter_800ExtraBold",
   },
   primaryButtonArrow: {
     color: "#FFFFFF",
     fontSize: 20,
-    fontWeight: "400",
+    fontFamily: "Inter_400Regular",
     marginLeft: 10,
     marginTop: -1,
   },
@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
   loginPromptLink: {
     color: "#FFFFFF",
     fontSize: 12,
-    fontWeight: "800",
+    fontFamily: "Inter_800ExtraBold",
   },
   formScreen: {
     backgroundColor: SURFACE,
@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
   backIcon: {
     color: INK,
     fontSize: 35,
-    fontWeight: "300",
+    fontFamily: "Inter_300Light",
     lineHeight: 36,
     marginTop: -3,
   },
@@ -497,7 +497,7 @@ const styles = StyleSheet.create({
   formTitle: {
     color: INK,
     fontSize: 25,
-    fontWeight: "800",
+    fontFamily: "Inter_800ExtraBold",
     letterSpacing: -0.6,
     lineHeight: 31,
   },
@@ -524,13 +524,13 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     color: INK,
     fontSize: 15,
-    fontWeight: "700",
+    fontFamily: "Inter_700Bold",
     height: "100%",
     textAlign: "center",
     width: 68,
   },
   switchMode: { alignItems: "center", padding: 16, minHeight: 44 },
-  switchModeText: { color: BLUE, fontSize: 13, fontWeight: "600" },
+  switchModeText: { color: BLUE, fontSize: 13, fontFamily: "Inter_600SemiBold" },
   phoneInput: {
     color: INK,
     flex: 1,
@@ -557,7 +557,7 @@ const styles = StyleSheet.create({
   formButtonText: {
     color: "#FFFFFF",
     fontSize: 14,
-    fontWeight: "800",
+    fontFamily: "Inter_800ExtraBold",
   },
   otpRow: {
     flexDirection: "row",
@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
     color: INK,
     flex: 1,
     fontSize: 18,
-    fontWeight: "700",
+    fontFamily: "Inter_700Bold",
     height: 52,
     minWidth: 0,
     padding: 0,
@@ -594,6 +594,6 @@ const styles = StyleSheet.create({
   resendValue: {
     color: BLUE,
     fontSize: 13,
-    fontWeight: "700",
+    fontFamily: "Inter_700Bold",
   },
 });

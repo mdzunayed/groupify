@@ -1,6 +1,6 @@
 # Roadmap implementation status
 
-This is a snapshot of evidence in the repository and current development environment, not the live [project tracker](https://docs.google.com/spreadsheets/d/1b__35uk0LqXWKjUfO9_TMHCadurFBflXbuVo4U0YQss/edit). The tracker was not accessible from this environment when this snapshot was prepared. Phase acceptance belongs to the product owner; a branch or passing check alone does not mark a phase complete.
+This is a snapshot of evidence in the repository and current development environment, not the live [project tracker](https://docs.google.com/spreadsheets/d/1b__35uk0LqXWKjUfO9_TMHCadurFBflXbuVo4U0YQss/edit). The tracker was inaccessible when the original snapshot was prepared; Drive reads succeeded on 2026-11-13. Phase acceptance belongs to the product owner; a branch or passing check alone does not mark a phase complete.
 
 | Phase | Repository evidence and current status |
 | --- | --- |
@@ -27,3 +27,12 @@ The signed-in home now uses the approved light-theme colors, spacing and type sc
 Evidence: verified Node 26.13.0 download checksum; `npm ci`, `npm run check` (lint, typecheck, 16 tests) passed. No live Clerk session or Android device is configured here, so authenticated rendering, TalkBack and large-text checks remain unverified. Drive reads succeeded; tracker reconciliation is pending. Status: in review, not phase acceptance.
 
 `npm run bundle:android` also passed (1,475 modules); this is a JavaScript/assets export, not an APK or device proof.
+
+
+## 2026-11-13 — brand and typography integration
+
+Branch `task/p3-brand-integration` stacks on `task/p3-honest-home-shell`. The app renders the checked-in helmet-and-road SVG with Expo Image and bundles six Inter weights through `@expo-google-fonts/inter` and Expo Font. Font loading gates navigation, with explicit startup loading/error states. Authentication typography, home tokens, sign-out feedback and startup typography use the bundled families. App configuration requests light mode. Authentication colors/layout and reusable controls still need P3 work.
+
+SDK 58 index, Font, Image, and app-config documentation were fetched before API changes. `npm run check` passed lint, typecheck and all 16 existing tests under Node 26.13.0. Those tests cover mocked authentication and token contrast, not rendered font/image behavior. No device or live Clerk key is configured. Android font rendering, SVG appearance, offline font startup, TalkBack, dynamic text and live session validation remain open. Status: in review; no phase accepted.
+
+Final Android export passed (1,488 modules) and includes the SVG plus exactly six Inter font assets. Imports target individual font files to avoid bundling unused weights. This does not prove device rendering or a live session. Next independent task: reusable authentication controls and the remaining token/accessibility pass; device validation needs an Android device and configured development identity.

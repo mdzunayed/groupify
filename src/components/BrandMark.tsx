@@ -1,4 +1,7 @@
+import { Image } from "expo-image";
 import { StyleSheet, Text, View } from "react-native";
+
+import { colors, spacing } from "../theme/tokens";
 
 type BrandMarkProps = {
   size?: number;
@@ -7,57 +10,21 @@ type BrandMarkProps = {
   light?: boolean;
 };
 
-export function BrandMark({
-  size = 40,
-  showName = false,
-  showTagline = false,
-  light = false,
-}: BrandMarkProps) {
-  const markBackground = light ? "#111923" : "#F7FAFC";
-  const markText = light ? "#F7FAFC" : "#111923";
-
+export function BrandMark({ size = 40, showName = false, showTagline = false, light = false }: BrandMarkProps) {
   return (
     <View style={styles.wrapper}>
-      <View
-        style={[
-          styles.mark,
-          {
-            width: size,
-            height: size,
-            borderRadius: size * 0.27,
-            backgroundColor: markBackground,
-          },
-        ]}
-      >
-        <Text
-          style={[
-            styles.markText,
-            {
-              color: markText,
-              fontSize: size * 0.72,
-              lineHeight: size * 0.82,
-            },
-          ]}
-        >
-          G
-        </Text>
-        <View
-          style={[
-            styles.markSlash,
-            {
-              width: size * 0.42,
-              height: Math.max(2, size * 0.09),
-              left: size * 0.3,
-              top: size * 0.54,
-              transform: [{ rotate: "-18deg" }],
-            },
-          ]}
-        />
-      </View>
+      <Image
+        source={require("../../assets/brand/groupify-mark.svg")}
+        style={{ width: size, height: size }}
+        contentFit="contain"
+        tintColor={light ? colors.onBrand : undefined}
+        accessible={!showName}
+        accessibilityLabel="Groupify"
+      />
       {showName ? (
-        <View style={styles.wordmark}>
-          <Text style={[styles.name, { color: light ? "#F7FAFC" : "#111923" }]}>Groupify</Text>
-          {showTagline ? <Text style={styles.tagline}>Move Together.</Text> : null}
+        <View>
+          <Text style={[styles.name, { color: light ? colors.onBrand : colors.text }]}>Groupify</Text>
+          {showTagline ? <Text style={[styles.tagline, { color: light ? colors.onBrand : colors.brand }]}>Move Together.</Text> : null}
         </View>
       ) : null}
     </View>
@@ -65,42 +32,7 @@ export function BrandMark({
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: 10,
-  },
-  mark: {
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  },
-  markText: {
-    fontStyle: "italic",
-    fontWeight: "900",
-    includeFontPadding: false,
-    letterSpacing: -2,
-    marginLeft: -2,
-  },
-  markSlash: {
-    backgroundColor: "#2563FF",
-    borderRadius: 99,
-    position: "absolute",
-  },
-  wordmark: {
-    justifyContent: "center",
-  },
-  name: {
-    fontSize: 20,
-    fontWeight: "800",
-    letterSpacing: -0.5,
-    lineHeight: 22,
-  },
-  tagline: {
-    color: "#2563FF",
-    fontSize: 11,
-    fontStyle: "italic",
-    fontWeight: "800",
-    lineHeight: 14,
-  },
+  wrapper: { alignItems: "center", flexDirection: "row", gap: spacing.sm },
+  name: { fontFamily: "Inter_800ExtraBold", fontSize: 20, lineHeight: 28 },
+  tagline: { fontFamily: "Inter_600SemiBold", fontSize: 12, lineHeight: 16 },
 });
