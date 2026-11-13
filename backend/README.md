@@ -1,6 +1,6 @@
 # Groupify backend foundation
 
-This is the beginning of the approved NestJS modular monolith. It provides liveness and dependency-readiness checks, local PostgreSQL/PostGIS and Redis services, and a migration baseline. It does not yet implement product APIs, authentication, authorization, WebSockets, or a production deployment.
+This is the beginning of the approved NestJS modular monolith. It provides liveness and dependency-readiness checks, local PostgreSQL/PostGIS and Redis services, and a migration baseline. It also contains a development-only external-session verification service. It does not implement product APIs, Groupify account authorization, WebSockets, or a production deployment.
 
 ## Local development
 
@@ -49,3 +49,12 @@ CI. Swagger Parser/Ajv are development-only dependencies; no Swagger endpoint or
 production provider is added. Focused readiness success/failure checks stub the
 readiness service result. `test:integration:docker` validates actual dependency
 responses against the same document when its required services are available.
+
+
+## Development identity boundary
+
+`IdentityModule` exports a disabled-by-default Clerk development verifier with
+pinned public-key checks and explicit issuer/audience/authorized-party policy.
+It adds no public endpoint or product-access grant. The installed SDK also
+requires a server-only development secret. See [configuration and limits](../docs/authentication-backend.md)
+and `npm run test:identity`. Health endpoints do not require identity configuration.

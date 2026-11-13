@@ -60,3 +60,9 @@ References: [Expo quickstart](https://clerk.com/docs/expo/getting-started/quicks
 ### Missing configuration at startup
 
 When `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY` is absent, startup displays “Sign-in is unavailable” after fonts load and does not mount Clerk or protected routes. Set the development publishable key using the configuration above and restart Expo. This presentation does not validate a nonempty key or the remote Clerk application. No secret key is needed in the client.
+
+
+Backend external-session verification has separate, server-only configuration;
+see [the development identity boundary](authentication-backend.md). Its secret
+must never be added to the Expo client. Local cryptographic adapter tests do not
+prove a live Clerk or SMS flow.

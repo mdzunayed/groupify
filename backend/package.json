@@ -8,14 +8,16 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "start": "node dist/main.js",
-    "test": "npm run build && node --test checks/health-unit.mjs checks/http-errors.mjs checks/openapi.mjs",
+    "test": "npm run build && node --test checks/health-unit.mjs checks/http-errors.mjs checks/openapi.mjs checks/development-identity.mjs",
     "test:integration": "npm run build && node --test checks/health-integration.mjs",
     "test:integration:docker": "bash scripts/test-integration.sh",
     "migrate:up": "node-pg-migrate up",
     "migrate:down": "node-pg-migrate down",
-    "test:contract": "npm run build && node --test checks/openapi.mjs"
+    "test:contract": "npm run build && node --test checks/openapi.mjs",
+    "test:identity": "npm run build && node --test checks/development-identity.mjs"
   },
   "dependencies": {
+    "@clerk/backend": "3.28.0",
     "@nestjs/common": "12.4.2",
     "@nestjs/core": "12.4.2",
     "@nestjs/platform-express": "12.4.2",

@@ -30,3 +30,14 @@ The published `@clerk/backend` 3.27.0 type documentation recommends `authenticat
 - Test real development sign-up, sign-in, session reload, and sign-out with the configured Clerk development application. Mocked tests do not establish SMS delivery, Bangladesh coverage, or production pricing.
 
 The existing [Clerk authentication guide](../authentication.md), [open decisions](../00-product/open-decisions.md), and [retention decision record](../01-architecture/architecture-decisions/ADR-015-security-retention.md) contain the current constraints. Approve a concrete schema, recovery policy, media-storage approach, and production provider before relying on the dependent implementation.
+
+
+## Development verification foundation (2026-11-13)
+
+A [bounded development verifier](../authentication-backend.md) now exists without
+account tables, product endpoints or authorization grants. It uses the pinned
+`@clerk/backend` 3.28.0 request-authentication SDK with explicit issuer/audience/
+authorized-party policy and a pinned public key. That SDK also requires a backend
+secret even with the key, as recorded in ADR-018. Local generated-token tests are
+not live-provider or account-status evidence. The account/profile/schema/recovery
+and revocation requirements above remain open and are not fulfilled by this adapter.
