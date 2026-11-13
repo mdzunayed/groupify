@@ -1,0 +1,856 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Groupify account/profile/lifecycle \u2014 review draft",
+    "version": "0.0.0-proposal",
+    "description": "NOT IMPLEMENTED OR APPROVED. This separate review artifact grants no permission and is not the implemented health API contract. R1\u2013R4 in docs/02-database/account-profile-contract.md must be resolved before dependent migrations/endpoints. No production provider or deployment is selected."
+  },
+  "x-groupify-status": "proposal-not-implemented",
+  "security": [
+    {
+      "ProposedBearer": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Proposed account/profile",
+      "description": "All paths are candidates for owner review, not discoverable product routes."
+    }
+  ],
+  "paths": {
+    "/v1/accounts/bootstrap": {
+      "post": {
+        "operationId": "draftBootstrapAccount",
+        "tags": [
+          "Proposed account/profile"
+        ],
+        "description": "PROPOSAL ONLY; not implemented. Create or resolve the exact verified provider/issuer/subject link. Never recover or replace a deactivated account implicitly.",
+        "x-groupify-blocked-by": [
+          "R1"
+        ],
+        "responses": {
+          "200": {
+            "description": "Existing active account.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/NoStore"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActiveAccount"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "New account/link committed atomically.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/NoStore"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActiveAccount"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "401": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "403": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "409": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "503": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "Optional empty object only; identity is derived from verification, never caller fields."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/me": {
+      "get": {
+        "operationId": "draftGetOwnLifecycle",
+        "tags": [
+          "Proposed account/profile"
+        ],
+        "description": "PROPOSAL ONLY; not implemented. Minimal self lifecycle status, including proposed limited inactive-account read. No profile or provider claims.",
+        "x-groupify-blocked-by": [
+          "R1"
+        ],
+        "responses": {
+          "200": {
+            "description": "Current mapped self lifecycle status.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/NoStore"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountSummary"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "400": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "401": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "403": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "409": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "503": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        }
+      }
+    },
+    "/v1/me/profile": {
+      "post": {
+        "operationId": "draftCreateOwnProfile",
+        "tags": [
+          "Proposed account/profile"
+        ],
+        "description": "PROPOSAL ONLY; not implemented. Active self only. Photo upload/attachment is blocked by R4; nullable reference is not a profile-completion decision.",
+        "x-groupify-blocked-by": [
+          "R1",
+          "R4"
+        ],
+        "responses": {
+          "201": {
+            "description": "Profile created.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/NoStore"
+              },
+              "ETag": {
+                "description": "Strong profile version precondition token.",
+                "required": true,
+                "schema": {
+                  "type": "string",
+                  "pattern": "^\"profile-[1-9][0-9]*\"$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "401": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "403": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "409": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "503": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileCreate"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "draftGetOwnProfile",
+        "tags": [
+          "Proposed account/profile"
+        ],
+        "description": "PROPOSAL ONLY; not implemented. Active self only; no lookup/edit permission for other riders.",
+        "x-groupify-blocked-by": [
+          "R1",
+          "R4"
+        ],
+        "responses": {
+          "200": {
+            "description": "Own profile.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/NoStore"
+              },
+              "ETag": {
+                "description": "Strong profile version precondition token.",
+                "required": true,
+                "schema": {
+                  "type": "string",
+                  "pattern": "^\"profile-[1-9][0-9]*\"$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "400": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "401": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "403": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "409": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "503": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "draftUpdateOwnProfile",
+        "tags": [
+          "Proposed account/profile"
+        ],
+        "description": "PROPOSAL ONLY; not implemented. Active self only, strong If-Match. Omission preserves, explicit vehicle null clears. Unknown/immutable fields rejected.",
+        "x-groupify-blocked-by": [
+          "R1",
+          "R4"
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated own profile.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/NoStore"
+              },
+              "ETag": {
+                "description": "Strong profile version precondition token.",
+                "required": true,
+                "schema": {
+                  "type": "string",
+                  "pattern": "^\"profile-[1-9][0-9]*\"$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "400": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "401": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "403": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "409": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "503": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "428": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/IfMatch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfilePatch"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/me/deletion": {
+      "post": {
+        "operationId": "draftRequestOwnDeletion",
+        "tags": [
+          "Proposed account/profile"
+        ],
+        "description": "PROPOSAL ONLY; not implemented. Approved proof required. Commit deactivation before 202; repeat requests must preserve the original cycle/deadline. This does not claim completed erasure.",
+        "x-groupify-blocked-by": [
+          "R2",
+          "R3",
+          "R4"
+        ],
+        "responses": {
+          "202": {
+            "description": "Durable deactivation; erasure remains scheduled/in progress.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/NoStore"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletionAccepted"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "401": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "403": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "409": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "503": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeletionRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/me/recovery": {
+      "post": {
+        "operationId": "draftRecoverOwnAccount",
+        "tags": [
+          "Proposed account/profile"
+        ],
+        "description": "PROPOSAL ONLY; not implemented. Approved fresh purpose/cycle proof, row lock and server time strictly before deadline. Deny purging; never auto-recover on sign-in.",
+        "x-groupify-blocked-by": [
+          "R2",
+          "R3",
+          "R4"
+        ],
+        "responses": {
+          "200": {
+            "description": "Account reactivated by explicit approved recovery.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/NoStore"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActiveAccount"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "401": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "403": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "409": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "503": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecoveryRequest"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RequestId": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+      },
+      "HttpError": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "statusCode",
+          "code",
+          "message",
+          "requestId"
+        ],
+        "properties": {
+          "statusCode": {
+            "type": "integer",
+            "minimum": 400,
+            "maximum": 599
+          },
+          "code": {
+            "type": "string",
+            "enum": [
+              "BAD_REQUEST",
+              "UNAUTHENTICATED",
+              "FORBIDDEN",
+              "NOT_FOUND",
+              "METHOD_NOT_ALLOWED",
+              "REQUEST_TIMEOUT",
+              "CONFLICT",
+              "PAYLOAD_TOO_LARGE",
+              "UNSUPPORTED_MEDIA_TYPE",
+              "UNPROCESSABLE_ENTITY",
+              "TOO_MANY_REQUESTS",
+              "INTERNAL_ERROR",
+              "BAD_GATEWAY",
+              "SERVICE_UNAVAILABLE",
+              "GATEWAY_TIMEOUT",
+              "REQUEST_FAILED"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Safe public text; clients must branch on status and code rather than message wording."
+          },
+          "requestId": {
+            "$ref": "#/components/schemas/RequestId"
+          }
+        }
+      },
+      "AccountSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "accountId",
+          "state",
+          "version",
+          "deletionCycleId",
+          "deletionRequestedAt",
+          "recoveryUntil"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "active",
+              "deactivated",
+              "purging"
+            ]
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$",
+            "description": "Positive database version serialized without integer precision loss."
+          },
+          "deletionCycleId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "deletionRequestedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "recoveryUntil": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "ActiveAccount": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AccountSummary"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "type": "string",
+                "enum": [
+                  "active"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "DeletionAccepted": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AccountSummary"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "type": "string",
+                "enum": [
+                  "deactivated",
+                  "purging"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "Profile": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "accountId",
+          "displayName",
+          "riderType",
+          "vehicleDescription",
+          "photoAssetId",
+          "version"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "PROPOSED: Unicode NFC/trim, code-point count, no control characters; confirm R1."
+          },
+          "riderType": {
+            "type": "string",
+            "enum": [
+              "motorcycle",
+              "bicycle"
+            ]
+          },
+          "vehicleDescription": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 160,
+            "description": "PROPOSED: optional NFC/trim plain text; null clears, omitted PATCH field preserves.",
+            "minLength": 1
+          },
+          "photoAssetId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "readOnly": true,
+            "description": "Logical owned-asset reference. Storage/FK/access/erasure contract unresolved; null is not approval to waive picture requirements."
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$",
+            "description": "Positive database version serialized without integer precision loss."
+          }
+        }
+      },
+      "ProfileCreate": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "displayName",
+          "riderType"
+        ],
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "PROPOSED: Unicode NFC/trim, code-point count, no control characters; confirm R1."
+          },
+          "riderType": {
+            "type": "string",
+            "enum": [
+              "motorcycle",
+              "bicycle"
+            ]
+          },
+          "vehicleDescription": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 160,
+            "description": "PROPOSED: optional NFC/trim plain text; null clears, omitted PATCH field preserves."
+          }
+        }
+      },
+      "ProfilePatch": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "PROPOSED: Unicode NFC/trim, code-point count, no control characters; confirm R1."
+          },
+          "riderType": {
+            "type": "string",
+            "enum": [
+              "motorcycle",
+              "bicycle"
+            ]
+          },
+          "vehicleDescription": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 160,
+            "description": "PROPOSED: optional NFC/trim plain text; null clears, omitted PATCH field preserves."
+          }
+        }
+      },
+      "DeletionRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "reauthProof"
+        ],
+        "properties": {
+          "reauthProof": {
+            "type": "string",
+            "minLength": 1,
+            "writeOnly": true,
+            "description": "UNIMPLEMENTED: fresh, one-use purpose/cycle-bound proof from the owner-approved provider reauthentication procedure (R2), not token iat or phone equality."
+          }
+        }
+      },
+      "RecoveryRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "deletionCycleId",
+          "reauthProof"
+        ],
+        "properties": {
+          "deletionCycleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reauthProof": {
+            "type": "string",
+            "minLength": 1,
+            "writeOnly": true,
+            "description": "UNIMPLEMENTED: fresh, one-use purpose/cycle-bound proof from the owner-approved provider reauthentication procedure (R2), not token iat or phone equality."
+          }
+        }
+      }
+    },
+    "headers": {
+      "RequestId": {
+        "description": "Fresh server-generated UUID v4 for this attempt. Incoming X-Request-Id values are ignored; this is not an idempotency key.",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/RequestId"
+        }
+      },
+      "NoStore": {
+        "description": "Error responses must not be cached.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "no-store"
+          ]
+        }
+      }
+    },
+    "responses": {
+      "HttpError": {
+        "description": "Shared safe HTTP error envelope. Status is 4xx/5xx; the body statusCode and requestId match the HTTP status and X-Request-Id header. No raw exception or request content is returned.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/RequestId"
+          },
+          "Cache-Control": {
+            "$ref": "#/components/headers/NoStore"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/HttpError"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": true,
+        "description": "Proposed UUID, scoped by authenticated identity/account, operation/body hash and deletion cycle. Record lifetime unresolved; not the request ID.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "IfMatch": {
+        "name": "If-Match",
+        "in": "header",
+        "required": true,
+        "description": "Strong current profile ETag; 428 if absent, 409 if stale.",
+        "schema": {
+          "type": "string",
+          "pattern": "^\"profile-[1-9][0-9]*\"$"
+        }
+      }
+    },
+    "securitySchemes": {
+      "ProposedBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Draft identity input only. Valid external identity must be followed by current account-state/self-resource checks. Production provider remains open."
+      }
+    }
+  }
+}

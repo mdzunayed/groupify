@@ -41,3 +41,12 @@ authorized-party policy and a pinned public key. That SDK also requires a backen
 secret even with the key, as recorded in ADR-018. Local generated-token tests are
 not live-provider or account-status evidence. The account/profile/schema/recovery
 and revocation requirements above remain open and are not fulfilled by this adapter.
+
+
+## Concrete review draft (2026-11-13)
+
+The [account/profile/lifecycle contract](account-profile-contract.md) develops this
+proposal into candidate columns/constraints, self-service APIs, version/idempotency
+rules, deletion-cycle races and owner review items R1–R4. Its separate draft OpenAPI
+is not the implemented health contract. No permission, schema, recovery proof or
+retention exception is accepted by publishing the draft; no migration/API was added.

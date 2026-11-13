@@ -22,5 +22,6 @@ Records labeled **Proposed** are recommendations for evaluation, not selections 
 | [ADR-016](ADR-016-operations-testing.md) | Proposed | Operations, environments, testing and release |
 | [ADR-017](ADR-017-ci.md) | Proposed | GitHub-hosted repository CI checks |
 | [ADR-018](ADR-018-development-identity-verification.md) | In review | Development external-identity verification, without product authorization |
+| [ADR-019](ADR-019-account-profile-lifecycle-contract.md) | Proposed | Account/profile ownership and lifecycle review contract |
 
 The [system architecture](../system-architecture.md), [flows](../flows-and-security.md), [operations](../operations-and-testing.md), and [research/cost model](../research-cost-capacity.md) use these records as their decision register. The owner requested work through the roadmap on separate phase branches for review; that request does not itself approve the proposed decisions.

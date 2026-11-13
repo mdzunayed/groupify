@@ -51,3 +51,11 @@ Every question in the tables is an **Open question**. None is an approved produc
 ## Dependency on decisions
 
 **Risk:** Unselected providers and architecture, unresolved permissions, retained-native integration, and unvalidated Android PTT can block later implementation or acceptance. No application, infrastructure, schema, or provider changes are authorized by resolving questions in this document alone.
+
+
+## Account/profile decision package for review
+
+OD-17 and OD-20 now have a [concrete contract draft](../02-database/account-profile-contract.md)
+with recommendations R1–R4. OD-18 shared emergency records and OD-16 independent
+location retention remain relevant dependencies. The draft does not resolve these
+questions, approve new permissions or alter the binding product baseline.
