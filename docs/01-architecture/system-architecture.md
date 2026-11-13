@@ -67,3 +67,10 @@ The following boundaries are proposed logical modules, not a database schema, se
 - **Retention and deletion:** Detailed location history has a 30-day retention period subject to legally required retention. Account deletion immediately deactivates the account, permits 30-day recovery, and then permanently deletes personal data subject to legal retention. The triggers, backups and applicable legal obligations require decisions and evidence. [ADR-015](architecture-decisions/ADR-015-security-retention.md)
 
 See [flows and security](flows-and-security.md) for failure boundaries and [operations and testing](operations-and-testing.md) for release and evidence requirements. No diagram asserts that the current application or a server already implements these flows.
+
+## Implemented Nest module composition
+
+The [backend module map](backend-modules.md) describes the current root composition,
+HTTP infrastructure, health probes and development identity boundary. This is a
+limited implemented foundation; the product-domain boundaries above remain a
+planning model and confer no unimplemented authorization or phase acceptance.

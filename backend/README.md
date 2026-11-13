@@ -58,3 +58,11 @@ pinned public-key checks and explicit issuer/audience/authorized-party policy.
 It adds no public endpoint or product-access grant. The installed SDK also
 requires a server-only development secret. See [configuration and limits](../docs/authentication-backend.md)
 and `npm run test:identity`. Health endpoints do not require identity configuration.
+
+## Module composition
+
+`AppModule` composes `HttpInfrastructureModule`, `HealthModule` and `IdentityModule`.
+Health owns its controller/private readiness service; HTTP infrastructure owns
+request IDs/global error formatting; identity explicitly exports its development
+verifier without product permissions. See [module boundaries](../docs/01-architecture/backend-modules.md).
+Health file locations and migration discovery remain unchanged.
