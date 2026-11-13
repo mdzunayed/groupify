@@ -1,0 +1,222 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Groupify health API",
+    "version": "0.1.0",
+    "description": "Implemented HTTP foundation, in review. Only health endpoints are documented. No product API, identity provider, deployment URL or phase acceptance is established."
+  },
+  "security": [],
+  "tags": [
+    {
+      "name": "Health",
+      "description": "Public liveness and dependency-readiness probes. No product data."
+    }
+  ],
+  "paths": {
+    "/health/live": {
+      "get": {
+        "operationId": "getLiveness",
+        "tags": [
+          "Health"
+        ],
+        "summary": "Check process liveness",
+        "description": "Serves without requiring database or Redis connectivity. Does not establish a live user session or product readiness.",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Healthy"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "operationId": "getReadiness",
+        "tags": [
+          "Health"
+        ],
+        "summary": "Check dependency and migration readiness",
+        "description": "Requires PostgreSQL with PostGIS and Redis to respond, and every local migration name to be recorded as applied. Does not verify migration contents or product behavior.",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Healthy"
+          },
+          "503": {
+            "$ref": "#/components/responses/ReadinessUnavailable"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RequestId": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+      },
+      "Health": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok"
+            ]
+          }
+        }
+      },
+      "HttpError": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "statusCode",
+          "code",
+          "message",
+          "requestId"
+        ],
+        "properties": {
+          "statusCode": {
+            "type": "integer",
+            "minimum": 400,
+            "maximum": 599
+          },
+          "code": {
+            "type": "string",
+            "enum": [
+              "BAD_REQUEST",
+              "UNAUTHENTICATED",
+              "FORBIDDEN",
+              "NOT_FOUND",
+              "METHOD_NOT_ALLOWED",
+              "REQUEST_TIMEOUT",
+              "CONFLICT",
+              "PAYLOAD_TOO_LARGE",
+              "UNSUPPORTED_MEDIA_TYPE",
+              "UNPROCESSABLE_ENTITY",
+              "TOO_MANY_REQUESTS",
+              "INTERNAL_ERROR",
+              "BAD_GATEWAY",
+              "SERVICE_UNAVAILABLE",
+              "GATEWAY_TIMEOUT",
+              "REQUEST_FAILED"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Safe public text; clients must branch on status and code rather than message wording."
+          },
+          "requestId": {
+            "$ref": "#/components/schemas/RequestId"
+          }
+        }
+      },
+      "ReadinessUnavailable": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/HttpError"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer",
+                "enum": [
+                  503
+                ]
+              },
+              "code": {
+                "type": "string",
+                "enum": [
+                  "SERVICE_UNAVAILABLE"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "headers": {
+      "RequestId": {
+        "description": "Fresh server-generated UUID v4 for this attempt. Incoming X-Request-Id values are ignored; this is not an idempotency key.",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/RequestId"
+        }
+      },
+      "NoStore": {
+        "description": "Error responses must not be cached.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "no-store"
+          ]
+        }
+      }
+    },
+    "responses": {
+      "Healthy": {
+        "description": "The process can serve requests (liveness), or every readiness condition passed.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/RequestId"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Health"
+            }
+          }
+        }
+      },
+      "ReadinessUnavailable": {
+        "description": "PostgreSQL/PostGIS, Redis or applied migration-name checks did not pass. No connection details are exposed.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/RequestId"
+          },
+          "Cache-Control": {
+            "$ref": "#/components/headers/NoStore"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ReadinessUnavailable"
+            }
+          }
+        }
+      },
+      "HttpError": {
+        "description": "Shared safe HTTP error envelope. Status is 4xx/5xx; the body statusCode and requestId match the HTTP status and X-Request-Id header. No raw exception or request content is returned.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/RequestId"
+          },
+          "Cache-Control": {
+            "$ref": "#/components/headers/NoStore"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/HttpError"
+            }
+          }
+        }
+      }
+    }
+  }
+}

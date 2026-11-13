@@ -4,6 +4,8 @@ import { createRequire } from "node:module";
 
 import { NestFactory } from "@nestjs/core";
 
+import { assertDocumentedResponse } from "./api-contract.mjs";
+
 const require = createRequire(import.meta.url);
 const { AppModule } = require("../dist/app.module.js");
 let app;
@@ -26,6 +28,7 @@ after(async () => {
 
 test("readiness checks PostGIS and Redis", async () => {
   const response = await fetch(`${baseUrl}/health/ready`);
+  await assertDocumentedResponse(response, "/health/ready");
   assert.equal(response.status, 200);
   assert.deepEqual(await response.json(), { status: "ok" });
 });
@@ -35,6 +38,7 @@ test("readiness fails closed when Redis cannot be reached", async () => {
   process.env.REDIS_URL = "redis://127.0.0.1:1";
   try {
     const response = await fetch(`${baseUrl}/health/ready`);
+    await assertDocumentedResponse(response, "/health/ready");
     assert.equal(response.status, 503);
     const body = await response.text();
     assert.ok(!body.includes(previousRedisUrl));
@@ -49,6 +53,7 @@ test("readiness fails closed when the database lacks PostGIS", async () => {
   process.env.DATABASE_URL = process.env.DATABASE_URL_WITHOUT_POSTGIS;
   try {
     const response = await fetch(`${baseUrl}/health/ready`);
+    await assertDocumentedResponse(response, "/health/ready");
     assert.equal(response.status, 503);
     const body = await response.text();
     assert.ok(!body.includes(process.env.DATABASE_URL));
@@ -66,6 +71,7 @@ test("readiness fails when migration history is missing or a migration is pendin
     ]) {
       process.env.DATABASE_URL = databaseUrl;
       const response = await fetch(`${baseUrl}/health/ready`);
+      await assertDocumentedResponse(response, "/health/ready");
       assert.equal(response.status, 503);
       assert.ok(!(await response.text()).includes(databaseUrl));
     }

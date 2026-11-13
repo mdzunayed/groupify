@@ -5,6 +5,8 @@ import { createRequire } from "node:module";
 import { Controller, Get, Post, Param, HttpException, Module } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 
+import { assertSharedErrorResponse } from "./api-contract.mjs";
+
 const require = createRequire(import.meta.url);
 const { AppModule } = require("../dist/app.module.js");
 const marker = "synthetic-private-error-marker";
@@ -43,6 +45,7 @@ before(async () => {
 after(async () => { if (app) await app.close(); });
 
 async function errorResponse(response, statusCode, code) {
+  await assertSharedErrorResponse(response);
   assert.equal(response.status, statusCode);
   assert.match(response.headers.get("x-request-id"), uuid);
   assert.equal(response.headers.get("cache-control"), "no-store");

@@ -88,7 +88,7 @@ It now uses the envelope above. Health success bodies and readiness's dependency
 migration conditions are unchanged. No current mobile client calls these APIs.
 
 Product routing/versioning, field validation/limits, pagination, write idempotency,
-DTO/OpenAPI contracts, CORS, request deadlines, authentication/account-state checks,
+product DTO/OpenAPI contracts, CORS, request deadlines, authentication/account-state checks,
 rate limiting and WebSocket errors remain unimplemented. Each needs an explicit
 contract before product clients depend on it. This foundation grants no access to
 community, ride, location, chat, PTT or SOS data.
@@ -104,3 +104,20 @@ from errors and captured error logs. Test-only failure controllers live under
 `npm run test:integration:docker` separately checks real PostGIS/Redis and migration
 repeatability/rollback/reapply. See implementation status for whether a particular
 run passed or was blocked; unit/HTTP checks alone do not prove those dependencies.
+
+## Machine-readable foundation contract
+
+[openapi.json](openapi.json) is an OpenAPI 3.0.3 document for the two implemented
+GET health operations and the shared error response. It deliberately declares no
+product paths, provider security scheme or deployment URL. The health operations
+are public. Required UUID headers, error cache headers and strict response shapes
+are machine-readable; error status/header correlation is also checked at runtime
+by the test helper because JSON Schema alone cannot compare HTTP headers/body.
+
+`cd backend && npm run test:contract` validates the document with Swagger Parser
+(external reference resolution disabled) and checks real loopback responses with
+Ajv. Readiness success/failure in this focused suite use a controlled service
+result to test the HTTP contract without requiring PostGIS/Redis. The real
+PostGIS/Redis integration suite also invokes this same response validator; it is
+a separate check, and its infrastructure blocker is recorded in implementation
+status. Contract tests explicitly reject payload/header/correlation drift.

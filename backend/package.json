@@ -8,11 +8,12 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "start": "node dist/main.js",
-    "test": "npm run build && node --test checks/health-unit.mjs checks/http-errors.mjs",
+    "test": "npm run build && node --test checks/health-unit.mjs checks/http-errors.mjs checks/openapi.mjs",
     "test:integration": "npm run build && node --test checks/health-integration.mjs",
     "test:integration:docker": "bash scripts/test-integration.sh",
     "migrate:up": "node-pg-migrate up",
-    "migrate:down": "node-pg-migrate down"
+    "migrate:down": "node-pg-migrate down",
+    "test:contract": "npm run build && node --test checks/openapi.mjs"
   },
   "dependencies": {
     "@nestjs/common": "12.4.2",
@@ -25,8 +26,11 @@
     "rxjs": "7.8.2"
   },
   "devDependencies": {
+    "@apidevtools/swagger-parser": "^13.1.0",
     "@types/node": "26.6.6",
     "@types/pg": "8.23.1",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "typescript": "7.0.2"
   },
   "overrides": {
