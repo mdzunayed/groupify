@@ -1,7 +1,6 @@
 import { useSignIn, useSignUp } from "@clerk/expo";
 import { useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -14,6 +13,9 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { Button } from "../components/Button";
+import { colors } from "../theme/tokens";
 
 import { BrandMark } from "../components/BrandMark";
 import { ReferenceBackdrop } from "../components/ReferenceBackdrop";
@@ -31,11 +33,11 @@ import {
 type AuthStep = "splash" | "onboarding" | "phone" | "otp";
 type InputRef = { focus: () => void };
 
-const BLUE = "#2563FF";
-const INK = "#111923";
-const MUTED = "#677383";
-const BORDER = "#D8E0EA";
-const SURFACE = "#F7FAFC";
+const BLUE = colors.brand;
+const INK = colors.text;
+const MUTED = colors.textMuted;
+const BORDER = colors.border;
+const SURFACE = colors.background;
 
 export default function Index() {
   const insets = useSafeAreaInsets();
@@ -254,22 +256,14 @@ export default function Index() {
                 keyboardType="phone-pad"
                 onChangeText={setPhone}
                 placeholder="Phone number"
-                placeholderTextColor="#A7B1BE"
+                placeholderTextColor={colors.textMuted}
                 style={styles.phoneInput}
                 value={phone}
               />
             </View>
             {error ? <Text accessibilityRole="alert" style={styles.errorText}>{error}</Text> : null}
 
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Send OTP"
-              disabled={busy}
-              onPress={sendOtp}
-              style={[styles.formButton, busy && styles.formButtonDisabled]}
-            >
-              {busy ? <ActivityIndicator color="#FFFFFF" /> : <Text style={styles.formButtonText}>Send OTP</Text>}
-            </Pressable>
+            <Button label="Send OTP" loadingLabel="Sending code…" loading={busy} onPress={sendOtp} style={styles.formAction} />
             <Pressable
               accessibilityRole="button"
               disabled={busy}
@@ -321,15 +315,7 @@ export default function Index() {
               <Text style={styles.resendValue}>{secondsLeft > 0 ? `in 00:${String(secondsLeft).padStart(2, "0")}` : "now"}</Text>
             </Pressable>
 
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Verify and continue"
-              disabled={otp.join("").length !== 6 || busy}
-              onPress={verifyOtp}
-              style={[styles.formButton, otp.join("").length !== 6 || busy ? styles.formButtonDisabled : null]}
-            >
-              {busy ? <ActivityIndicator color="#FFFFFF" /> : <Text style={styles.formButtonText}>Verify &amp; Continue</Text>}
-            </Pressable>
+            <Button label="Verify & Continue" loadingLabel="Verifying code…" loading={busy} disabled={otp.join("").length !== 6} onPress={verifyOtp} style={styles.formAction} />
           </View>
         )}
         {Platform.OS === "web" ? <View nativeID="clerk-captcha" /> : null}
@@ -539,26 +525,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   errorText: {
-    color: "#D43B46",
+    color: colors.dangerText,
     fontSize: 12,
     marginTop: 8,
   },
-  formButton: {
-    alignItems: "center",
-    backgroundColor: BLUE,
-    borderRadius: 13,
-    height: 51,
-    justifyContent: "center",
-    marginTop: 20,
-  },
-  formButtonDisabled: {
-    opacity: 0.56,
-  },
-  formButtonText: {
-    color: "#FFFFFF",
-    fontSize: 14,
-    fontFamily: "Inter_800ExtraBold",
-  },
+  formAction: { marginTop: 20 },
   otpRow: {
     flexDirection: "row",
     gap: 8,

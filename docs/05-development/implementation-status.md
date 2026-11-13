@@ -36,3 +36,11 @@ Branch `task/p3-brand-integration` stacks on `task/p3-honest-home-shell`. The ap
 SDK 58 index, Font, Image, and app-config documentation were fetched before API changes. `npm run check` passed lint, typecheck and all 16 existing tests under Node 26.13.0. Those tests cover mocked authentication and token contrast, not rendered font/image behavior. No device or live Clerk key is configured. Android font rendering, SVG appearance, offline font startup, TalkBack, dynamic text and live session validation remain open. Status: in review; no phase accepted.
 
 Final Android export passed (1,488 modules) and includes the SVG plus exactly six Inter font assets. Imports target individual font files to avoid bundling unused weights. This does not prove device rendering or a live session. Next independent task: reusable authentication controls and the remaining token/accessibility pass; device validation needs an Android device and configured development identity.
+
+## 2026-11-13 — shared authentication buttons
+
+Branch `task/p3-auth-buttons` stacks on `task/p3-brand-integration`. A reusable primary/text button now serves send OTP, verify OTP and sign-out, with visible loading labels, busy/disabled accessibility states, a minimum 48-point target and flexible text height. Existing request guards and Clerk authorization remain in their callers. The authentication form's base text, surface, border, error and placeholder colors now use approved theme tokens. Full component coverage, navigation and device accessibility remain unfinished.
+
+`npm run check` passed lint, typecheck and 16 existing tests on Node 26.13.0. The mocked tests do not establish UI rendering or live authentication. No backend code changed; historical backend and integration results have not been rerun for these UI-only tasks. No Android device/Clerk configuration is available. Next: input components and representative-screen accessibility checks. The Drive tracker's Detailed Tasks notes O28/O30 were updated and read back for the preceding two branches; phase statuses were not marked approved or complete.
+
+`npm run bundle:android` passed for the shared-button branch (1,489 modules); no APK or device behavior was verified.
