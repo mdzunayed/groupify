@@ -8,34 +8,27 @@ import { Inter_800ExtraBold } from "@expo-google-fonts/inter/800ExtraBold";
 import { ClerkProvider, useAuth, useSession } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { Stack } from "expo-router";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { colors, typography } from "../theme/tokens";
+import { StateScreen } from "../components/StateScreen";
 
 import { SignOutButton } from "../components/SignOutButton";
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
-
-if (!publishableKey) {
-  throw new Error("Set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in .env, then restart Expo.");
-}
 
 function AuthNavigator() {
   const { isLoaded, isSignedIn } = useAuth();
   const { session } = useSession();
 
   if (!isLoaded) {
-    return <View style={styles.centered}><ActivityIndicator accessibilityLabel="Loading your session" color={colors.brand} /></View>;
+    return <StateScreen kind="loading" title="Loading your session" message="Checking your sign-in status…" />;
   }
 
   if (session?.status === "pending" || session?.currentTask) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.title}>One more step is needed</Text>
-        <Text style={styles.message}>Your account requires additional setup. Please contact Groupify support to continue.</Text>
+      <StateScreen title="One more step is needed" message="Your account requires additional setup. Please contact Groupify support to continue.">
         <SignOutButton />
-      </View>
+      </StateScreen>
     );
   }
 
@@ -51,30 +44,30 @@ function AuthNavigator() {
   );
 }
 
-export default function RootLayout() {
+function Startup() {
   const [fontsLoaded, fontError] = useFonts({
     Inter_300Light, Inter_400Regular, Inter_500Medium,
     Inter_600SemiBold, Inter_700Bold, Inter_800ExtraBold,
   });
 
   if (fontError) {
-    return <View style={styles.centered}><Text accessibilityRole="alert">Unable to load app fonts. Please restart Groupify.</Text></View>;
+    return <StateScreen kind="error" fontsReady={false} title="Unable to load Groupify" message="App fonts could not be loaded. Please restart Groupify." />;
   }
   if (!fontsLoaded) {
-    return <View style={styles.centered}><ActivityIndicator accessibilityLabel="Loading Groupify" color={colors.brand} /></View>;
+    return <StateScreen kind="loading" fontsReady={false} title="Loading Groupify" message="Preparing the app…" />;
+  }
+
+  if (!publishableKey) {
+    return <StateScreen kind="error" title="Sign-in is unavailable" message="This installation is not ready for sign-in. Please contact Groupify support." />;
   }
 
   return (
-    <SafeAreaProvider>
-      <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-        <AuthNavigator />
-      </ClerkProvider>
-    </SafeAreaProvider>
+    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+      <AuthNavigator />
+    </ClerkProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  centered: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.background, padding: 24 },
-  title: { ...typography.heading2, color: colors.text },
-  message: { marginTop: 12, maxWidth: 350, textAlign: "center", color: colors.textMuted, ...typography.body },
-});
+export default function RootLayout() {
+  return <SafeAreaProvider><Startup /></SafeAreaProvider>;
+}

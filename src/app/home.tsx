@@ -5,7 +5,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BrandMark } from "../components/BrandMark";
 import { SignOutButton } from "../components/SignOutButton";
-import { colors, radius, spacing, typography } from "../theme/tokens";
+import { StateNotice } from "../components/StateNotice";
+import { colors, spacing, typography } from "../theme/tokens";
 
 export default function Home() {
   const insets = useSafeAreaInsets();
@@ -22,14 +23,8 @@ export default function Home() {
         <BrandMark size={40} />
       </View>
       <Text style={styles.subtitle}>Your ride, connected.</Text>
-      <View style={styles.card}>
-        <Text accessibilityRole="header" style={styles.heading}>Rides are coming</Text>
-        <Text style={styles.body}>Communities and rides are still being built. Your ride list is not available yet.</Text>
-      </View>
-      <View style={styles.card}>
-        <Text accessibilityRole="header" style={styles.heading}>Location sharing</Text>
-        <Text style={styles.body}>This screen does not track or share your location. When tracking is available, sharing will require joining an active ride and enabling tracking.</Text>
-      </View>
+      <StateNotice title="Rides are coming" message="Communities and rides are still being built. Your ride list is not available yet." />
+      <StateNotice title="Location sharing" message="This screen does not track or share your location. When tracking is available, sharing will require joining an active ride and enabling tracking." />
       <SignOutButton />
     </ScrollView>
   );
@@ -41,7 +36,4 @@ const styles = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: spacing.md },
   title: { ...typography.heading2, color: colors.text, flex: 1 },
   subtitle: { ...typography.body, color: colors.textMuted },
-  card: { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1, borderRadius: radius.xl, padding: spacing.xl, gap: spacing.sm },
-  heading: { ...typography.heading3, color: colors.text },
-  body: { ...typography.body, color: colors.textMuted },
 });

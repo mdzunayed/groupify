@@ -22,7 +22,8 @@ export function Button({ label, loadingLabel, onPress, disabled = false, loading
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={loading ? loadingLabel ?? label : label}
-      accessibilityState={{ disabled: unavailable, busy: loading }}
+      aria-disabled={unavailable}
+      aria-busy={loading}
       disabled={unavailable}
       onPress={onPress}
       style={({ pressed }) => [styles.button, textVariant ? styles.textButton : styles.primaryButton, style, unavailable && styles.disabled, pressed && styles.pressed]}
