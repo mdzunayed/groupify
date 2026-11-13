@@ -35,8 +35,9 @@ test("readiness fails closed when dependencies are not configured", async () => 
     assert.equal(response.status, 503);
     assert.deepEqual(await response.json(), {
       statusCode: 503,
-      message: "Dependencies unavailable",
-      error: "Service Unavailable",
+      code: "SERVICE_UNAVAILABLE",
+      message: "The service is temporarily unavailable.",
+      requestId: response.headers.get("x-request-id"),
     });
   } finally {
     if (previousDatabaseUrl !== undefined) process.env.DATABASE_URL = previousDatabaseUrl;

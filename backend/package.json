@@ -8,7 +8,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "start": "node dist/main.js",
-    "test": "npm run build && node --test checks/health-unit.mjs",
+    "test": "npm run build && node --test checks/health-unit.mjs checks/http-errors.mjs",
     "test:integration": "npm run build && node --test checks/health-integration.mjs",
     "test:integration:docker": "bash scripts/test-integration.sh",
     "migrate:up": "node-pg-migrate up",
