@@ -8,12 +8,12 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { TextField } from "../components/TextField";
 import { Button } from "../components/Button";
 import { colors } from "../theme/tokens";
 
@@ -36,7 +36,6 @@ type InputRef = { focus: () => void };
 const BLUE = colors.brand;
 const INK = colors.text;
 const MUTED = colors.textMuted;
-const BORDER = colors.border;
 const SURFACE = colors.background;
 
 export default function Index() {
@@ -239,25 +238,24 @@ export default function Index() {
             <Text style={styles.formSubtitle}>We’ll send a 6-digit code to verify your number.</Text>
 
             <View style={styles.phoneRow}>
-              <TextInput
-                accessibilityLabel="Country calling code"
+              <TextField
+                label="Country calling code"
                 editable={!busy}
                 keyboardType="phone-pad"
                 maxLength={4}
                 onChangeText={(value) => setCountryCode(`+${value.replace(/\D/g, "")}`)}
                 selectTextOnFocus
-                style={styles.countrySelector}
+                containerStyle={styles.countryField}
                 value={countryCode}
               />
-              <TextInput
-                accessibilityLabel="Phone number"
+              <TextField
+                label="Phone number"
                 autoComplete="tel"
                 editable={!busy}
                 keyboardType="phone-pad"
                 onChangeText={setPhone}
                 placeholder="Phone number"
-                placeholderTextColor={colors.textMuted}
-                style={styles.phoneInput}
+                containerStyle={styles.phoneField}
                 value={phone}
               />
             </View>
@@ -280,8 +278,9 @@ export default function Index() {
 
             <View style={styles.otpRow}>
               {otp.map((value, index) => (
-                <TextInput
-                  accessibilityLabel={`OTP digit ${index + 1}`}
+                <TextField
+                  label={`OTP digit ${index + 1}`}
+                  hideLabel
                   autoComplete={index === 0 ? "one-time-code" : "off"}
                   textContentType={index === 0 ? "oneTimeCode" : "none"}
                   editable={!busy}
@@ -298,7 +297,8 @@ export default function Index() {
                     otpRefs.current[index] = ref;
                   }}
                   selectTextOnFocus
-                  style={[styles.otpInput, value ? styles.otpInputFilled : null]}
+                  containerStyle={styles.otpField}
+                  style={styles.otpInput}
                   value={value}
                 />
               ))}
@@ -494,64 +494,20 @@ const styles = StyleSheet.create({
     marginTop: 9,
     maxWidth: 320,
   },
-  phoneRow: {
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    borderColor: BORDER,
-    borderRadius: 13,
-    borderWidth: 1,
-    flexDirection: "row",
-    height: 54,
-    marginTop: 32,
-    overflow: "hidden",
-  },
-  countrySelector: {
-    borderRightColor: BORDER,
-    borderRightWidth: 1,
-    color: INK,
-    fontSize: 15,
-    fontFamily: "Inter_700Bold",
-    height: "100%",
-    textAlign: "center",
-    width: 68,
-  },
+  phoneRow: { flexDirection: "row", alignItems: "flex-end", gap: 12, marginTop: 32 },
+  countryField: { width: 100 },
+  phoneField: { flex: 1 },
   switchMode: { alignItems: "center", padding: 16, minHeight: 44 },
   switchModeText: { color: BLUE, fontSize: 13, fontFamily: "Inter_600SemiBold" },
-  phoneInput: {
-    color: INK,
-    flex: 1,
-    fontSize: 16,
-    height: "100%",
-    paddingHorizontal: 16,
-  },
   errorText: {
     color: colors.dangerText,
     fontSize: 12,
     marginTop: 8,
   },
   formAction: { marginTop: 20 },
-  otpRow: {
-    flexDirection: "row",
-    gap: 8,
-    marginTop: 31,
-  },
-  otpInput: {
-    backgroundColor: "#FFFFFF",
-    borderColor: BORDER,
-    borderRadius: 9,
-    borderWidth: 1,
-    color: INK,
-    flex: 1,
-    fontSize: 18,
-    fontFamily: "Inter_700Bold",
-    height: 52,
-    minWidth: 0,
-    padding: 0,
-    textAlign: "center",
-  },
-  otpInputFilled: {
-    borderColor: "#AFC5FF",
-  },
+  otpRow: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 31 },
+  otpField: { flexGrow: 1, flexBasis: "30%", minWidth: 48 },
+  otpInput: { fontSize: 18, fontFamily: "Inter_700Bold", paddingHorizontal: 0, textAlign: "center" },
   resendButton: {
     alignSelf: "center",
     flexDirection: "row",

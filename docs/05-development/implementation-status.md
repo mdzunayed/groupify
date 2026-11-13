@@ -44,3 +44,15 @@ Branch `task/p3-auth-buttons` stacks on `task/p3-brand-integration`. A reusable 
 `npm run check` passed lint, typecheck and 16 existing tests on Node 26.13.0. The mocked tests do not establish UI rendering or live authentication. No backend code changed; historical backend and integration results have not been rerun for these UI-only tasks. No Android device/Clerk configuration is available. Next: input components and representative-screen accessibility checks. The Drive tracker's Detailed Tasks notes O28/O30 were updated and read back for the preceding two branches; phase statuses were not marked approved or complete.
 
 `npm run bundle:android` passed for the shared-button branch (1,489 modules); no APK or device behavior was verified.
+
+## 2026-11-13 — shared authentication fields
+
+Branch `task/p3-auth-fields` stacks on `task/p3-auth-buttons` (`e8b7749`). A fresh fetch found no phase branch merged into `main`, and the working tree was clean before starting. SDK 58 docs/index and React Native TextInput documentation were fetched before changes.
+
+A reusable `TextField` now serves country code, phone and OTP inputs. It supplies persistent phone-field labels, shared Inter/tokens, visible focus and disabled states, optional field-specific errors, and native input refs/callbacks. The existing phone normalization, OTP paste/focus/backspace handling and request guards remain in the screen. OTP inputs use two rows of three to retain 48-point minimum targets at 320px. Request errors remain form-level alerts rather than treating network failures as invalid input.
+
+Verification under Node 26.13.0: `npm run check` passed lint, typecheck and all 16 existing tests. An isolated Expo Web fixture rendered the actual authentication screen with mocked Clerk resources (no SMS/session): Chromium/Playwright checked phone values/labels/focus, disabled editing during a pending request, six-digit paste and ref focus, empty-digit backspace, verification gating, 320px OTP targets/no horizontal overflow, return-to-phone value preservation, validation alerts and absence of browser runtime errors. Screenshots were inspected. The temporary harness is `/tmp/groupify-field-preview` in this environment; it is not a live-authentication test or a committed CI suite.
+
+Device/autofill, native keyboard, TalkBack, large-text and live authentication remain unverified: no Android device or development Clerk configuration is available. Status: in review; P3 is not accepted or complete. Next: representative-screen accessibility (including enlarged text), then the remaining shell/state components whose dependencies are ready.
+
+Final `npm run bundle:android` passed (1,490 modules); this is a JavaScript/assets export, not an APK or native device proof. No backend files changed or backend results claimed for this task.

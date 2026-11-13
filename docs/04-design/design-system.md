@@ -22,3 +22,9 @@ Spacing follows 4, 8, 12, 16, 24, 32, and 40 points. Heading sizes are 32/40, 24
 ## Shared button
 
 `src/components/Button.tsx` provides primary and text variants. Pass a visible `label`, an `onPress` handler and optional `disabled`, `loading`, `loadingLabel` and layout `style`. Loading disables interaction and reports busy/disabled accessibility states while keeping a readable label beside the spinner. The component uses Inter and theme colors, has a minimum 48-point target and grows vertically with text. Callers own request deduplication, errors and authorization; the component does not infer request success. Send OTP, verify OTP and sign-out use this component. Native focus, TalkBack announcements and enlarged text remain device checks.
+
+## Shared text field
+
+`src/components/TextField.tsx` wraps a controlled React Native input with a persistent visible `label`, Inter body typography, and neutral, focus, disabled and optional validation-error states. `hideLabel` retains the accessibility label for the six OTP digits; the OTP group uses two rows of three so each input stays at least 48 points wide at narrow widths. Inputs have a minimum 48-point height and vertical padding rather than a fixed height. Neutral borders use the muted-text color for readable boundaries, while focus and error borders use brand and danger colors.
+
+Pass standard `TextInput` value/change/keyboard/autocomplete properties and `editable` from the caller. `ref` points to the native input, and focus/blur callbacks are forwarded. `containerStyle` controls layout; `style` customizes the input. An optional field-specific `error` is displayed as an alert and included in the input's accessibility hint. Request-level failures stay in the form alert; a server/network failure must not automatically mark a phone number invalid. Native keyboard/autofill, TalkBack, and large-text behavior still require Android validation.
