@@ -150,7 +150,7 @@ export default function Index() {
 
   if (step === "splash") {
     return (
-      <Pressable style={styles.splash} onPress={() => setStep("onboarding")}>
+      <Pressable accessibilityRole="button" accessibilityLabel="Continue to welcome" style={styles.splash} onPress={() => setStep("onboarding")}>
         <StatusBar style="light" />
         <View style={styles.splashCenter}>
           <BrandMark size={76} showName showTagline light />
@@ -166,33 +166,19 @@ export default function Index() {
       <View style={styles.onboarding}>
         <StatusBar style="light" />
         <ReferenceBackdrop />
-        <View style={styles.onboardingShade} />
-        <View style={[styles.onboardingContent, { paddingBottom: Math.max(insets.bottom, 20) }]}>
+        <View pointerEvents="none" style={styles.onboardingShade} />
+        <ScrollView contentContainerStyle={[styles.onboardingContent, { paddingTop: insets.top + 48, paddingBottom: Math.max(insets.bottom, 20) }]}>
           <View style={styles.onboardingCopy}>
-            <Text style={styles.onboardingTitle}>Ride. Explore.{"\n"}Belong.</Text>
+            <Text accessibilityRole="header" style={styles.onboardingTitle}>Ride. Explore.{"\n"}Belong.</Text>
             <Text style={styles.onboardingSubtitle}>
               Join riding communities, plan group rides, navigate together, stay connected, and ride safer — all in one app.
             </Text>
-            <View style={styles.dots} accessibilityLabel="Onboarding page 1 of 3">
-              <View style={[styles.dot, styles.activeDot]} />
-              <View style={styles.dot} />
-              <View style={styles.dot} />
-            </View>
           </View>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Get started"
-            style={styles.primaryButton}
-            onPress={() => startLogin("sign-up")}
-          >
-            <Text style={styles.primaryButtonText}>Get Started</Text>
-            <Text style={styles.primaryButtonArrow}>→</Text>
-          </Pressable>
+          <Button label="Get started" onPress={() => startLogin("sign-up")} />
           <Pressable accessibilityRole="button" onPress={() => startLogin("sign-in")} style={styles.loginPrompt}>
-            <Text style={styles.loginPromptText}>Already have an account? </Text>
-            <Text style={styles.loginPromptLink}>Log in</Text>
+            <Text style={styles.loginPromptText}>Already have an account? Log in</Text>
           </Pressable>
-        </View>
+        </ScrollView>
       </View>
     );
   }
@@ -217,7 +203,7 @@ export default function Index() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Go back"
-            hitSlop={12}
+            accessibilityState={{ disabled: busy }}
             disabled={busy}
             onPress={() => {
               setError("");
@@ -234,7 +220,7 @@ export default function Index() {
 
         {step === "phone" ? (
           <View style={styles.formBody}>
-            <Text style={styles.formTitle}>{mode === "sign-in" ? "Log in with your phone" : "Join with your phone"}</Text>
+            <Text accessibilityRole="header" style={styles.formTitle}>{mode === "sign-in" ? "Log in with your phone" : "Join with your phone"}</Text>
             <Text style={styles.formSubtitle}>We’ll send a 6-digit code to verify your number.</Text>
 
             <View style={styles.phoneRow}>
@@ -245,7 +231,6 @@ export default function Index() {
                 maxLength={4}
                 onChangeText={(value) => setCountryCode(`+${value.replace(/\D/g, "")}`)}
                 selectTextOnFocus
-                containerStyle={styles.countryField}
                 value={countryCode}
               />
               <TextField
@@ -255,7 +240,6 @@ export default function Index() {
                 keyboardType="phone-pad"
                 onChangeText={setPhone}
                 placeholder="Phone number"
-                containerStyle={styles.phoneField}
                 value={phone}
               />
             </View>
@@ -265,6 +249,7 @@ export default function Index() {
             <Pressable
               accessibilityRole="button"
               disabled={busy}
+              accessibilityState={{ disabled: busy }}
               onPress={() => startLogin(mode === "sign-in" ? "sign-up" : "sign-in")}
               style={styles.switchMode}
             >
@@ -273,7 +258,7 @@ export default function Index() {
           </View>
         ) : (
           <View style={styles.formBody}>
-            <Text style={styles.formTitle}>Enter OTP</Text>
+            <Text accessibilityRole="header" style={styles.formTitle}>Enter OTP</Text>
             <Text style={styles.formSubtitle}>Sent to {sentTo}</Text>
 
             <View style={styles.otpRow}>
@@ -305,15 +290,13 @@ export default function Index() {
             </View>
             {error ? <Text accessibilityRole="alert" style={styles.errorText}>{error}</Text> : null}
 
-            <Pressable
-              accessibilityRole="button"
+            <Button
+              label={secondsLeft > 0 ? `Resend code in ${secondsLeft} seconds` : "Resend code"}
               disabled={secondsLeft > 0 || busy}
               onPress={resendOtp}
+              variant="text"
               style={styles.resendButton}
-            >
-              <Text style={styles.resendLabel}>Resend code </Text>
-              <Text style={styles.resendValue}>{secondsLeft > 0 ? `in 00:${String(secondsLeft).padStart(2, "0")}` : "now"}</Text>
-            </Pressable>
+            />
 
             <Button label="Verify & Continue" loadingLabel="Verifying code…" loading={busy} disabled={otp.join("").length !== 6} onPress={verifyOtp} style={styles.formAction} />
           </View>
@@ -361,7 +344,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   onboardingShade: {
-    backgroundColor: "rgba(3, 9, 16, 0.3)",
+    backgroundColor: "rgba(3, 9, 16, 0.78)",
     bottom: 0,
     left: 0,
     position: "absolute",
@@ -369,10 +352,9 @@ const styles = StyleSheet.create({
     top: 0,
   },
   onboardingContent: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: "flex-end",
     paddingHorizontal: 24,
-    paddingTop: 72,
   },
   onboardingCopy: {
     marginBottom: 28,
@@ -391,61 +373,8 @@ const styles = StyleSheet.create({
     marginTop: 12,
     maxWidth: 350,
   },
-  dots: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: 5,
-    marginTop: 20,
-  },
-  dot: {
-    backgroundColor: "rgba(238, 245, 255, 0.55)",
-    borderRadius: 4,
-    height: 5,
-    width: 5,
-  },
-  activeDot: {
-    backgroundColor: "#FFFFFF",
-    width: 18,
-  },
-  primaryButton: {
-    alignItems: "center",
-    backgroundColor: BLUE,
-    borderRadius: 14,
-    flexDirection: "row",
-    height: 52,
-    justifyContent: "center",
-    shadowColor: BLUE,
-    shadowOffset: { height: 8, width: 0 },
-    shadowOpacity: 0.28,
-    shadowRadius: 12,
-  },
-  primaryButtonText: {
-    color: "#FFFFFF",
-    fontSize: 15,
-    fontFamily: "Inter_800ExtraBold",
-  },
-  primaryButtonArrow: {
-    color: "#FFFFFF",
-    fontSize: 20,
-    fontFamily: "Inter_400Regular",
-    marginLeft: 10,
-    marginTop: -1,
-  },
-  loginPrompt: {
-    alignSelf: "center",
-    flexDirection: "row",
-    paddingHorizontal: 8,
-    paddingVertical: 15,
-  },
-  loginPromptText: {
-    color: "#C5D0DE",
-    fontSize: 12,
-  },
-  loginPromptLink: {
-    color: "#FFFFFF",
-    fontSize: 12,
-    fontFamily: "Inter_800ExtraBold",
-  },
+  loginPrompt: { minHeight: 48, justifyContent: "center", paddingHorizontal: 8, paddingVertical: 16 },
+  loginPromptText: { color: "#FFFFFF", fontFamily: "Inter_600SemiBold", fontSize: 14, lineHeight: 22, textAlign: "center" },
   formScreen: {
     backgroundColor: SURFACE,
     flex: 1,
@@ -460,12 +389,13 @@ const styles = StyleSheet.create({
   formHeader: {
     alignItems: "center",
     flexDirection: "row",
-    height: 42,
+    minHeight: 48,
   },
   backButton: {
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "center",
-    width: 45,
+    minHeight: 48,
+    width: 48,
   },
   backIcon: {
     color: INK,
@@ -494,10 +424,8 @@ const styles = StyleSheet.create({
     marginTop: 9,
     maxWidth: 320,
   },
-  phoneRow: { flexDirection: "row", alignItems: "flex-end", gap: 12, marginTop: 32 },
-  countryField: { width: 100 },
-  phoneField: { flex: 1 },
-  switchMode: { alignItems: "center", padding: 16, minHeight: 44 },
+  phoneRow: { gap: 16, marginTop: 32 },
+  switchMode: { alignItems: "center", padding: 16, minHeight: 48 },
   switchModeText: { color: BLUE, fontSize: 13, fontFamily: "Inter_600SemiBold" },
   errorText: {
     color: colors.dangerText,
@@ -508,19 +436,5 @@ const styles = StyleSheet.create({
   otpRow: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 31 },
   otpField: { flexGrow: 1, flexBasis: "30%", minWidth: 48 },
   otpInput: { fontSize: 18, fontFamily: "Inter_700Bold", paddingHorizontal: 0, textAlign: "center" },
-  resendButton: {
-    alignSelf: "center",
-    flexDirection: "row",
-    marginTop: 19,
-    padding: 7,
-  },
-  resendLabel: {
-    color: MUTED,
-    fontSize: 13,
-  },
-  resendValue: {
-    color: BLUE,
-    fontSize: 13,
-    fontFamily: "Inter_700Bold",
-  },
+  resendButton: { marginTop: 19 },
 });

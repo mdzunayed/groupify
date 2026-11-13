@@ -28,7 +28,7 @@ export function ReferenceBackdrop() {
       }}
     >
       <Image
-        accessibilityLabel="Mountain road with a rider"
+        accessible={false}
         source={require("../../design/app-design-ref.png")}
         contentFit="fill"
         style={{
