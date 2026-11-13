@@ -17,3 +17,13 @@ See [open decisions](../00-product/open-decisions.md), the [architecture decisio
 ## Latest task
 
 On 2026-11-11, branch `task/p4-migration-readiness` extended backend readiness to require every local migration name to appear in PostgreSQL's migration history. The backend unit tests and Docker integration tests cover healthy dependencies, missing migration history, pending migrations, missing PostGIS, and unavailable Redis. This checks recorded names, not migration contents or product behavior. The live Google Drive tracker was not accessible from this environment; this repository record is the current local progress update.
+
+## 2026-11-13 — truthful home shell
+
+Branch `task/p3-honest-home-shell` starts at `c7fd364` because fetched `main` remains at `f571eb8` and none of the phase branches are merged into it. No main reconciliation was needed. This environment had no checkout; a fresh HTTPS clone was required.
+
+The signed-in home now uses the approved light-theme colors, spacing and type scale, scrolls for smaller screens and enlarged text, and explicitly states that rides and tracking are unavailable. Fictional ride/map content and nonfunctional navigation labels were removed. No location permission or tracking was introduced. Inter loading and the approved mark remain a subsequent task.
+
+Evidence: verified Node 26.13.0 download checksum; `npm ci`, `npm run check` (lint, typecheck, 16 tests) passed. No live Clerk session or Android device is configured here, so authenticated rendering, TalkBack and large-text checks remain unverified. Drive reads succeeded; tracker reconciliation is pending. Status: in review, not phase acceptance.
+
+`npm run bundle:android` also passed (1,475 modules); this is a JavaScript/assets export, not an APK or device proof.
