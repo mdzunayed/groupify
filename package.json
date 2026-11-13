@@ -31,9 +31,13 @@
     "react-native-worklets": "0.13.0"
   },
   "devDependencies": {
+    "@testing-library/react-native": "^14.1.0",
+    "@types/jest": "30.0.0",
     "@types/react": "~19.3.0",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~58.0.4",
+    "jest": "~30.5.2",
+    "jest-expo": "~58.0.14",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -45,8 +49,10 @@
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
     "test:auth": "node --test tests/phone-auth.test.mjs",
-    "test": "node --test",
-    "check": "npm run lint && npm run typecheck && npm test"
+    "test": "npm run test:unit && npm run test:navigation",
+    "check": "npm run lint && npm run typecheck && npm test",
+    "test:unit": "node --test tests/*.test.mjs",
+    "test:navigation": "jest --runInBand"
   },
   "private": true
 }

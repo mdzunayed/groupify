@@ -37,3 +37,12 @@ This document covers the authorized Phase 2 repository foundation. It does not s
 - EAS is the project's approved build direction. Configuring a cloud project, signing, deployment environments, production credentials and release approval are separate work; no cloud resources or releases are created by this foundation document.
 
 References: [Expo environment variables](https://docs.expo.dev/guides/environment-variables/), [Expo SDK 58](https://docs.expo.dev/versions/v58.0.0/), [Node TypeScript support](https://nodejs.org/api/typescript.html), and [npm ci](https://docs.npmjs.com/cli/v11/commands/npm-ci/).
+
+## Navigation test runner
+
+`npm run test:unit` runs the existing Node authentication/contrast tests, and
+`npm run test:navigation` runs the committed Jest/Expo Router integration suite.
+`npm test` runs both, so the existing CI `npm run check` step includes navigation
+coverage. Test fixtures are outside `src/app` and do not configure or bypass
+production authentication. See [navigation test scope](../../tests/navigation/README.md)
+for mocked dependencies and validation limits.
