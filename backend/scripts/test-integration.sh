@@ -23,6 +23,8 @@ export DATABASE_URL_WITHOUT_POSTGIS="postgresql://groupify:${POSTGRES_PASSWORD}@
 export DATABASE_URL_WITHOUT_MIGRATIONS="postgresql://groupify:${POSTGRES_PASSWORD}@127.0.0.1:${POSTGRES_PORT}/groupify_without_migrations"
 export DATABASE_URL_WITH_PENDING_MIGRATIONS="postgresql://groupify:${POSTGRES_PASSWORD}@127.0.0.1:${POSTGRES_PORT}/groupify_pending_migrations"
 export REDIS_URL="redis://127.0.0.1:${REDIS_PORT}"
+# This marker belongs only to the fresh owned fixture, never application config.
+export GROUPIFY_TEST_DISPOSABLE_DATABASE=true
 
 docker compose -p "$project_name" up -d --wait --wait-timeout 60
 docker compose -p "$project_name" exec -T database psql -U groupify -d postgres \

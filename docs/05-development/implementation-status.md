@@ -17,7 +17,7 @@ See [open decisions](../00-product/open-decisions.md), the [architecture decisio
 
 ## Latest task
 
-See the newest dated entry for `task/p4-backend-container-artifact` and the
+See the newest dated entry for `task/p4-complete-empty-migration-cycle` and the
 [review branch index](review-branches.md). Entries below are
 historical commit snapshots; later recorded hosted results supersede their earlier
 pending CI statements. Implementations remain in review; acceptance belongs to the owner.
@@ -412,3 +412,13 @@ The new CI smoke step builds a UUID-owned image/container, uses read-only root/d
 Node26.13.0 local verification passed backend TypeScript build/all70 checks and root lint/typecheck/all65 app checks; smoke script syntax check passed. No app/native API, dependency/lockfile, migration or backend runtime source change. Local image build/run was not repeated against the known storage-blocked managed VFS daemon. Actual build/start/HTTP/shutdown and complete hosted regression evidence await push/CI; no image pass is inferred from the manifest, an open port or host-process unit checks. No verification was disabled and no shared Docker resources were pruned.
 
 Status: in review, not P4 acceptance. Drive/hosted evidence is updated after push. Current limitations remain managed local Docker storage, missing live development identity/HTTPS/native claims and physical Android, unresolved provider/media/lifecycle/creator/ride decisions, and nine low unpatched tooling audit entries. Next: inspect actual hosted image results and repair failures before treating the artifact ready for review; keep deployment and production operating decisions separate.
+
+## 2026-11-14 — complete empty migration-chain regression
+
+Branch `task/p4-complete-empty-migration-cycle` stacks on `task/p4-backend-container-artifact` (`28cee3c`). Parent [run43571186540](https://github.com/mdzunayed/groupify/actions/runs/43571186540) passed the actual pinned image smoke,65 app/70 backend/all63 real integration and AndroidJS steps. The image reported exact Node26.13.0, non-root/read-only runtime, omitted compiler, four packaged migrations, production denial despite development flags and clean exit0. The follow-up accepts Nest's existing completed0/143 SIGTERM behavior without treating a forced kill as clean; image source is unchanged.
+
+Inspection of the actual integration runner found its downgrade step covered only the newest migration. The added [full-chain regression](../06-testing/migration-cycle.md) requires an explicitly disposable target, matching history and empty current business tables, then uses the installed CLI's numeric down count for all local migrations. It checks history/tables disappear while PostGIS remains functional, then reapplies twice and checks the restored empty schema/history/extension. The current migrations' populated-data guards, transaction behavior and advisory locks stay enabled. This is no production rollback/data-recovery/erasure acceptance.
+
+The owned Docker fixture sets a test-only disposable marker. A direct unmarked call refuses before database access; that negative preflight initially caught a discovery export imported from the wrong package root, which was corrected to the existing readiness subpath before publishing. The test runs in the existing serial file suite, avoiding overlapping fixture DDL. One new real SQL case brings committed integration count to64; actual execution awaits hosted CI, not inferred from the refusal probe or parent pass. No new library, lockfile, migration, production runtime/app/native API or deployment change.
+
+Node26.13.0 backend TypeScript build/all70 checks and root lint/typecheck/all65 app checks passed. The corrected unmarked-target preflight and syntax check passed. Local Docker storage remains unavailable, so no new local database/image result is claimed. Drive T039 and final hosted evidence follow push. Status: in review, not P4 acceptance. Next: verify the hosted64-case result, preserve current review order and continue only where remaining live/provider/device/media/lifecycle/creator/ride dependencies are satisfied.
