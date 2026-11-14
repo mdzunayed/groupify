@@ -49,3 +49,7 @@ It also exports explicit internal account provisioning. Both services share priv
 transaction/locked-lookup infrastructure; provisioning is never automatic during
 verification or authorization. Creation and concurrent-link resolution are atomic,
 with no public bootstrap, implicit reactivation or phone-based merge.
+
+`CommunitiesModule` imports accounts and owns internal atomic community/initial
+Leader creation. It has no public controller, membership mutation or ride/location
+grant. See [creation scope and open dependencies](../02-database/community-creation-core.md).

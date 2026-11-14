@@ -11,6 +11,10 @@ the same existing active identity. Concurrent attempts converge without orphan
 accounts; inactive mappings are never reactivated. There is no public bootstrap
 controller or automatic account creation from authentication.
 
+An internal [community creation core](../docs/02-database/community-creation-core.md)
+atomically creates a community and its verified active creator's Leader membership.
+It has no public endpoint, invitation, role-editing or ride/location permission.
+
 Development verification checks local token validity and then current Clerk session
 status through a bounded, read-only provider request. It fails closed on revocation
 or provider unavailability; no product access follows. See [configuration and evidence](../docs/authentication-backend.md).
