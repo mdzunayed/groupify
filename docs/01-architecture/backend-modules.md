@@ -53,3 +53,7 @@ with no public bootstrap, implicit reactivation or phone-based merge.
 `CommunitiesModule` imports accounts and owns internal atomic community/initial
 Leader creation. It has no public controller, membership mutation or ride/location
 grant. See [creation scope and open dependencies](../02-database/community-creation-core.md).
+
+The module also exports a current-membership management capability transaction
+using the approved Leader/Co-leader grants. It locks membership through protected
+SQL and adds no mutator, public controller or active-ride access. See [the matrix](../02-database/community-management-authorization.md).

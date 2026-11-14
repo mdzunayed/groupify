@@ -33,3 +33,20 @@ integration environment and lockfiles; no new provider/package is selected.
 Details: [implemented creation core](../../02-database/community-creation-core.md).
 Binding inputs: [approved community/role rules](../../00-product/business-rules.md#community-and-ride-relationship),
 [PR-04/PR-05](../../00-product/product-requirements.md#approved-decisions-and-acceptance-checks).
+
+## Current management grants extension — 2026-11-14
+
+An internal management service now enforces only the already-approved grants:
+Leader for role/membership management, Leader and Co-leader for rides/invitations.
+Resolve the verified active account's membership for the requested community and
+share-lock it in the protected SQL transaction. Unknown capabilities, absent
+membership and insufficient current role fail closed; creator metadata is not an
+extra role. A grant in another community is irrelevant. Canonical UUID context and
+parameterized queries keep resource selection explicit.
+
+No mutator/controller is added. Future callers must validate exact resource/action
+rules and scope rides/invitations to this community; membership assignments,
+succession, audit, ride leadership and lifecycle remain open. Community management
+does not grant active-ride chat/PTT/SOS/location. Database-observed contention tests
+verify that revocation/removal cannot race a protected transaction, and subsequent
+requests observe the changed role. See [scope and matrix](../../02-database/community-management-authorization.md).

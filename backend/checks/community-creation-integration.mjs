@@ -1,15 +1,18 @@
 import assert from "node:assert/strict";
 import { after, afterEach, before, beforeEach, test } from "node:test";
 import { createRequire } from "node:module";
+import { setTimeout as delay } from "node:timers/promises";
 import pg from "pg";
 
 const require = createRequire(import.meta.url);
 const { AccountAuthorizationService } = require("../dist/accounts/account-authorization.service.js");
 const { CommunityCreationService } = require("../dist/communities/community-creation.service.js");
+const { CommunityAuthorizationService } = require("../dist/communities/community-authorization.service.js");
 const migration = require("../migrations/1794675600000_community_creation.cjs");
 let admin;
 let accountId;
 let service;
+let management;
 let accounts;
 let communities;
 before(async () => {
@@ -32,6 +35,7 @@ beforeEach(async () => {
     [accountId, identity.provider, identity.issuer, identity.subject]);
   const authorization = new AccountAuthorizationService({ verifyBearer: async () => identity });
   service = new CommunityCreationService(authorization);
+  management = new CommunityAuthorizationService(authorization);
 });
 afterEach(async () => {
   await admin.query("DELETE FROM community_memberships WHERE community_id = ANY($1::uuid[])", [[...communities]]);
@@ -120,4 +124,107 @@ test("populated community rollback refuses to discard community and membership d
     await admin.query("ROLLBACK");
   }
   assert.equal((await admin.query("SELECT role FROM community_memberships WHERE community_id = $1", [community.id])).rows[0].role, "Leader");
+});
+
+async function deniedManagement(communityId, capability, status = 403) {
+  let called = false;
+  await assert.rejects(management.withManagementCapability("fixture", communityId, capability, async () => { called = true; }), (error) => error.getStatus() === status);
+  assert.equal(called, false);
+}
+
+test("the approved management capability matrix uses the current community role", async () => {
+  const community = await create();
+  const all = ["manage_roles", "manage_membership", "manage_rides", "manage_invitations"];
+  for (const [role, grants] of [["Leader", all], ["Co-leader", ["manage_rides", "manage_invitations"]], ["Member", []]]) {
+    await admin.query("UPDATE community_memberships SET role = $1 WHERE community_id = $2 AND account_id = $3", [role, community.id, accountId]);
+    for (const capability of all) {
+      if (!grants.includes(capability)) { await deniedManagement(community.id, capability); continue; }
+      const value = await management.withManagementCapability("fixture", community.id, capability, async (client, context) => {
+        assert.deepEqual(context, { accountId, communityId: community.id, role });
+        assert.ok(Object.isFrozen(context));
+        assert.equal((await client.query("SELECT id FROM communities WHERE id = $1", [context.communityId])).rows[0].id, community.id);
+        return "authorized";
+      });
+      assert.equal(value, "authorized");
+    }
+  }
+});
+
+test("a Leader in one community cannot borrow that role in another community", async () => {
+  const own = await create();
+  const otherCreator = await fixtureAccount();
+  const other = (await admin.query("INSERT INTO communities (name, created_by) VALUES ('Other fixture', $1) RETURNING id", [otherCreator])).rows[0].id;
+  communities.add(other);
+  await admin.query("INSERT INTO community_memberships (community_id, account_id, role) VALUES ($1, $2, 'Leader'), ($1, $3, 'Member')", [other, otherCreator, accountId]);
+  await management.withManagementCapability("fixture", own.id, "manage_invitations", async () => undefined);
+  await deniedManagement(other, "manage_invitations");
+  await deniedManagement("00000000-0000-4000-8000-000000000001", "manage_invitations");
+});
+
+test("unknown capabilities and ride/location actions never inherit community management permissions", async () => {
+  const community = await create();
+  for (const capability of [undefined, null, {}, "unknown", "speak", "chat", "trigger_sos", "view_live_location"]) {
+    await deniedManagement(community.id, capability);
+  }
+});
+
+test("creator metadata cannot replace current membership or active-account checks", async () => {
+  const community = await create();
+  await admin.query("DELETE FROM community_memberships WHERE community_id = $1 AND account_id = $2", [community.id, accountId]);
+  await deniedManagement(community.id, "manage_roles");
+  await admin.query("INSERT INTO community_memberships (community_id, account_id, role) VALUES ($1, $2, 'Leader')", [community.id, accountId]);
+  await admin.query("UPDATE accounts SET state = 'deactivated' WHERE id = $1", [accountId]);
+  await deniedManagement(community.id, "manage_roles");
+});
+
+test("invalid resource IDs fail safely and UUID spelling does not change the canonical context", async () => {
+  const community = await create();
+  for (const id of [undefined, {}, "", "private-fixture-marker", `${community.id}' OR TRUE --`, `${community.id}\n`]) {
+    await deniedManagement(id, "manage_roles", 400);
+  }
+  const id = await management.withManagementCapability("fixture", community.id.toUpperCase(), "manage_roles", async (_client, context) => context.communityId);
+  assert.equal(id, community.id);
+});
+
+test("management operations hold the membership lock through role revocation or removal", async () => {
+  const community = await create();
+  for (const sql of [
+    "UPDATE community_memberships SET role = 'Member' WHERE community_id = $1 AND account_id = $2",
+    "DELETE FROM community_memberships WHERE community_id = $1 AND account_id = $2",
+  ]) {
+    const writer = new pg.Client({ connectionString: process.env.DATABASE_URL });
+    await writer.connect();
+    const pid = (await writer.query("SELECT pg_backend_pid() AS pid")).rows[0].pid;
+    let enter;
+    let release;
+    const entered = new Promise((resolve) => { enter = resolve; });
+    const barrier = new Promise((resolve) => { release = resolve; });
+    const operation = management.withManagementCapability("fixture", community.id, "manage_roles", async () => { enter(); await barrier; return "finished"; });
+    operation.catch(() => undefined);
+    let change;
+    try {
+      await Promise.race([entered, operation]);
+      let settled = false;
+      change = writer.query(sql, [community.id, accountId]).finally(() => { settled = true; });
+      change.catch(() => undefined);
+      let waiting = false;
+      const deadline = Date.now() + 1800;
+      while (!settled && Date.now() < deadline) {
+        const state = (await admin.query("SELECT wait_event_type FROM pg_stat_activity WHERE pid = $1", [pid])).rows[0];
+        if (state?.wait_event_type === "Lock") { waiting = true; break; }
+        await delay(10);
+      }
+      assert.ok(waiting, "PostgreSQL must confirm membership changes wait for the authorized transaction");
+      release();
+      assert.equal(await operation, "finished");
+      await change;
+      await deniedManagement(community.id, "manage_roles");
+    } finally {
+      release();
+      await operation.catch(() => undefined);
+      await change?.catch(() => undefined);
+      await writer.end();
+      await admin.query("INSERT INTO community_memberships (community_id, account_id, role) VALUES ($1, $2, 'Leader') ON CONFLICT (community_id, account_id) DO UPDATE SET role = 'Leader'", [community.id, accountId]);
+    }
+  }
 });

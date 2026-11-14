@@ -15,6 +15,10 @@ An internal [community creation core](../docs/02-database/community-creation-cor
 atomically creates a community and its verified active creator's Leader membership.
 It has no public endpoint, invitation, role-editing or ride/location permission.
 
+The internal [management authorization boundary](../docs/02-database/community-management-authorization.md)
+enforces the approved current-community Leader/Co-leader grants under membership
+row locks. Exact operation/resource rules and public mutators remain separate work.
+
 Development verification checks local token validity and then current Clerk session
 status through a bounded, read-only provider request. It fails closed on revocation
 or provider unavailability; no product access follows. See [configuration and evidence](../docs/authentication-backend.md).
