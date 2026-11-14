@@ -4,7 +4,7 @@ This is the beginning of the approved NestJS modular monolith. It provides healt
 
 An internal [account authorization transaction](../docs/02-database/account-authorization-foundation.md)
 now maps verified external identity to active accounts under database row locks.
-It backs the explicit protected development bootstrap; profile/lifecycle endpoints remain absent. The account/link migration
+It backs explicit development bootstrap and active-self text; lifecycle endpoints remain absent. The account/link migration
 refuses a destructive downgrade when either table contains data.
 Explicit internal provisioning can atomically create an account/link or resolve
 the same existing active identity. Concurrent attempts converge without orphan
@@ -100,3 +100,13 @@ completion and an in-flight request draining before HTTP disposal. It is include
 in `npm test`. Startup failures emit fixed `startup_failed` reasons; the lifecycle
 hook emits `http_shutdown_complete` after Nest disposes HTTP. No production shutdown
 deadline or persistent/media drain is claimed. See [scope and reproduction](../docs/06-testing/backend-process-lifecycle.md).
+
+
+## Active-self profile text
+
+Protected development GET/POST/PATCH `/v1/me/profile` reads/creates/edits only the
+current active caller's text attributes. A strong profile-identity/version ETag
+prevents lost updates and cross-representation stale edits. Missing/stale conditions
+are safe 428/412. There is no picture field/upload, other-rider lookup, lifecycle
+operation or profile-complete claim. Required picture support and app/live/native
+integration remain unfinished. See [actual contract and open policy](../docs/03-api/self-profile-text.md).

@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Groupify development HTTP API",
-    "version": "0.2.0",
-    "description": "Implemented health and development-only explicit account bootstrap, in review. Bootstrap requires trusted development identity and database mapping rules. No live authentication, production provider/deployment, profile/lifecycle implementation or phase acceptance is established."
+    "version": "0.3.0",
+    "description": "Implemented health, protected development account bootstrap and active-self profile text, in review. Pictures, app integration, recovery/deletion, production identity and live native/device evidence remain unfinished; no phase acceptance."
   },
   "security": [],
   "tags": [
@@ -14,6 +14,10 @@
     {
       "name": "Accounts",
       "description": "Development identity-derived account bootstrap; no profile/recovery grant."
+    },
+    {
+      "name": "Profiles",
+      "description": "Active-self-only development profile text. Required picture/media support remains unfinished; no other-user access or profile-complete assertion."
     }
   ],
   "paths": {
@@ -106,6 +110,160 @@
           }
         }
       }
+    },
+    "/v1/me/profile": {
+      "get": {
+        "operationId": "getSelfProfileText",
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "GET the active caller\u2019s own profile text",
+        "description": "Current development bearer/provider/account checks. Identity is derived server-side; unknown/immutable/photo fields and query inputs are rejected. No other-user access, picture waiver, recovery or production availability is granted. Normalization bounds are reversible development choices in review. Errors do not prove non-commit; no automatic retry/idempotency-key cache.",
+        "security": [
+          {
+            "DevelopmentBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ProfileText"
+          },
+          "400": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "401": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "403": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "404": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "503": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        }
+      },
+      "post": {
+        "operationId": "createSelfProfileText",
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "POST the active caller\u2019s own profile text",
+        "description": "Current development bearer/provider/account checks. Identity is derived server-side; unknown/immutable/photo fields and query inputs are rejected. No other-user access, picture waiver, recovery or production availability is granted. Normalization bounds are reversible development choices in review. Errors do not prove non-commit; no automatic retry/idempotency-key cache.",
+        "security": [
+          {
+            "DevelopmentBearer": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/ProfileText"
+          },
+          "400": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "401": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "403": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "409": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "503": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "415": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProfileText"
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateSelfProfileText",
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "PATCH the active caller\u2019s own profile text",
+        "description": "Current development bearer/provider/account checks. Identity is derived server-side; unknown/immutable/photo fields and query inputs are rejected. No other-user access, picture waiver, recovery or production availability is granted. Normalization bounds are reversible development choices in review. Errors do not prove non-commit; no automatic retry/idempotency-key cache.",
+        "security": [
+          {
+            "DevelopmentBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ProfileText"
+          },
+          "400": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "401": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "403": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "404": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "412": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "428": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "503": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "415": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchProfileText"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "description": "Exactly the strong ETag from the latest self profile. Missing =>428; stale =>412; wildcard/weak/list/overflow is invalid.",
+            "schema": {
+              "type": "string",
+              "pattern": "^\"profile-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-[1-9][0-9]{0,18}\"$"
+            }
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -163,7 +321,9 @@
               "BAD_GATEWAY",
               "SERVICE_UNAVAILABLE",
               "GATEWAY_TIMEOUT",
-              "REQUEST_FAILED"
+              "REQUEST_FAILED",
+              "PRECONDITION_FAILED",
+              "PRECONDITION_REQUIRED"
             ]
           },
           "message": {
@@ -217,6 +377,96 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {}
+      },
+      "CreateProfileText": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "displayName",
+          "riderType"
+        ],
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "description": "NFC/trim normalized, 1\u201380 Unicode code points; normalized controls and isolated surrogates rejected."
+          },
+          "riderType": {
+            "type": "string",
+            "enum": [
+              "motorcycle",
+              "bicycle"
+            ]
+          },
+          "vehicleDescription": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional normalized plain text up to 160 code points; null/trimmed empty clears it. Omission preserves on PATCH."
+          }
+        }
+      },
+      "PatchProfileText": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "description": "NFC/trim normalized, 1\u201380 Unicode code points; normalized controls and isolated surrogates rejected."
+          },
+          "riderType": {
+            "type": "string",
+            "enum": [
+              "motorcycle",
+              "bicycle"
+            ]
+          },
+          "vehicleDescription": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional normalized plain text up to 160 code points; null/trimmed empty clears it. Omission preserves on PATCH."
+          }
+        }
+      },
+      "ProfileText": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "profileId",
+          "displayName",
+          "riderType",
+          "vehicleDescription",
+          "version"
+        ],
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "riderType": {
+            "type": "string",
+            "enum": [
+              "motorcycle",
+              "bicycle"
+            ]
+          },
+          "vehicleDescription": {
+            "type": "string",
+            "nullable": true,
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Positive PostgreSQL bigint serialized as decimal text; use returned ETag without Number coercion."
+          },
+          "profileId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Server-generated profile identity; not accepted in writes and not an access token."
+          }
+        }
       }
     },
     "headers": {
@@ -313,6 +563,40 @@
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/AccountBootstrap"
+            }
+          }
+        }
+      },
+      "ProfileText": {
+        "description": "Caller-owned profile text snapshot; no picture or complete-profile claim. Strong ETag binds immutable profile identity and decimal version; use it unchanged.",
+        "headers": {
+          "X-Request-Id": {
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RequestId"
+            }
+          },
+          "Cache-Control": {
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "no-store"
+              ]
+            }
+          },
+          "ETag": {
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"profile-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-[1-9][0-9]{0,18}\"$"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProfileText"
             }
           }
         }

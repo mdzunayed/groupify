@@ -4,6 +4,7 @@
 not approval of product APIs, account/profile schemas, authorization policies or
 a production deployment. Health and protected
 [development bootstrap](development-account-bootstrap.md) currently exist;
+[active-self profile text](self-profile-text.md) is an additional development slice;
 the opt-in [development WebSocket protocol](development-websocket.md) is separate.
 
 ## Responses and correlation
@@ -44,9 +45,11 @@ is introduced here.
 | 405 | `METHOD_NOT_ALLOWED` |
 | 408 | `REQUEST_TIMEOUT` |
 | 409 | `CONFLICT` |
+| 412 | `PRECONDITION_FAILED` |
 | 413 | `PAYLOAD_TOO_LARGE` |
 | 415 | `UNSUPPORTED_MEDIA_TYPE` |
 | 422 | `UNPROCESSABLE_ENTITY` |
+| 428 | `PRECONDITION_REQUIRED` |
 | 429 | `TOO_MANY_REQUESTS` |
 | 500 | `INTERNAL_ERROR` |
 | 502 | `BAD_GATEWAY` |
@@ -112,6 +115,8 @@ run passed or was blocked; unit/HTTP checks alone do not prove those dependencie
 
 [openapi.json](openapi.json) is an OpenAPI 3.0.3 document for the two implemented
 GET health operations, protected development POST bootstrap and shared errors.
+Active-self GET/POST/PATCH profile text has its own current-account security and
+strong write-precondition responses; pictures/lifecycle remain unfinished.
 Development bearer security applies only to bootstrap; there is no deployment URL
 or full profile/lifecycle contract. Health is public. UUID/cache headers and strict response shapes
 are machine-readable; error status/header correlation is also checked at runtime

@@ -13,6 +13,7 @@ resolve the account/profile/lifecycle draft's R1–R4 decisions.
 | `AccountsModule` | Account/link persistence, authorization/provisioning, explicit development bootstrap controller | Current account transactions; no implicit login provisioning/profile/recovery |
 | `CommunitiesModule` | Internal creation/initial Leader and management capability boundary | No public mutator, ride/location or invitation workflow |
 | `RealtimeModule` | Opt-in development upgrade/diagnostic protocol | Private owned transport; no product broadcast API |
+| `ProfilesModule` | Active-self text service/controller, ownership/versioned SQL | No cross-user/role override, photo or lifecycle grant |
 
 The root composes modules rather than redeclaring their providers/controllers.
 HTTP filtering remains global at the application boundary. Request-ID middleware

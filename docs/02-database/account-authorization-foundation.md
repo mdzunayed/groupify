@@ -2,7 +2,7 @@
 
 **In review.** Explicit internal provisioning and a protected
 [development bootstrap HTTP route](../03-api/development-account-bootstrap.md)
-now exist. Profile, deactivation, recovery and deletion endpoints remain absent.
+now exist. The [active-self text profile API](../03-api/self-profile-text.md) uses this boundary; deactivation, recovery and deletion endpoints remain absent.
 No real account is created
 by startup or by token verification. The full [account/profile contract](account-profile-contract.md)
 remains a proposal; this increment does not settle its R1–R4 decisions.

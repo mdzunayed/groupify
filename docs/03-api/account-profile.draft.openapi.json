@@ -3,7 +3,7 @@
   "info": {
     "title": "Groupify account/profile/lifecycle \u2014 review draft",
     "version": "0.0.0-proposal",
-    "description": "UNACCEPTED FULL CANDIDATE CONTRACT. A narrower development bootstrap now exists in openapi.json; this draft does not describe its actual response. Remaining profile/lifecycle/media policies R1\u2013R4 remain in review. No production provider/deployment or phase acceptance is selected."
+    "description": "UNACCEPTED FULL CANDIDATE CONTRACT. Narrower development bootstrap and active-self text profile APIs now exist in openapi.json 0.3.0, with profile identity-bound ETags and 412/428 preconditions. This draft is not their actual response contract. Remaining R1\u2013R4/media/lifecycle/visibility choices and production identity/deployment remain unresolved; no phase acceptance."
   },
   "x-groupify-status": "proposal-not-implemented",
   "security": [

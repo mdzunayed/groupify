@@ -3,8 +3,7 @@
 **2026-11-14 implementation note:** the separate [account authorization foundation](account-authorization-foundation.md)
 now implements a narrower internal account/link schema and transaction boundary.
 The protected [development bootstrap](../03-api/development-account-bootstrap.md)
-now exposes a narrower identity-derived account-ID response. It does not implement
-or accept this complete candidate model, profile policy or lifecycle recommendations.
+exposes a narrower identity-derived account-ID response. The [active-self text API](../03-api/self-profile-text.md) now implements a development subset with identity-bound ETags, without photo/lifecycle operations. Neither accepts this full candidate model or resolves R1–R4.
 The absence-of-migrations statements below describe the original full draft.
 
 **Status: proposed, not implemented or accepted.** No table, migration, endpoint,
@@ -81,7 +80,7 @@ requiredness/timing and asset delivery remain review decisions.
 
 ## Self-service API proposal
 
-**Every operation below is absent from the running backend.** Proposed bearer
+**This table is the original full candidate contract.** Actual development bootstrap and text-profile subsets are linked above; their response shapes, ETags and 412/428 semantics are authoritative for running code. Broader operations remain absent. Proposed bearer
 identity verification must be followed by account-state/resource checks. The
 production provider is not selected by the generic draft bearer scheme.
 

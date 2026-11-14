@@ -101,9 +101,9 @@ test("the real bootstrap verifier remains unavailable when disabled or used in p
   }
 });
 
-test("bootstrap exposes no GET account listing or profile/lifecycle route", async () => {
+test("bootstrap exposes no GET account listing or lifecycle route", async () => {
   await start();
-  for (const resource of [path, "/v1/accounts", "/v1/me/profile", "/v1/me/deletion"]) {
+  for (const resource of [path, "/v1/accounts", "/v1/me/deletion"]) {
     const response = await fetch(`${url}${resource}`);
     assert.equal(response.status, 404);
     await assertSharedErrorResponse(response);

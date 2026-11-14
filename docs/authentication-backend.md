@@ -3,7 +3,7 @@
 **Status: implemented foundation, in review.** This service verifies an external
 Clerk token and the provider's current session status; it is not Groupify account authorization or a production provider
 selection. The protected [explicit development bootstrap](03-api/development-account-bootstrap.md)
-uses the verifier to create/resolve only the caller's account; there is no global
+uses the verifier to create/resolve only the caller's account; [active-self text](03-api/self-profile-text.md) additionally checks current ownership/status. There is no global
 product-access guard. Health remains public. The separate opt-in
 [development WebSocket probe](03-api/development-websocket.md) uses this verifier
 and current account SQL before upgrade and each supported diagnostic action.
