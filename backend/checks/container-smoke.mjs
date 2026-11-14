@@ -71,13 +71,18 @@ try {
     assert.ok(!JSON.stringify(await assertDocumentedResponse(response, path, method.toLowerCase())).includes("container-fixture-private-marker"));
   }
   await docker("stop", "--time", "10", container);
-  assert.equal(await docker("inspect", "--format", "{{.State.ExitCode}}", container), "0");
+  const stopped = JSON.parse(await docker("inspect", "--format", "{{json .State}}", container));
+  // Nest disposes HTTP and can re-raise SIGTERM; Docker represents that as143.
+  // Match the existing real-process proof rather than requiring a zero exit.
+  assert.ok([0, 143].includes(stopped.ExitCode));
+  assert.equal(stopped.OOMKilled, false);
+  assert.equal(stopped.Error, "");
   const captured = await execute("docker", ["logs", container], { cwd: directory, maxBuffer: 16 * 1024 * 1024 });
   const logs = captured.stdout + captured.stderr;
   assert.match(logs, /http_shutdown_complete/);
   assert.ok(!logs.includes("container-fixture-private-marker"));
   console.log(JSON.stringify({ event: "container_smoke_passed", nodeVersion, nonRoot: true, readOnly: true,
-    compilerOmitted: true, migrations: migrationNames.length, productionDevelopmentFlagsDenied: true, shutdown: "clean" }));
+    compilerOmitted: true, migrations: migrationNames.length, productionDevelopmentFlagsDenied: true, shutdown: "clean", exitCode: stopped.ExitCode }));
 } finally {
   // Remove only the UUID-named image and exact container created by this test.
   if (container) await docker("rm", "--force", container).catch(() => console.error("Owned container cleanup failed"));
