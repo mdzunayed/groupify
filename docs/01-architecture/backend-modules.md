@@ -35,3 +35,8 @@ are introduced. Their resource/account/role/active-ride/consent boundaries requi
 actual contracts and tests before access is enabled. External-session verification
 alone remains insufficient. See [the current contract proposal](../02-database/account-profile-contract.md),
 [development identity limits](../authentication-backend.md) and [implemented HTTP conventions](../03-api/api-conventions.md).
+
+HTTP infrastructure also owns `HttpLifecycleService`, which records an allowlisted
+HTTP-disposal completion event through Nest's lifecycle hook. Process startup,
+configuration validation and signal registration remain in `main.ts`; the
+[real-process suite](../06-testing/backend-process-lifecycle.md) checks that wiring.

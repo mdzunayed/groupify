@@ -66,3 +66,12 @@ Health owns its controller/private readiness service; HTTP infrastructure owns
 request IDs/global error formatting; identity explicitly exports its development
 verifier without product permissions. See [module boundaries](../docs/01-architecture/backend-modules.md).
 Health file locations and migration discovery remain unchanged.
+
+## Process lifecycle checks
+
+`npm run test:process` builds and spawns the actual entry point with isolated
+non-production configuration. It checks public health, invalid/busy ports, SIGTERM
+completion and an in-flight request draining before HTTP disposal. It is included
+in `npm test`. Startup failures emit fixed `startup_failed` reasons; the lifecycle
+hook emits `http_shutdown_complete` after Nest disposes HTTP. No production shutdown
+deadline or persistent/media drain is claimed. See [scope and reproduction](../docs/06-testing/backend-process-lifecycle.md).
