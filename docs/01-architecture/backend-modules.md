@@ -40,3 +40,7 @@ HTTP infrastructure also owns `HttpLifecycleService`, which records an allowlist
 HTTP-disposal completion event through Nest's lifecycle hook. Process startup,
 configuration validation and signal registration remain in `main.ts`; the
 [real-process suite](../06-testing/backend-process-lifecycle.md) checks that wiring.
+
+`AccountsModule` imports identity and exports the internal account authorization
+transaction. It owns account/link persistence and current-state SQL checks; it has
+no controller or profile/recovery grant. See [its exact boundary](../02-database/account-authorization-foundation.md).

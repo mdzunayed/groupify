@@ -1,5 +1,11 @@
 # Account, profile and lifecycle contract — review draft
 
+**2026-11-14 implementation note:** the separate [account authorization foundation](account-authorization-foundation.md)
+now implements a narrower internal account/link schema and transaction boundary.
+It exposes none of the public operations below and does not implement or accept
+this complete candidate model, profile policy or lifecycle recommendations.
+The absence-of-migrations statements below describe the original full draft.
+
 **Status: proposed, not implemented or accepted.** No table, migration, endpoint,
 permission, recovery mechanism or retention exception is created by this document.
 The separate [draft OpenAPI](../03-api/account-profile.draft.openapi.json) is not

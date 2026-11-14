@@ -93,8 +93,7 @@ now rejects a provider-reported revocation. This does not discover Groupify acco
 deactivation or deletion. Future
 protected operations must map the external identity to a Groupify account, check
 its current server-side status, and enforce action/resource/role/consent rules.
-Account mapping, lifecycle/recovery rules, profile visibility and production
-provider/SMS remain open. Clerk organization roles must not become Groupify roles.
+An internal [account/status transaction](02-database/account-authorization-foundation.md) now exists for trusted server consumers, without a public account endpoint or resource grant. Lifecycle/recovery rules, profile visibility and production provider/SMS remain open. Clerk organization roles must not become Groupify roles.
 
 Pinned-key rotation requires updating trusted server configuration (and restarting
 processes when environment changes require it). A local test proves replacement

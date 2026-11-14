@@ -1,6 +1,11 @@
 # Groupify backend foundation
 
-This is the beginning of the approved NestJS modular monolith. It provides liveness and dependency-readiness checks, local PostgreSQL/PostGIS and Redis services, and a migration baseline. It also contains a development-only external-session verification service. It does not implement product APIs, Groupify account authorization, WebSockets, or a production deployment.
+This is the beginning of the approved NestJS modular monolith. It provides liveness and dependency-readiness checks, local PostgreSQL/PostGIS and Redis services, and a migration baseline. It also contains a development-only external-session verification service. It does not implement public product APIs, resource-specific permissions, WebSockets, or a production deployment.
+
+An internal [account authorization transaction](../docs/02-database/account-authorization-foundation.md)
+now maps verified external identity to active accounts under database row locks.
+It exposes no public account/profile/lifecycle endpoint. The account/link migration
+refuses a destructive downgrade when either table contains data.
 
 Development verification checks local token validity and then current Clerk session
 status through a bounded, read-only provider request. It fails closed on revocation
