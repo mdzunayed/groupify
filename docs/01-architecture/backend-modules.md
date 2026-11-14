@@ -9,7 +9,10 @@ resolve the account/profile/lifecycle draft's R1–R4 decisions.
 | `AppModule` | Production composition of HTTP infrastructure, health and development identity | No controllers, business providers or authentication policy of its own |
 | `HttpInfrastructureModule` | Server-generated request-ID middleware on all HTTP routes and the global safe error filter through `APP_FILTER` | HTTP presentation only; no exported business service or identity/account grant |
 | `HealthModule` | `HealthController` and private `HealthService`; liveness and PostGIS/Redis/applied-migration-name readiness | Only the existing public `/health/live` and `/health/ready` routes; no exported readiness provider |
-| `IdentityModule` | Development verifier/configuration and pinned Clerk SDK integration | Explicitly exports `DevelopmentIdentityService`; no controller, global guard, account mapping, role or consent grant |
+| `IdentityModule` | Development verifier/configuration and pinned Clerk SDK integration | Exports verifier; no global role/resource grant |
+| `AccountsModule` | Account/link persistence, authorization/provisioning, explicit development bootstrap controller | Current account transactions; no implicit login provisioning/profile/recovery |
+| `CommunitiesModule` | Internal creation/initial Leader and management capability boundary | No public mutator, ride/location or invitation workflow |
+| `RealtimeModule` | Opt-in development upgrade/diagnostic protocol | Private owned transport; no product broadcast API |
 
 The root composes modules rather than redeclaring their providers/controllers.
 HTTP filtering remains global at the application boundary. Request-ID middleware
@@ -43,12 +46,14 @@ configuration validation and signal registration remain in `main.ts`; the
 
 `AccountsModule` imports identity and exports the internal account authorization
 transaction. It owns account/link persistence and current-state SQL checks; it has
-no controller or profile/recovery grant. See [its exact boundary](../02-database/account-authorization-foundation.md).
+the explicit protected development bootstrap controller, without profile/recovery
+grants. See [its exact boundary](../02-database/account-authorization-foundation.md).
 
 It also exports explicit internal account provisioning. Both services share private
 transaction/locked-lookup infrastructure; provisioning is never automatic during
 verification or authorization. Creation and concurrent-link resolution are atomic,
-with no public bootstrap, implicit reactivation or phone-based merge.
+with no implicit reactivation or phone-based merge. Its single explicit development
+HTTP route never creates from an arbitrary login/protected request.
 
 `CommunitiesModule` imports accounts and owns internal atomic community/initial
 Leader creation. It has no public controller, membership mutation or ride/location

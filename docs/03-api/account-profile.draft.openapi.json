@@ -3,7 +3,7 @@
   "info": {
     "title": "Groupify account/profile/lifecycle \u2014 review draft",
     "version": "0.0.0-proposal",
-    "description": "NOT IMPLEMENTED OR APPROVED. This separate review artifact grants no permission and is not the implemented health API contract. R1\u2013R4 in docs/02-database/account-profile-contract.md must be resolved before dependent migrations/endpoints. No production provider or deployment is selected."
+    "description": "UNACCEPTED FULL CANDIDATE CONTRACT. A narrower development bootstrap now exists in openapi.json; this draft does not describe its actual response. Remaining profile/lifecycle/media policies R1\u2013R4 remain in review. No production provider/deployment or phase acceptance is selected."
   },
   "x-groupify-status": "proposal-not-implemented",
   "security": [

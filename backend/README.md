@@ -4,12 +4,11 @@ This is the beginning of the approved NestJS modular monolith. It provides healt
 
 An internal [account authorization transaction](../docs/02-database/account-authorization-foundation.md)
 now maps verified external identity to active accounts under database row locks.
-It exposes no public account/profile/lifecycle endpoint. The account/link migration
+It backs the explicit protected development bootstrap; profile/lifecycle endpoints remain absent. The account/link migration
 refuses a destructive downgrade when either table contains data.
 Explicit internal provisioning can atomically create an account/link or resolve
 the same existing active identity. Concurrent attempts converge without orphan
-accounts; inactive mappings are never reactivated. There is no public bootstrap
-controller or automatic account creation from authentication.
+accounts; inactive mappings are never reactivated. The [development bootstrap API](../docs/03-api/development-account-bootstrap.md) invokes provisioning explicitly; authentication alone never creates an account.
 
 An internal [community creation core](../docs/02-database/community-creation-core.md)
 atomically creates a community and its verified active creator's Leader membership.

@@ -1,15 +1,19 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Groupify health API",
-    "version": "0.1.0",
-    "description": "Implemented HTTP foundation, in review. Only health endpoints are documented. No product API, identity provider, deployment URL or phase acceptance is established."
+    "title": "Groupify development HTTP API",
+    "version": "0.2.0",
+    "description": "Implemented health and development-only explicit account bootstrap, in review. Bootstrap requires trusted development identity and database mapping rules. No live authentication, production provider/deployment, profile/lifecycle implementation or phase acceptance is established."
   },
   "security": [],
   "tags": [
     {
       "name": "Health",
       "description": "Public liveness and dependency-readiness probes. No product data."
+    },
+    {
+      "name": "Accounts",
+      "description": "Development identity-derived account bootstrap; no profile/recovery grant."
     }
   ],
   "paths": {
@@ -45,6 +49,57 @@
           },
           "503": {
             "$ref": "#/components/responses/ReadinessUnavailable"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        }
+      }
+    },
+    "/v1/accounts/bootstrap": {
+      "post": {
+        "operationId": "bootstrapDevelopmentAccount",
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Explicitly create or resolve the caller\u2019s development account",
+        "description": "Requires current verified development provider identity. No body or an empty application/json object; unknown fields/query inputs are rejected. Existing inactive mapping returns 403 without reactivation or replacement. Repeated/concurrent calls converge to one exact identity mapping. Production/disabled/unconfigured verification fails closed. No account ID, subject, phone, role or profile comes from the caller. Success follows SQL commit; uncertain failures are not automatically retried.",
+        "security": [
+          {
+            "DevelopmentBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyBootstrapRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/AccountBootstrapped"
+          },
+          "201": {
+            "$ref": "#/components/responses/AccountBootstrapped"
+          },
+          "400": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "401": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "403": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "415": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "503": {
+            "$ref": "#/components/responses/HttpError"
           },
           "default": {
             "$ref": "#/components/responses/HttpError"
@@ -144,6 +199,24 @@
             }
           }
         ]
+      },
+      "AccountBootstrap": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "accountId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "EmptyBootstrapRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
       }
     },
     "headers": {
@@ -216,6 +289,41 @@
             }
           }
         }
+      },
+      "AccountBootstrapped": {
+        "description": "Committed identity-derived account ID. HTTP 201 newly created, 200 existing active mapping; no profile/role or ongoing-state assertion.",
+        "headers": {
+          "X-Request-Id": {
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RequestId"
+            }
+          },
+          "Cache-Control": {
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "no-store"
+              ]
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/AccountBootstrap"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "DevelopmentBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Opt-in non-production Clerk development session verification plus current provider status. Requires documented trusted configuration; never cookie/URL credentials."
       }
     }
   }

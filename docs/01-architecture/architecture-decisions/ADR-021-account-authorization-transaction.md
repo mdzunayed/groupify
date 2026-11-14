@@ -56,3 +56,14 @@ force uncommitted winning/losing insert ordering and check for orphans. Sources:
 Details: [implemented account boundary](../../02-database/account-authorization-foundation.md).
 Sources fetched 2026-11-14: [PostgreSQL row locks](https://www.postgresql.org/docs/16/explicit-locking.html#LOCKING-ROWS),
 [node-postgres transactions](https://node-postgres.com/features/transactions).
+
+
+## Development HTTP bootstrap extension — 2026-11-14
+
+The explicit provisioning method is now wrapped by a protected development
+POST /v1/accounts/bootstrap controller. It accepts no caller identity/role data,
+returns only the committed caller account UUID (201 new/200 existing), and retains
+inactive refusal and development-only verification. The actual narrow contract is
+in implemented OpenAPI 0.2.0 and [the endpoint guide](../../03-api/development-account-bootstrap.md).
+It is not acceptance of the broader R1–R4 draft, public profile/lifecycle policies,
+live native identity or production exposure. No client integration is performed.

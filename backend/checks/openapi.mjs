@@ -22,11 +22,12 @@ before(async () => {
 });
 after(async () => { if (app) await app.close(); });
 
-test("the OpenAPI document validates and describes only implemented public health operations", async () => {
+test("the OpenAPI document describes implemented health and protected development bootstrap operations", async () => {
   const document = await loadContract();
   assert.equal(document.openapi, "3.0.3");
-  assert.deepEqual(Object.keys(document.paths).sort(), ["/health/live", "/health/ready"]);
+  assert.deepEqual(Object.keys(document.paths).sort(), ["/health/live", "/health/ready", "/v1/accounts/bootstrap"]);
   assert.deepEqual(document.security, []);
+  assert.deepEqual(document.paths["/v1/accounts/bootstrap"].post.security, [{ DevelopmentBearer: [] }]);
   assert.equal(document.servers, undefined);
 });
 

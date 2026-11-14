@@ -1,8 +1,9 @@
 # Account authorization foundation
 
-**In review, internal infrastructure only.** An explicit internal provisioning method
-now exists. No public account/profile/bootstrap,
-deactivation, recovery or deletion endpoint is registered. No real account is created
+**In review.** Explicit internal provisioning and a protected
+[development bootstrap HTTP route](../03-api/development-account-bootstrap.md)
+now exist. Profile, deactivation, recovery and deletion endpoints remain absent.
+No real account is created
 by startup or by token verification. The full [account/profile contract](account-profile-contract.md)
 remains a proposal; this increment does not settle its R1–R4 decisions.
 
@@ -68,8 +69,9 @@ operation, deployment failure behavior and operational tuning remain open.
 ## Explicit internal provisioning
 
 `AccountProvisioningService.provision()` is a separate, deliberate server call.
-Neither JWT verification, startup, nor `withActiveAccount()` invokes it. No public
-bootstrap controller or client integration exists. It verifies the development
+Neither JWT verification, startup, nor `withActiveAccount()` invokes it. The explicit
+development controller is documented separately; no client integration exists.
+Provisioning verifies the development
 provider first and uses the same transaction/locked-lookup infrastructure.
 
 An existing active exact mapping returns its internal ID with `created: false`;

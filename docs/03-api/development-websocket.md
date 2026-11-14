@@ -2,8 +2,9 @@
 
 **Implemented development foundation in review.** Disabled by default; usable only
 with `GROUPIFY_DEV_WS_ENABLED=true` and `NODE_ENV=development` or `test`. Production
-mode never installs this upgrade handler. Normal public HTTP routes remain health
-probes. This diagnostic protocol is not chat/PTT/SOS/location delivery, live Clerk
+mode never installs this upgrade handler. HTTP health remains public;
+[development bootstrap](development-account-bootstrap.md) has separate protected
+routing. This diagnostic protocol is not chat/PTT/SOS/location delivery, live Clerk
 or device proof, production deployment or phase acceptance.
 
 ## Connection and authorization

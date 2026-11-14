@@ -2,7 +2,9 @@
 
 **Status: implemented foundation, in review.** This is a reversible P4 convention,
 not approval of product APIs, account/profile schemas, authorization policies or
-a production deployment. Only the health endpoints currently exist.
+a production deployment. Health and protected
+[development bootstrap](development-account-bootstrap.md) currently exist;
+the opt-in [development WebSocket protocol](development-websocket.md) is separate.
 
 ## Responses and correlation
 
@@ -87,9 +89,10 @@ response rather than attempting a second response.
 It now uses the envelope above. Health success bodies and readiness's dependency/
 migration conditions are unchanged. No current mobile client calls these APIs.
 
-Product routing/versioning, field validation/limits, pagination, write idempotency,
-product DTO/OpenAPI contracts, CORS, request deadlines, authentication/account-state checks,
-rate limiting and WebSocket errors remain unimplemented. Each needs an explicit
+Bootstrap uses an explicit `/v1` path, strict empty request shape and current
+identity/account checks. Broader product routing/fields, pagination, write
+idempotency, DTOs, CORS, deadlines, rate limiting and domain WebSocket contracts
+remain unfinished. Each needs an explicit
 contract before product clients depend on it. This foundation grants no access to
 community, ride, location, chat, PTT or SOS data.
 
@@ -108,9 +111,9 @@ run passed or was blocked; unit/HTTP checks alone do not prove those dependencie
 ## Machine-readable foundation contract
 
 [openapi.json](openapi.json) is an OpenAPI 3.0.3 document for the two implemented
-GET health operations and the shared error response. It deliberately declares no
-product paths, provider security scheme or deployment URL. The health operations
-are public. Required UUID headers, error cache headers and strict response shapes
+GET health operations, protected development POST bootstrap and shared errors.
+Development bearer security applies only to bootstrap; there is no deployment URL
+or full profile/lifecycle contract. Health is public. UUID/cache headers and strict response shapes
 are machine-readable; error status/header correlation is also checked at runtime
 by the test helper because JSON Schema alone cannot compare HTTP headers/body.
 

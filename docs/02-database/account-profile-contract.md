@@ -2,14 +2,15 @@
 
 **2026-11-14 implementation note:** the separate [account authorization foundation](account-authorization-foundation.md)
 now implements a narrower internal account/link schema and transaction boundary.
-It exposes none of the public operations below and does not implement or accept
-this complete candidate model, profile policy or lifecycle recommendations.
+The protected [development bootstrap](../03-api/development-account-bootstrap.md)
+now exposes a narrower identity-derived account-ID response. It does not implement
+or accept this complete candidate model, profile policy or lifecycle recommendations.
 The absence-of-migrations statements below describe the original full draft.
 
 **Status: proposed, not implemented or accepted.** No table, migration, endpoint,
 permission, recovery mechanism or retention exception is created by this document.
 The separate [draft OpenAPI](../03-api/account-profile.draft.openapi.json) is not
-the [implemented health contract](../03-api/openapi.json). Review this draft against
+the [implemented development HTTP contract](../03-api/openapi.json). Review this draft against
 [PR-03/PR-18](../00-product/product-requirements.md), OD-17/OD-20 and ADR-015/018.
 
 ## Binding baseline and proposed boundary
