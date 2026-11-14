@@ -24,7 +24,8 @@ No service is deployed or externally published by the smoke check.
 The build-context allowlist excludes environment files, local node_modules,
 compiled output, tests and other files outside the explicit source/migration/
 package/compiler inputs. Runtime excludes compiler/test code. No key is passed
-as a build argument, baked into a layer or read from host environment by the test.
+as a build argument or baked into a layer. Default smoke mode supplies no stores;
+the explicitly marked store mode supplies only its own generated fixture URLs.
 Supply actual server configuration through supported environment settings only
 when the relevant environment/action is authorized; never put it in this image.
 
@@ -59,9 +60,31 @@ and executes the actual image's HTTP service. It verifies:
 
 Only its exact container ID and UUID image tag are removed; no unrelated image,
 volume, cache or container is pruned. This check is an added CI step. The existing
-63-case real PostGIS/Redis/HTTP/WebSocket integration remains a separate step,
-not evidence that the image was connected to those stores. No real provider
-secret, OTP, private profile or device is used by either fixture boundary.
+64-case real PostGIS/Redis/HTTP/WebSocket integration remains a separate suite.
+No real provider secret, OTP, private profile or device is used by the fixture.
+
+## Owned store-wiring mode
+
+After the serial integration suite, the Docker runner invokes the same image
+check with its unique Compose network. This mode requires the disposable marker,
+the exact integration-network naming pattern and matching Compose ownership label,
+the primary loopback fixture URLs, and the same generated database credential.
+Unmarked, unrelated or malformed settings refuse before any Docker build or data
+store access. Invalid URL errors do not reflect their original strings.
+
+Only the fixture URL hosts/ports are translated to internal database/Redis service
+names. The two URLs reach Docker through the child environment and key-only env
+arguments; credentials are never command arguments, image layers or log fields.
+Combined image logs are checked for the generated password as well as the synthetic
+request marker. Host provider keys/accounts are not forwarded.
+
+This second actual-image mode requires documented readiness200 using real
+PostGIS/Redis and the applied migrations, while the standalone unconfigured mode
+still requires503. Both retain production-mode development API denial, non-root/
+read-only execution and clean shutdown checks. The existing Compose fixture and
+image cleanup own all resources; no production network/service is added. This
+proves the particular image's fixture wiring only after hosted execution, not
+production TLS, provider identity, backup/restore or deployment readiness.
 
 Local image execution remains blocked by the managed Docker daemon's existing
 VFS storage problem. Registry manifest inspection succeeds without downloading

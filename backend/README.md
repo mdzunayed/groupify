@@ -135,3 +135,8 @@ deployment still unselected. `npm run test:container` builds its own UUID image
 and tests the actual service with loopback publication, read-only root, dropped
 capabilities, safe production failures and clean shutdown. See
 [configuration, evidence and limits](../docs/05-development/backend-container.md).
+The Docker integration runner also exercises the packaged image against its own
+migrated PostGIS/Redis network after the64-case suite. A marked/ownership-checked
+test-only mode requires actual readiness200; standalone mode requires503 without
+stores. Fixture URLs are passed through environment settings with no provider
+key, credential argument/logging or external service deployment.

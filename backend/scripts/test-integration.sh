@@ -44,3 +44,5 @@ npm run migrate:up
 npm run migrate:down
 npm run migrate:up
 npm run test:integration
+# Verify the exact runtime artifact against this already-owned migrated fixture.
+GROUPIFY_CONTAINER_TEST_NETWORK="${project_name}_default" npm run test:container
