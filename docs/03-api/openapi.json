@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Groupify development HTTP API",
-    "version": "0.3.0",
-    "description": "Implemented health, protected development account bootstrap and active-self profile text, in review. Pictures, app integration, recovery/deletion, production identity and live native/device evidence remain unfinished; no phase acceptance."
+    "version": "0.3.1",
+    "description": "Implemented health, protected development account bootstrap and active-self profile text, in review. The app integrates development text editing. Pictures, recovery/deletion, production identity and live native/device evidence remain unfinished; no phase acceptance."
   },
   "security": [],
   "tags": [
@@ -128,6 +128,9 @@
           "200": {
             "$ref": "#/components/responses/ProfileText"
           },
+          "304": {
+            "$ref": "#/components/responses/ProfileTextNotModified"
+          },
           "400": {
             "$ref": "#/components/responses/HttpError"
           },
@@ -146,7 +149,18 @@
           "default": {
             "$ref": "#/components/responses/HttpError"
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "If-None-Match",
+            "in": "header",
+            "required": false,
+            "description": "Optional HTTP conditional read. Current authentication, active account and owned profile are evaluated before a matching condition can produce bodyless 304. No-store still prohibits caching; the app sends no conditional reads.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
       },
       "post": {
         "operationId": "createSelfProfileText",
@@ -597,6 +611,33 @@
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/ProfileText"
+            }
+          }
+        }
+      },
+      "ProfileTextNotModified": {
+        "description": "Current owned profile matches the conditional read after current authorization. Empty body, current ETag, server request ID and no-store; never a cached authorization grant.",
+        "headers": {
+          "X-Request-Id": {
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RequestId"
+            }
+          },
+          "Cache-Control": {
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "no-store"
+              ]
+            }
+          },
+          "ETag": {
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"profile-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-[1-9][0-9]{0,18}\"$"
             }
           }
         }

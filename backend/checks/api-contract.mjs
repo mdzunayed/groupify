@@ -34,6 +34,10 @@ async function assertResponse(response, responseContract) {
     if (header.required) assert.notEqual(value, null, `Missing ${name} header`);
     if (value !== null) validate(header.schema, value, name);
   }
+  if (!responseContract.content) {
+    assert.equal(await response.clone().text(), "", "Bodyless response must be empty");
+    return null;
+  }
   assert.match(response.headers.get("content-type") ?? "", /^application\/json(?:\s*;|$)/i);
   const body = await response.clone().json();
   validate(responseContract.content["application/json"].schema, body, "Response body");

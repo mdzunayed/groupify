@@ -76,3 +76,13 @@ test("response validation rejects payload, header and correlation drift", async 
     }), "/health/ready"));
   }
 });
+
+test("the conditional profile contract requires bodyless responses and current no-store edit metadata", async () => {
+  const profileId = "11111111-1111-4111-8111-111111111111";
+  const headers = { "X-Request-Id": profileId, "Cache-Control": "no-store", ETag: `"profile-${profileId}-1"` };
+  assert.equal(await assertDocumentedResponse(new Response(null, { status: 304, headers }), "/v1/me/profile"), null);
+  for (const drift of [{ ...headers, ETag: 'W/"private-fixture-marker"' }, { ...headers, "Cache-Control": "public" }, { ETag: headers.ETag, "Cache-Control": "no-store" }]) {
+    await assert.rejects(assertDocumentedResponse(new Response(null, { status: 304, headers: drift }), "/v1/me/profile"));
+  }
+  await assert.rejects(assertDocumentedResponse({ status: 304, headers: new Headers(headers), clone: () => new Response("unexpected body") }, "/v1/me/profile"));
+});

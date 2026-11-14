@@ -4,6 +4,7 @@ import { createRequire } from "node:module";
 import { HttpException } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { assertDocumentedResponse, assertSharedErrorResponse } from "./api-contract.mjs";
+import { rawGet } from "./raw-get.mjs";
 
 const require = createRequire(import.meta.url);
 const { AppModule } = require("../dist/app.module.js");
@@ -74,6 +75,40 @@ test("profile controller returns strict text shape, no-store and matching strong
   assert.deepEqual(calls.map((call) => call.method), ["get", "create", "update"]);
   assert.ok(calls.every((call) => call.args[0] === "Bearer fixture-only-marker"));
   assert.equal(calls[2].args[1], tag);
+});
+
+test("conditional profile reads keep no-store metadata and call the service before a bodyless 304", async () => {
+  const { url, calls } = await start();
+  const headers = { Authorization: "Bearer fixture-only-marker", "X-Request-Id": "private-fixture-marker" };
+  for (const condition of [tag, `W/${tag}`, `"unrelated", ${tag}`, "*"]) {
+    const result = await rawGet(`${url}${path}`, { ...headers, "If-None-Match": condition });
+    assert.equal(result.status, 304);
+    assert.equal(await assertDocumentedResponse(result, path), null);
+    assert.equal(result.headers.get("etag"), tag);
+    assert.notEqual(result.headers.get("x-request-id"), headers["X-Request-Id"]);
+    assert.equal(result.headers.get("set-cookie"), null);
+    assert.equal(result.headers.get("content-type"), null);
+  }
+  const unmatched = await rawGet(`${url}${path}`, { ...headers, "If-None-Match": '"unrelated"' });
+  assert.equal(unmatched.status, 200);
+  assert.deepEqual(await assertDocumentedResponse(unmatched, path), profile);
+  assert.equal(calls.length, 5);
+  assert.ok(calls.every((call) => call.method === "get" && call.args[0] === headers.Authorization));
+});
+
+test("conditional profile headers never replace authentication, active-account or not-found failures", async () => {
+  const { url } = await start();
+  let checks = 0;
+  for (const status of [401, 403, 404, 503]) {
+    app.get(ProfileTextService).get = async () => { checks += 1; throw new HttpException("private-fixture-marker", status); };
+    for (const condition of [tag, "*"]) {
+      const result = await rawGet(`${url}${path}`, { Authorization: "Bearer fixture-only-marker", "If-None-Match": condition });
+      assert.equal(result.status, status);
+      assert.ok(!JSON.stringify(await assertDocumentedResponse(result, path)).includes("private-fixture-marker"));
+      assert.doesNotMatch(result.headers.get("etag") ?? "", /profile-/);
+    }
+  }
+  assert.equal(checks, 8);
 });
 
 test("profile errors keep safe status codes and omit version/identity details", async () => {

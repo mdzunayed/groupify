@@ -5,6 +5,7 @@ import { UnauthorizedException } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import pg from "pg";
 import { assertDocumentedResponse, assertSharedErrorResponse } from "./api-contract.mjs";
+import { rawGet } from "./raw-get.mjs";
 
 const require = createRequire(import.meta.url);
 const { AppModule } = require("../dist/app.module.js");
@@ -97,6 +98,38 @@ test("two actors can read/edit only their own profile; identity selectors cannot
   const foreign = await fetch(`${url}/v1/users/${accountIds[1]}/profile`, { headers: { Authorization: first } });
   assert.equal(foreign.status, 404); await assertSharedErrorResponse(foreign);
   assert.deepEqual(await get(second), other);
+});
+
+test("conditional self reads use the current owned profile generation and version", async () => {
+  const initial = await create();
+  const conditional = (actor, tag) => rawGet(`${url}${path}`, { Authorization: actor, "If-None-Match": tag });
+  const matching = await conditional(first, profileTag(initial));
+  assert.equal(matching.status, 304);
+  assert.equal(await assertDocumentedResponse(matching, path), null);
+  assert.equal(matching.headers.get("etag"), profileTag(initial));
+  await check(await conditional(second, "*"), 404);
+  const other = await create({ displayName: "Second fixture", riderType: "bicycle" }, second);
+  assert.deepEqual(await check(await conditional(second, profileTag(initial)), 200), other);
+  const changed = await check(await request("PATCH", { body: { displayName: "Changed fixture" }, tag: profileTag(initial) }), 200, "patch");
+  assert.deepEqual(await check(await conditional(first, profileTag(initial)), 200), changed);
+  // Test-only replacement is not an implemented public deletion/recreation policy.
+  await admin.query("DELETE FROM rider_profiles WHERE account_id = $1", [accountIds[0]]);
+  const replacement = await create();
+  assert.equal(replacement.version, initial.version);
+  assert.notEqual(replacement.profileId, initial.profileId);
+  assert.deepEqual(await check(await conditional(first, profileTag(initial)), 200), replacement);
+});
+
+test("conditional reads recheck actual account/link state and upstream identity before returning 304", async () => {
+  const initial = await create();
+  const conditional = (tag) => rawGet(`${url}${path}`, { Authorization: first, "If-None-Match": tag });
+  await admin.query("UPDATE accounts SET state = 'deactivated' WHERE id = $1", [accountIds[0]]);
+  for (const condition of [profileTag(initial), "*"]) await check(await conditional(condition), 403);
+  await admin.query("UPDATE accounts SET state = 'active' WHERE id = $1", [accountIds[0]]);
+  await admin.query("DELETE FROM external_identities WHERE account_id = $1", [accountIds[0]]);
+  for (const condition of [profileTag(initial), "*"]) await check(await conditional(condition), 403);
+  actors.delete(first);
+  for (const condition of [profileTag(initial), "*"]) await check(await conditional(condition), 401);
 });
 
 test("ETags bind the profile generation as well as its version", async () => {

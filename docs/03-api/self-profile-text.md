@@ -10,7 +10,8 @@ Pictures are still required unfinished product work. This API has no photo colum
 unowned asset reference, upload or client URL fetch, and accepts no photo field.
 It never declares a profile complete or waives picture support. Media, recovery,
 erasure, identity reuse/legal obligations and production identity remain separate.
-The app client is not integrated yet; no live Clerk/native session is proved.
+The [app client](../05-development/profile-client.md) integrates this text-only
+flow in development; no live Clerk/native session is proved.
 
 All methods use current development bearer/provider checks, exact account mapping
 and active-account SQL locks. Production/disabled/unconfigured verification fails
@@ -20,7 +21,7 @@ and then create text deliberately.
 
 | Method | `/v1/me/profile` behavior |
 | --- | --- |
-| GET | Own existing text or 404; no implicit creation |
+| GET | Own existing text or 404; matching conditional reads may return bodyless 304 after current authorization |
 | POST | Create one own profile, 201; existing profile returns 409 without replacement |
 | PATCH | Partial own update under the exact strong `If-Match`; 200 only after commit |
 
@@ -52,6 +53,17 @@ Success JSON has exactly `profileId`, `displayName`, `riderType`,
 UUID is immutable, not an access token or an addressable other-user resource.
 Versions remain strings beyond JavaScript Number precision. Timestamps stay internal.
 
+GET can honor `If-None-Match` after current provider/account checks and reading
+the caller's actual owned profile. A matching strong/weak tag, matching tag in a
+list or `*` can yield 304 with an empty body, current strong ETag, server request
+ID and `Cache-Control: no-store`. This is existing Express behavior, now covered
+by the contract; it is not an authorization cache. Changed/replaced/other-owned
+profiles do not match the old exact tag. Missing profiles still return 404;
+invalid identity, inactive account or removed link still fail normally, including
+when conditional headers match a previously visible profile. No-store prohibits
+storing/reusing these responses under RFC 9111; a conditional request does not
+waive it. The app sends unconditional GETs and stores no profile cache.
+
 Success has `Cache-Control: no-store`, server `X-Request-Id` and a strong edit tag
 of the form `"profile-<profile UUID>-<version>"`. Return that ETag unchanged on PATCH;
 never synthesize it from a counter alone. Identity binds preconditions across users
@@ -65,8 +77,10 @@ This follows HTTP precondition semantics, replacing the earlier unaccepted draft
 Errors do not prove non-commit. There is no automatic retry or idempotency cache;
 reconcile uncertain creation/update with an explicit self read before a new attempt.
 
-[OpenAPI 0.3.0](openapi.json) is the implemented narrow contract. SQL tests cover
+[OpenAPI 0.3.1](openapi.json) is the implemented narrow contract. SQL tests cover
 actor isolation, duplicate/create races, same-version edits, profile-generation
 tags, optional-field handling, Unicode/parameterization, constraints/downgrade and
 bigint precision. External identity is stubbed only at that suite boundary; no real
 provider/phone, picture, native/device or complete deletion/recovery flow is used.
+Conditional-read semantics follow [RFC 9110 sections 13.1.2/15.4.5](https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.2)
+and no-store follows [RFC 9111 section 5.2.2.5](https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.2.5).
