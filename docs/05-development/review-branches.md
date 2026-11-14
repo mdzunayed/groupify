@@ -2,7 +2,7 @@
 
 All branches remain **in review**, not phase acceptance. Fresh fetches found main
 at f571eb8 with this stack unmerged. No main merge or force-push was performed.
-These nineteen tasks stack on the previously confirmed provider-status work at
+These twenty tasks stack on the previously confirmed provider-status work at
 d2791c7, which itself contains the preceding unmerged phase branches. Review
 history/content before selecting a merge order; the latest head includes its
 parents but does not imply their acceptance.
@@ -27,7 +27,9 @@ parents but does not imply their acceptance.
 | 16 | [p3-auth-theme-token-integration](https://github.com/mdzunayed/groupify/tree/task/p3-auth-theme-token-integration): light intro/Inter feedback | [43570061472](https://github.com/mdzunayed/groupify/actions/runs/43570061472), passed |
 | 17 | [p4-backend-container-artifact](https://github.com/mdzunayed/groupify/tree/task/p4-backend-container-artifact): pinned non-root image and actual-container CI check | [43571186540](https://github.com/mdzunayed/groupify/actions/runs/43571186540), passed |
 | 18 | [p4-complete-empty-migration-cycle](https://github.com/mdzunayed/groupify/tree/task/p4-complete-empty-migration-cycle): guarded full empty-chain rollback/reapply | [43572289282](https://github.com/mdzunayed/groupify/actions/runs/43572289282), passed |
-| 19 | [p4-container-store-readiness](https://github.com/mdzunayed/groupify/tree/task/p4-container-store-readiness): actual runtime image with owned PostGIS/Redis | Local65 app/70 backend and ownership/URL refusal checks pass; [hosted branch runs](https://github.com/mdzunayed/groupify/actions?query=branch%3Atask%2Fp4-container-store-readiness) verify configured-image readiness |
+| 19 | [p4-container-store-readiness](https://github.com/mdzunayed/groupify/tree/task/p4-container-store-readiness): actual runtime image with owned PostGIS/Redis | [43573450197](https://github.com/mdzunayed/groupify/actions/runs/43573450197), passed including both actual-image readiness modes |
+
+| 20 | [p7-ride-draft-creation-core](https://github.com/mdzunayed/groupify/tree/task/p7-ride-draft-creation-core): internal immediate/scheduled non-active creation | Hosted SQL/image results recorded after push; local proof below |
 
 Hosted integration uses real PostGIS/Redis, SQL/HTTP/WebSockets and stubbed upstream
 identity; it is not a live Clerk/native session. Latest parent suite has65 app,

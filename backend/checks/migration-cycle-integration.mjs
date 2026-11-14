@@ -10,7 +10,7 @@ import pg from "pg";
 const execute = promisify(execFile);
 const directory = fileURLToPath(new URL("../", import.meta.url));
 const cli = fileURLToPath(new URL("../node_modules/node-pg-migrate/bin/node-pg-migrate.js", import.meta.url));
-const tables = ["accounts", "external_identities", "communities", "community_memberships", "rider_profiles"];
+const tables = ["accounts", "external_identities", "communities", "community_memberships", "rider_profiles", "rides"];
 
 test("the entire empty migration chain rolls back/reapplies without dropping PostGIS", async () => {
   // Only the Docker runner marks its newly created, isolated database disposable.

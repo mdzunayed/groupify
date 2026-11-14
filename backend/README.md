@@ -18,6 +18,11 @@ The internal [management authorization boundary](../docs/02-database/community-m
 enforces the approved current-community Leader/Co-leader grants under membership
 row locks. Exact operation/resource rules and public mutators remain separate work.
 
+The internal [ride draft core](../docs/02-database/ride-creation-core.md) reuses
+current Leader/Co-leader ride management to commit immediate or future scheduled
+drafts. It exposes no ride HTTP/app entry, participant, activation or tracking
+capability; ride-specific leadership/start/end policy remains open.
+
 An [opt-in development WebSocket probe](../docs/03-api/development-websocket.md)
 authenticates before upgrade and each supported account-check message on the
 existing HTTP server. It is disabled by default and in production, and adds no
@@ -88,7 +93,7 @@ and `npm run test:identity`. Health endpoints do not require identity configurat
 ## Module composition
 
 `AppModule` composes HTTP infrastructure, health, identity, accounts, profiles,
-communities and the optional development realtime transport.
+communities, internal ride drafts and the optional development realtime transport.
 Health owns its controller/private readiness service; HTTP infrastructure owns
 request IDs/global error formatting; identity explicitly exports its development
 verifier without product permissions. See [module boundaries](../docs/01-architecture/backend-modules.md).

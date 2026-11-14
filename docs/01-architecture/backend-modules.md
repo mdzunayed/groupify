@@ -15,6 +15,7 @@ the current narrow development APIs separately from unfinished product workflows
 | `CommunitiesModule` | Atomic creation/initial Leader, default-off development creation controller and internal management capability boundary | No production creation eligibility, list/cross-user metadata, membership mutator, ride/location or invitation workflow |
 | `RealtimeModule` | Opt-in development upgrade/diagnostic protocol | Private owned transport; no product broadcast API |
 | `ProfilesModule` | Active-self text service/controller, ownership/versioned SQL | No cross-user/role override, photo or lifecycle grant |
+| `RidesModule` | Internal immediate/scheduled draft creation through community management authorization | Exports creation service; no controller, participant, activation or active-ride capability |
 
 The root composes modules rather than redeclaring their providers/controllers.
 HTTP filtering remains global at the application boundary. Request-ID middleware
@@ -34,8 +35,8 @@ must not duplicate SDK/client configuration or register another copy of a privat
 provider in the root. The contract tests' container lookup to stub readiness is
 test instrumentation, not a supported cross-module production dependency.
 
-Ride, location, chat, PTT, SOS and entitlement implementations remain absent. The
-account/profile/community increments above are narrower than complete workflows.
+Location, chat, PTT, SOS and entitlement implementations remain absent. The
+account/profile/community/ride increments above are narrower than complete workflows.
 No empty placeholder modules or shared product repositories are introduced.
 Resource/account/role/active-ride/consent boundaries require actual contracts and
 tests before access is enabled. External-session verification alone remains
@@ -72,3 +73,7 @@ SQL and adds no management mutator/controller or active-ride access. See [the ma
 HTTP server. It uses account authorization before upgrade and each supported probe,
 cleans its owned listener/sockets and exports no product send/broadcast API.
 See [protocol scope](../03-api/development-websocket.md).
+
+`RidesModule` imports communities and reuses its current Leader/Co-leader
+manage_rides transaction for non-active draft insertion only. It does not turn
+creator metadata into ride leadership or participation. See [creation scope](../02-database/ride-creation-core.md).

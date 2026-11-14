@@ -28,5 +28,6 @@ Records labeled **Proposed** are recommendations for evaluation, not selections 
 | [ADR-022](ADR-022-community-creation-transaction.md) | In review | Atomic internal community creation and initial Leader membership |
 | [ADR-023](ADR-023-development-websocket-boundary.md) | In review | Opt-in pre-upgrade/account-checked development WebSocket probe |
 | [ADR-024](ADR-024-self-profile-text.md) | In review | Active-self development profile text and identity-bound write preconditions |
+| [ADR-025](ADR-025-internal-ride-draft-creation.md) | In review | Internal immediate/scheduled drafts under current community ride-management authority |
 
 The [system architecture](../system-architecture.md), [flows](../flows-and-security.md), [operations](../operations-and-testing.md), and [research/cost model](../research-cost-capacity.md) use these records as their decision register. The owner requested work through the roadmap on separate phase branches for review; that request does not itself approve the proposed decisions.

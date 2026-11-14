@@ -7,8 +7,8 @@ empty downgrade paths for all earlier account/community migrations together.
 
 The added real-database test uses the same installed node-pg-migrate9 discovery
 export as readiness (`node-pg-migrate/migration`) and its actual CLI. It counts
-local migrations rather than assuming the current four will always be the total,
-checks the matching applied-history count and confirms all five current business
+local migrations rather than assuming the current five will always be the total,
+checks the matching applied-history count and confirms all six current business
 tables are empty before DDL. It runs `down <count>` with the normal migration
 transaction/lock/guard behavior, then verifies zero applied rows, absence of those
 tables and an unchanged working PostGIS extension. It runs `up` twice and confirms
