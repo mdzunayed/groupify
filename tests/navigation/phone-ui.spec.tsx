@@ -72,9 +72,10 @@ it('disables editing and duplicate sends until the pending request settles', asy
 
 it.each(modes)('shows a %s send failure and permits retry', async (mode) => {
   await openPhone(mode);
-  send(mode).mockResolvedValueOnce({ error: new Error('Test SMS unavailable') });
+  send(mode).mockResolvedValueOnce({ error: new Error('synthetic_sensitive_marker') });
   await user.press(screen.getByRole('button', { name: 'Send OTP' }));
-  expect(screen.getByRole('alert')).toHaveTextContent('Test SMS unavailable');
+  expect(screen.getByRole('alert')).toHaveTextContent('We couldn’t complete that request. Please try again.');
+  expect(screen.queryByText(/synthetic_sensitive_marker/)).toBeNull();
   expect(screen.getByLabelText('Phone number')).toBeEnabled();
   await sendCode();
   expect(send(mode)).toHaveBeenCalledTimes(2);
@@ -82,15 +83,42 @@ it.each(modes)('shows a %s send failure and permits retry', async (mode) => {
 
 it.each(modes)('keeps %s verification failures on OTP and permits retry', async (mode) => {
   await openPhone(mode); await sendCode();
-  verify(mode).mockResolvedValueOnce({ error: new Error('Test incorrect code') });
+  verify(mode).mockResolvedValueOnce({ error: { errors: [{ code: 'form_code_incorrect', longMessage: 'synthetic_sensitive_marker' }] } });
   await fireEvent.changeText(digit(1), '123456');
   await user.press(verifyButton());
-  expect(screen.getByRole('alert')).toHaveTextContent('Test incorrect code');
+  expect(screen.getByRole('alert')).toHaveTextContent('That code is incorrect. Check it and try again.');
+  expect(screen.queryByText(/synthetic_sensitive_marker/)).toBeNull();
   expect(resource(mode).finalize).not.toHaveBeenCalled();
   expect(screen).toHavePathname('/');
   await fireEvent.changeText(digit(1), '654321');
   await user.press(verifyButton());
   await waitFor(() => { expect(screen).toHavePathname('/home'); });
+});
+
+it('offers a new code for expired verification without reflecting provider text or activating a session', async () => {
+  await openPhone('sign-in'); await sendCode();
+  signInResource.phoneCode.verifyCode.mockResolvedValueOnce({ error: { errors: [{ code: 'verification_expired', longMessage: 'synthetic_sensitive_marker' }] } });
+  await fireEvent.changeText(digit(1), '123456');
+  await user.press(verifyButton());
+  expect(screen.getByRole('alert')).toHaveTextContent('That code has expired. Request a new code.');
+  expect(screen.queryByText(/synthetic_sensitive_marker/)).toBeNull();
+  expect(signInResource.finalize).not.toHaveBeenCalled();
+  expect(screen).toHavePathname('/');
+  await act(async () => { jest.advanceTimersByTime(30_000); });
+  await user.press(screen.getByRole('button', { name: 'Resend code' }));
+  expect(signInResource.phoneCode.sendCode).toHaveBeenCalledTimes(2);
+  expect(digit(1)).toHaveDisplayValue('');
+});
+
+it('shows a fixed unsupported-country explanation and keeps phone entry available', async () => {
+  await openPhone('sign-up');
+  signUpResource.create.mockResolvedValueOnce({ error: { code: 'unsupported_country_code', longMessage: 'synthetic_sensitive_marker' } });
+  await user.press(screen.getByRole('button', { name: 'Send OTP' }));
+  expect(screen.getByRole('alert')).toHaveTextContent('SMS is unavailable for this country. Please contact Groupify support.');
+  expect(screen.queryByText(/synthetic_sensitive_marker/)).toBeNull();
+  expect(screen.getByLabelText('Phone number')).toBeEnabled();
+  expect(signUpResource.verifications.sendPhoneCode).not.toHaveBeenCalled();
+  expect(signUpResource.finalize).not.toHaveBeenCalled();
 });
 
 it('requires all six digits after clearing a previously pasted code', async () => {
@@ -143,10 +171,11 @@ it('keeps incomplete verification on OTP without activating a session', async ()
 
 it('shows finalization failure without opening home, then permits retry', async () => {
   await openPhone('sign-in'); await sendCode();
-  signInResource.finalize.mockResolvedValueOnce({ error: new Error('Test activation failure') });
+  signInResource.finalize.mockResolvedValueOnce({ error: new Error('synthetic_sensitive_marker') });
   await fireEvent.changeText(digit(1), '123456');
   await user.press(verifyButton());
-  expect(screen.getByRole('alert')).toHaveTextContent('Test activation failure');
+  expect(screen.getByRole('alert')).toHaveTextContent('We couldn’t complete that request. Please try again.');
+  expect(screen.queryByText(/synthetic_sensitive_marker/)).toBeNull();
   expect(screen).toHavePathname('/');
   expect(screen.queryByText('Rides are coming')).toBeNull();
   await user.press(verifyButton());

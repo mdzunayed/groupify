@@ -60,3 +60,12 @@ it is imported. Font responses are mocked rather than dependent on native loadin
 These renderer tests do not establish physical keyboard/autofill/ref-focus behavior,
 large-text layout or screen-reader announcements; retain the separate browser and
 Android validation procedures for that evidence.
+
+Authentication failure regressions use synthetic sensitive markers: send,
+verification, finalization and sign-out errors must display fixed text without
+reflecting raw provider/transport strings. Expired verification offers resend
+without activation; unsupported-country remains on phone entry with no OTP send.
+Node tests additionally cover malformed/unknown/prototype-looking codes, nested
+metadata and preservation of Groupify-owned local setup instructions. These are
+presentation/guard tests, not proof of a real leaked credential, provider coverage,
+rate-limit enforcement or a live session.

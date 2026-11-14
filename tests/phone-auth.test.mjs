@@ -90,5 +90,33 @@ test("Clerk errors produce actionable messages without dumping the response", ()
   assert.match(getAuthError({ code: "form_identifier_exists" }), /Log in/);
   assert.match(getAuthError({ errors: [{ code: "form_identifier_not_found" }] }), /Sign up/);
   assert.match(getAuthError({ code: "too_many_requests" }), /wait/);
-  assert.equal(getAuthError({ longMessage: "That code has expired." }), "That code has expired.");
+  assert.match(getAuthError({ code: "verification_expired" }), /expired.*new code/);
+  assert.match(getAuthError({ errors: [{ code: "form_code_incorrect" }] }), /incorrect/);
+  assert.match(getAuthError({ code: "unsupported_country_code" }), /SMS is unavailable/);
+  assert.match(getAuthError({ code: "captcha_invalid" }), /Verification could not be completed/);
+  assert.match(getAuthError({ code: "service_unavailable" }), /temporarily unavailable/);
+});
+
+test("unrecognized provider/transport failures never reflect text, nested metadata, stacks or causes", () => {
+  const marker = "synthetic_sensitive_marker";
+  for (const error of [new Error(marker, { cause: marker }), { longMessage: marker }, { message: marker },
+    { errors: [{ code: marker, message: marker, longMessage: marker, meta: { private: marker } }] },
+    { errors: marker }, { errors: [null] }, { errors: [marker] }, { code: "__proto__" }, { code: "toString" }, null, undefined, marker]) {
+    const result = getAuthError(error);
+    assert.equal(result, "We couldn’t complete that request. Please try again.");
+    assert.ok(!result.includes(marker));
+  }
+  for (const code of ["form_identifier_exists", "form_identifier_not_found", "too_many_requests", "form_code_incorrect", "verification_expired", "unsupported_country_code", "captcha_invalid", "service_unavailable"]) {
+    const result = getAuthError({ errors: [{ code, longMessage: marker, message: marker, meta: { private: marker } }] });
+    assert.ok(!result.includes(marker));
+    assert.notEqual(result, "We couldn’t complete that request. Please try again.");
+  }
+});
+
+test("local setup/verification instructions survive without trusting arbitrary Error messages", async () => {
+  const incomplete = fixture("sign-in", { status: "needs_second_factor" });
+  await assert.rejects(verifyPhoneCode(incomplete.auth, "123456"), (error) => /additional verification/.test(getAuthError(error)));
+  const setup = fixture("sign-up"); setup.auth.resource.missingFields = ["email_address"];
+  await assert.rejects(sendPhoneCode(setup.auth, "+12025550123"), (error) => /additional details/.test(getAuthError(error)));
+  await assert.rejects(verifyPhoneCode(fixture("sign-in").auth, "123"), (error) => /six-digit/.test(getAuthError(error)));
 });

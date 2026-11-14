@@ -67,8 +67,9 @@ it('retains home on failed sign-out and redirects only after a successful retry'
   await user.press(screen.getByRole('button', { name: 'Signing out…' }));
   expect(signOut).toHaveBeenCalledTimes(1);
   expect(screen).toHavePathname('/home');
-  await act(async () => { rejectSignOut(new Error('Test sign-out failure')); });
-  expect(screen.getByRole('alert')).toHaveTextContent('Test sign-out failure');
+  await act(async () => { rejectSignOut(new Error('synthetic_sensitive_marker')); });
+  expect(screen.getByRole('alert')).toHaveTextContent('We couldn’t complete that request. Please try again.');
+  expect(screen.queryByText(/synthetic_sensitive_marker/)).toBeNull();
   expect(screen).toHavePathname('/home');
   await user.press(screen.getByRole('button', { name: 'Sign out' }));
   await waitFor(() => { expect(screen).toHavePathname('/'); });

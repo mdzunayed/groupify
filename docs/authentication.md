@@ -19,7 +19,7 @@ In that application's [Clerk Dashboard](https://dashboard.clerk.com/):
 3. Enable Native API under Native applications for Android/iOS.
 4. Check allowed SMS countries for the numbers you plan to use.
 
-These account settings are not changed by installing the SDK. The app displays provider errors when a method or SMS destination is disabled. The editable calling-code field accepts country codes such as `+1` or `+880`; pasting a complete international number in the phone field also works. Enter national numbers without a trunk prefix (for example `1712345678` with `+880`).
+These account settings are not changed by installing the SDK. The app maps recognized provider codes to fixed readable messages and uses a generic failure for unknown cases; raw provider/transport messages are not displayed. An unsupported-country message reflects that request's provider code, not verified Bangladesh coverage or pricing. The editable calling-code field accepts country codes such as `+1` or `+880`; pasting a complete international number in the phone field also works. Enter national numbers without a trunk prefix (for example `1712345678` with `+880`).
 
 The Clerk CLI is not signed in or linked on this machine, so `clerk doctor` cannot validate Dashboard settings. That is separate from the client integration, which loads using the existing publishable key. Its generic missing-secret-key warning does not require adding a secret to this mobile app. To manage the selected application through the CLI later, sign in from your own terminal and link it:
 
@@ -66,3 +66,20 @@ Backend external-session verification has separate, server-only configuration;
 see [the development identity boundary](authentication-backend.md). Its secret
 must never be added to the Expo client. Local cryptographic adapter tests do not
 prove a live Clerk or SMS flow.
+
+### Safe failure presentation
+
+Phone send/verify/finalize and sign-out failures pass through one fixed-message
+mapper. It recognizes documented account-exists/not-found, request-limit,
+incorrect/expired verification, unsupported-country, CAPTCHA and unavailable
+codes in either the top-level or first API error. Unknown/malformed codes,
+generic Error messages, longMessage, metadata, causes and stacks are never used
+as UI text. There is no new raw-error logging. See
+[Clerk's frontend error reference](https://clerk.com/docs/guides/development/errors/frontend-api.md).
+
+Groupify's own missing-details, additional-verification and incomplete-code errors
+have a private typed error with fixed text; those instructions survive without
+trusting every Error instance. No token/SMS/OTP request, status/finalization guard,
+cooldown, retry rule, permission or session-storage behavior changes. A readable
+request-limit message is not implemented server rate limiting. Provider/live
+country settings and security/rate/device proofs remain unfinished.

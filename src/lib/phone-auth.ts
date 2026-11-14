@@ -7,6 +7,31 @@ export type PhoneAuth =
 
 export const RESEND_DELAY_MS = 30_000;
 
+const localMessages = {
+  setup_required: "Account setup requires additional details. Please contact Groupify support.",
+  verification_required: "Your account requires additional verification. Please contact Groupify support.",
+  incomplete_code: "Enter the full six-digit code.",
+};
+class PhoneAuthError extends Error {
+  readonly kind: keyof typeof localMessages;
+  constructor(kind: keyof typeof localMessages) {
+    super(localMessages[kind]);
+    this.name = "PhoneAuthError";
+    this.kind = kind;
+  }
+}
+const fallbackMessage = "We couldn’t complete that request. Please try again.";
+const providerMessages = new Map([
+  ["form_identifier_exists", "An account with this number already exists. Choose Log in below."],
+  ["form_identifier_not_found", "We couldn’t find an account with this number. Choose Sign up below."],
+  ["too_many_requests", "Too many attempts. Please wait a moment before trying again."],
+  ["form_code_incorrect", "That code is incorrect. Check it and try again."],
+  ["verification_expired", "That code has expired. Request a new code."],
+  ["unsupported_country_code", "SMS is unavailable for this country. Please contact Groupify support."],
+  ["captcha_invalid", "Verification could not be completed. Please try again."],
+  ["service_unavailable", "The service is temporarily unavailable. Please try again later."],
+]);
+
 export function normalizePhoneNumber(countryCode: string, phone: string) {
   const input = phone.trim();
   if (!/^[+\d\s().-]+$/.test(input)) return null;
@@ -17,27 +42,15 @@ export function normalizePhoneNumber(countryCode: string, phone: string) {
 }
 
 export function getAuthError(error: unknown): string {
+  if (error instanceof PhoneAuthError) return localMessages[error.kind];
   if (error && typeof error === "object") {
-    const detail = error as {
-      code?: string;
-      longMessage?: string;
-      message?: string;
-      errors?: { code?: string; longMessage?: string; message?: string }[];
-    };
-    const first = detail.errors?.[0] ?? detail;
-    if (first.code === "form_identifier_exists") {
-      return "An account with this number already exists. Choose Log in below.";
+    const detail = error as { code?: unknown; errors?: unknown };
+    const first = Array.isArray(detail.errors) ? detail.errors[0] ?? detail : detail;
+    if (first && typeof first === "object" && "code" in first && typeof first.code === "string") {
+      return providerMessages.get(first.code) ?? fallbackMessage;
     }
-    if (first.code === "form_identifier_not_found") {
-      return "We couldn’t find an account with this number. Choose Sign up below.";
-    }
-    if (first.code === "too_many_requests") {
-      return "Too many attempts. Please wait a moment before trying again.";
-    }
-    if (first.longMessage) return first.longMessage;
-    if (first.message && error instanceof Error) return first.message;
   }
-  return "We couldn’t connect. Check your connection and try again.";
+  return fallbackMessage;
 }
 
 export async function sendPhoneCode(auth: PhoneAuth, phoneNumber: string) {
@@ -50,7 +63,7 @@ export async function sendPhoneCode(auth: PhoneAuth, phoneNumber: string) {
   const { error } = await auth.resource.create({ phoneNumber });
   if (error) throw error;
   if (auth.resource.missingFields.length > 0) {
-    throw new Error("Account setup requires additional details. Please contact Groupify support.");
+    throw new PhoneAuthError("setup_required");
   }
   const { error: sendError } = await auth.resource.verifications.sendPhoneCode();
   if (sendError) throw sendError;
@@ -64,7 +77,7 @@ export async function resendPhoneCode(auth: PhoneAuth) {
 }
 
 export async function verifyPhoneCode(auth: PhoneAuth, code: string) {
-  if (!/^\d{6}$/.test(code)) throw new Error("Enter the full six-digit code.");
+  if (!/^\d{6}$/.test(code)) throw new PhoneAuthError("incomplete_code");
 
   const { error } = auth.mode === "sign-in"
     ? await auth.resource.phoneCode.verifyCode({ code })
@@ -74,7 +87,7 @@ export async function verifyPhoneCode(auth: PhoneAuth, code: string) {
   // A valid first factor is not enough when Clerk requires another factor/task.
   // Never grant access just because the user has entered six digits.
   if (auth.resource.status !== "complete") {
-    throw new Error("Your account requires additional verification. Please contact Groupify support.");
+    throw new PhoneAuthError("verification_required");
   }
 
   const { error: finalizeError } = await auth.resource.finalize();
