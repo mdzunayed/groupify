@@ -36,6 +36,23 @@ safe failure tests and public-health regression checks. Provider/native credenti
 live account flows, device/socket/media invalidation, full lifecycle, idempotency,
 resource-specific permissions and production tuning remain separate work.
 
+## Explicit provisioning extension — 2026-11-14
+
+An internal AccountProvisioningService now implements deliberate exact-identity
+account creation. It shares transaction/lookup code with account authorization;
+neither authentication nor arbitrary protected requests provision implicitly.
+Existing inactive links cannot reactivate or become replacement accounts. Unique
+insert conflicts remove the losing candidate inside the same transaction and then
+resolve the committed winner. Explicit Read Committed snapshots make that lookup
+reliable after waiting on the unique constraint. Failed link insertion rolls back
+the candidate as well. No migration or public API changes are needed.
+
+This extends the implementation foundation, without accepting public bootstrap,
+profile, identity reuse, recovery or erasure policies. PostgreSQL concurrency tests
+force uncommitted winning/losing insert ordering and check for orphans. Sources:
+[Read Committed](https://www.postgresql.org/docs/16/transaction-iso.html#XACT-READ-COMMITTED),
+[INSERT conflicts](https://www.postgresql.org/docs/16/sql-insert.html).
+
 Details: [implemented account boundary](../../02-database/account-authorization-foundation.md).
 Sources fetched 2026-11-14: [PostgreSQL row locks](https://www.postgresql.org/docs/16/explicit-locking.html#LOCKING-ROWS),
 [node-postgres transactions](https://node-postgres.com/features/transactions).

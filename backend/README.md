@@ -6,6 +6,10 @@ An internal [account authorization transaction](../docs/02-database/account-auth
 now maps verified external identity to active accounts under database row locks.
 It exposes no public account/profile/lifecycle endpoint. The account/link migration
 refuses a destructive downgrade when either table contains data.
+Explicit internal provisioning can atomically create an account/link or resolve
+the same existing active identity. Concurrent attempts converge without orphan
+accounts; inactive mappings are never reactivated. There is no public bootstrap
+controller or automatic account creation from authentication.
 
 Development verification checks local token validity and then current Clerk session
 status through a bounded, read-only provider request. It fails closed on revocation

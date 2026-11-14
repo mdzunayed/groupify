@@ -1,6 +1,7 @@
 # Account authorization foundation
 
-**In review, internal infrastructure only.** No public account/profile/bootstrap,
+**In review, internal infrastructure only.** An explicit internal provisioning method
+now exists. No public account/profile/bootstrap,
 deactivation, recovery or deletion endpoint is registered. No real account is created
 by startup or by token verification. The full [account/profile contract](account-profile-contract.md)
 remains a proposal; this increment does not settle its R1–R4 decisions.
@@ -64,6 +65,34 @@ defaults, not product limits or production SLAs. Dedicated clients are closed af
 each transaction. Pool sizing, production capacity, session expiry during a long
 operation, deployment failure behavior and operational tuning remain open.
 
+## Explicit internal provisioning
+
+`AccountProvisioningService.provision()` is a separate, deliberate server call.
+Neither JWT verification, startup, nor `withActiveAccount()` invokes it. No public
+bootstrap controller or client integration exists. It verifies the development
+provider first and uses the same transaction/locked-lookup infrastructure.
+
+An existing active exact mapping returns its internal ID with `created: false`;
+inactive mappings return safe 403 without recovery or a replacement account. A
+missing mapping creates a candidate account and inserts the exact unique identity
+link. A successful link commits with `created: true`. On a competing insert, remove
+the unlinked losing candidate inside that transaction, then read and lock the
+winning mapping. All callers converge to that account, with no committed orphan.
+If the mapping unexpectedly disappears, fail unavailable rather than guessing.
+
+Both account services explicitly use Read Committed transactions, ensuring that a
+post-conflict lookup sees the winning committed insert with a fresh snapshot.
+Candidate creation and link errors roll back together. No account linking by phone,
+automatic recovery, profile-complete assertion, membership or role is added. The
+returned result is available only after commit; it is a point-in-time account result,
+not a guarantee about later status or external effects. There is no automatic retry
+or public idempotency-key contract in this internal method.
+
+Provisioning is not a deletion/reuse policy. Identity unlink, purge and restoration
+remain absent; R4 must define reuse/restore suppression before those operations
+could make a formerly used identity appear new. No production or real-user bootstrap
+is performed by these tests.
+
 ## Verification
 
 `npm test` includes provider-before-database, absent/malformed configuration and
@@ -72,7 +101,11 @@ tests for exact mapping/constraints, deactivation, parameterized identities,
 commit/rollback, swallowed SQL errors and row-lock concurrency. The database itself
 must report a blocked writer in `pg_stat_activity`, rather than inferring a lock
 from a delay. The down guard is tested against populated tables; the existing
-integration runner exercises empty rollback/reapply.
+integration runner exercises empty rollback/reapply. Provisioning checks cover
+new/existing/inactive mappings, simultaneous calls, namespace separation and failed
+link rollback. A manually uncommitted winning identity makes all competing inserts
+wait on actual PostgreSQL locks before it commits; every losing candidate must be
+removed. This forces the conflict path instead of relying on request timing.
 
 Only the upstream external identity result is stubbed in the database suite;
 the separate identity suite checks the actual SDK with generated keys and mocked

@@ -44,3 +44,8 @@ configuration validation and signal registration remain in `main.ts`; the
 `AccountsModule` imports identity and exports the internal account authorization
 transaction. It owns account/link persistence and current-state SQL checks; it has
 no controller or profile/recovery grant. See [its exact boundary](../02-database/account-authorization-foundation.md).
+
+It also exports explicit internal account provisioning. Both services share private
+transaction/locked-lookup infrastructure; provisioning is never automatic during
+verification or authorization. Creation and concurrent-link resolution are atomic,
+with no public bootstrap, implicit reactivation or phone-based merge.

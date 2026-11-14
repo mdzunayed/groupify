@@ -5,6 +5,7 @@ import { UnauthorizedException } from "@nestjs/common";
 
 const require = createRequire(import.meta.url);
 const { AccountAuthorizationService } = require("../dist/accounts/account-authorization.service.js");
+const { AccountProvisioningService } = require("../dist/accounts/account-provisioning.service.js");
 const identity = Object.freeze({ provider: "clerk", issuer: "https://identity.example.test", subject: "user_fixture", sessionId: "sess_fixture" });
 let previous;
 beforeEach(() => { previous = process.env.DATABASE_URL; });
@@ -45,4 +46,16 @@ test("malformed account database configuration is sanitized and fails closed", a
     return true;
   });
   assert.equal(called, false);
+});
+
+test("explicit provisioning verifies the provider before opening any database connection", async () => {
+  process.env.DATABASE_URL = "private-fixture-marker";
+  const service = new AccountProvisioningService({ verifyBearer: async () => { throw new UnauthorizedException(); } });
+  await assert.rejects(service.provision(undefined), (error) => error.getStatus() === 401);
+});
+
+test("explicit provisioning fails safely when the database is unconfigured", async () => {
+  delete process.env.DATABASE_URL;
+  const service = new AccountProvisioningService({ verifyBearer: async () => identity });
+  await assert.rejects(service.provision("fixture"), (error) => error.getStatus() === 503 && error.cause === undefined);
 });

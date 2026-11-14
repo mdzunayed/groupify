@@ -7,11 +7,14 @@ import pg from "pg";
 
 const require = createRequire(import.meta.url);
 const { AccountAuthorizationService } = require("../dist/accounts/account-authorization.service.js");
+const { AccountProvisioningService } = require("../dist/accounts/account-provisioning.service.js");
 const migration = require("../migrations/1794672000000_account_identity_boundary.cjs");
 let admin;
 let accountId;
 let identity;
 let service;
+let provisioner;
+let provisioned;
 
 before(async () => {
   assert.ok(process.env.DATABASE_URL, "Use the disposable integration database");
@@ -26,10 +29,13 @@ beforeEach(async () => {
   // The separate SDK suite verifies tokens/provider reads. Here only external
   // identity is stubbed; connections, SQL, constraints and locks are real.
   service = new AccountAuthorizationService({ verifyBearer: async () => identity });
+  provisioner = new AccountProvisioningService({ verifyBearer: async () => identity });
+  provisioned = new Set();
 });
 afterEach(async () => {
-  await admin.query("DELETE FROM external_identities WHERE account_id = $1", [accountId]);
-  await admin.query("DELETE FROM accounts WHERE id = $1", [accountId]);
+  const ids = [accountId, ...provisioned];
+  await admin.query("DELETE FROM external_identities WHERE account_id = ANY($1::uuid[])", [ids]);
+  await admin.query("DELETE FROM accounts WHERE id = ANY($1::uuid[])", [ids]);
 });
 async function link(overrides = {}) {
   const value = { ...identity, ...overrides };
@@ -173,4 +179,92 @@ test("migration rollback refuses to discard populated account or identity tables
     await admin.query("ROLLBACK");
   }
   assert.equal((await admin.query("SELECT count(*)::int AS count FROM external_identities WHERE account_id = $1", [accountId])).rows[0].count, 1);
+});
+
+async function provision() {
+  const value = await provisioner.provision("fixture");
+  provisioned.add(value.id);
+  return value;
+}
+async function accountCount() {
+  return (await admin.query("SELECT count(*)::int AS count FROM accounts")).rows[0].count;
+}
+
+test("explicit provisioning commits one new mapping and a replay resolves that same account", async () => {
+  const first = await provision();
+  assert.equal(first.created, true);
+  assert.ok(Object.isFrozen(first));
+  const again = await provision();
+  assert.deepEqual(again, { id: first.id, created: false });
+  assert.equal((await admin.query("SELECT account_id FROM external_identities WHERE subject = $1", [identity.subject])).rows[0].account_id, first.id);
+});
+
+test("concurrent explicit provisioning converges to one account without orphans", async () => {
+  const before = await accountCount();
+  const results = await Promise.allSettled(Array.from({ length: 8 }, () => provision()));
+  assert.ok(results.every((value) => value.status === "fulfilled"));
+  const values = results.map((value) => value.value);
+  assert.equal(new Set(values.map((value) => value.id)).size, 1);
+  assert.equal(values.filter((value) => value.created).length, 1);
+  assert.equal(await accountCount(), before + 1);
+});
+
+test("inserts blocked by an uncommitted winning identity remove all losing candidate accounts", async () => {
+  const before = await accountCount();
+  const observer = new pg.Client({ connectionString: process.env.DATABASE_URL });
+  await observer.connect();
+  let committed = false;
+  let settled;
+  let winningId;
+  await admin.query("BEGIN");
+  try {
+    winningId = (await admin.query("INSERT INTO accounts DEFAULT VALUES RETURNING id")).rows[0].id;
+    provisioned.add(winningId);
+    await admin.query("INSERT INTO external_identities (account_id, provider, issuer, subject) VALUES ($1, $2, $3, $4)",
+      [winningId, identity.provider, identity.issuer, identity.subject]);
+    settled = Promise.allSettled(Array.from({ length: 4 }, () => provision()));
+    let waiting = 0;
+    const deadline = Date.now() + 1800;
+    while (waiting !== 4 && Date.now() < deadline) {
+      waiting = (await observer.query(`SELECT count(*)::int AS count FROM pg_stat_activity
+        WHERE datname = current_database() AND wait_event_type = 'Lock'
+        AND query LIKE '%ON CONFLICT (provider, issuer, subject) DO NOTHING%'`)).rows[0].count;
+      if (waiting !== 4) await delay(10);
+    }
+    assert.equal(waiting, 4, "All candidates must actually reach the conflicting insert before the winner commits");
+    await admin.query("COMMIT");
+    committed = true;
+    const results = await settled;
+    assert.ok(results.every((value) => value.status === "fulfilled"));
+    for (const value of results) assert.deepEqual(value.value, { id: winningId, created: false });
+    assert.equal(await accountCount(), before + 1);
+  } finally {
+    if (!committed) await admin.query("ROLLBACK");
+    await settled;
+    await observer.end();
+  }
+});
+
+test("explicit provisioning never reactivates an inactive mapping or replaces it with a new account", async () => {
+  const first = await provision();
+  await admin.query("UPDATE accounts SET state = 'deactivated' WHERE id = $1", [first.id]);
+  const before = await accountCount();
+  await assert.rejects(provision(), (error) => error.getStatus() === 403);
+  assert.equal(await accountCount(), before);
+  assert.equal((await admin.query("SELECT state FROM accounts WHERE id = $1", [first.id])).rows[0].state, "deactivated");
+});
+
+test("distinct exact provider namespaces never become a phone or subject-only merge", async () => {
+  const first = await provision();
+  identity = { ...identity, issuer: "https://different-issuer.example.test" };
+  const second = await provision();
+  assert.notEqual(second.id, first.id);
+  assert.equal(second.created, true);
+});
+
+test("a failed identity insert rolls back the candidate account as well", async () => {
+  const before = await accountCount();
+  identity = { ...identity, provider: "" }; // Force the real database's nonempty constraint to reject the write.
+  await assert.rejects(provision(), (error) => error.getStatus() === 503 && error.cause === undefined);
+  assert.equal(await accountCount(), before);
 });
