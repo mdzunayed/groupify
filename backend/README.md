@@ -2,6 +2,10 @@
 
 This is the beginning of the approved NestJS modular monolith. It provides liveness and dependency-readiness checks, local PostgreSQL/PostGIS and Redis services, and a migration baseline. It also contains a development-only external-session verification service. It does not implement product APIs, Groupify account authorization, WebSockets, or a production deployment.
 
+Development verification checks local token validity and then current Clerk session
+status through a bounded, read-only provider request. It fails closed on revocation
+or provider unavailability; no product access follows. See [configuration and evidence](../docs/authentication-backend.md).
+
 ## Local development
 
 Use the Node version in the repository's `.nvmrc` and Docker Compose. From `backend/`:

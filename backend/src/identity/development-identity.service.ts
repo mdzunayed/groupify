@@ -1,7 +1,8 @@
 import { createClerkClient } from "@clerk/backend";
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable, ServiceUnavailableException, UnauthorizedException } from "@nestjs/common";
 
 import { developmentIdentityConfig } from "./development-identity.config";
+import { assertActiveProviderSession } from "./provider-session";
 
 export type VerifiedExternalIdentity = Readonly<{
   provider: "clerk";
@@ -39,15 +40,19 @@ export class DevelopmentIdentityService {
       const auth = result.toAuth({ treatPendingAsSignedOut: true });
       const claims = auth.sessionClaims;
       const audience = claims?.aud;
-      if (typeof auth.userId !== "string" || !auth.userId.trim() || typeof auth.sessionId !== "string" || !auth.sessionId.trim() ||
+      if (typeof auth.userId !== "string" || !auth.userId.trim() || typeof auth.sessionId !== "string" || !/^sess_[A-Za-z0-9_-]+$/.test(auth.sessionId) ||
           auth.actor || !claims || claims.act != null || claims.v !== 2 || claims.sts !== "active" ||
           claims.iss !== config.issuer || typeof claims.azp !== "string" || !config.authorizedParties.includes(claims.azp) ||
           !(typeof audience === "string" ? audience === config.audience : Array.isArray(audience) && audience.every((value) => typeof value === "string") && audience.includes(config.audience)) ||
           ![claims.iat, claims.nbf, claims.exp].every(Number.isInteger) || claims.exp <= claims.iat || claims.exp <= claims.nbf) {
         throw new Error();
       }
+      await assertActiveProviderSession(config.secretKey, auth.sessionId, auth.userId);
+      // A provider round trip must not extend the bearer token's validity.
+      if (Date.now() >= claims.exp * 1000) throw new Error();
       return Object.freeze({ provider: "clerk", issuer: config.issuer, subject: auth.userId, sessionId: auth.sessionId });
-    } catch {
+    } catch (error) {
+      if (error instanceof ServiceUnavailableException) throw error;
       // Do not leak SDK messages, claims, keys, token values or refresh/handshake hints.
       throw new UnauthorizedException("Authentication is required");
     }

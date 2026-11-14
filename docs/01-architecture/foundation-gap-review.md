@@ -8,7 +8,7 @@ that stack as of this review.
 | Area | Evidence now available | Remaining dependency / next action |
 | --- | --- | --- |
 | P1 client/backend direction | Owner-selected Expo/React Native and NestJS; locked installs, module composition and local checks | Native Room/Kotlin/Material integration and Android support/device matrix remain open; no primary-stack reversal |
-| P1 identity/OTP | Clerk approved for development; actual SDK verifies locally signed test tokens | Live development keys/configuration and native token claims unverified; production SMS/provider, Bangladesh delivery and prices remain open |
+| P1 identity/OTP | Clerk approved for development; actual SDK verifies locally signed test tokens; current provider-session status read has mocked revocation/failure evidence | Live development keys/configuration, actual provider revocation and native token claims unverified; production SMS/provider, Bangladesh delivery and prices remain open |
 | P1 hosting/cost | Existing VM/managed-service comparison and planning cost model | Provider, region, topology, backups, actual quotes/usage and operational responsibility need review; no provisioning or price-fit claim |
 | P1 maps/PTT | OSM-based map direction, native in-app PTT requirement and comparison/device protocols | Renderer/tiles/routing/geocoding and audio transport not selected; physical background GPS/PTT/audio-focus/battery proof absent |
 | P4 HTTP/module foundation | Public health, migration-name readiness, safe errors/request IDs, health OpenAPI, explicit health/HTTP/identity modules | Product APIs/account-state authorization/WebSockets are not implemented; R1–R4 draft does not grant access |
@@ -51,7 +51,12 @@ and no PTT speaking-duration timeout or other product limit is introduced.
 
 ## Next work
 
-The current implementation has hosted real-dependency evidence as recorded above. Extend development verification to check current provider-session status without granting product access; local JWT validity cannot detect provider revocation.
+The lifecycle implementation has hosted real-dependency evidence as recorded above.
+The subsequent `task/p5-provider-session-status` adds current provider-status reads
+with mocked transport evidence; see [ADR-020](architecture-decisions/ADR-020-development-session-status.md).
+Its hosted run must be checked independently. Live provider/native compatibility
+and revocation evidence remain a next verification step when development settings
+are supplied; no product access follows from the verifier.
 Repair local Docker storage through the managed environment before claiming local
 PostGIS/Redis/migration validation again. Confirm the account/profile draft's
 R1–R4 decisions before dependent P5 endpoints/migrations; obtain live development

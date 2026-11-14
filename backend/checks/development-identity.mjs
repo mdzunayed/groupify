@@ -50,21 +50,36 @@ let previous;
 let fetchMock;
 let output;
 
+function providerSession(overrides = {}) {
+  return { object: "session", id: "sess_fixture", user_id: "user_fixture", status: "active", actor: null,
+    expire_at: Date.now() + 60000, abandon_at: Date.now() + 60000, ...overrides };
+}
+
 beforeEach(() => {
   previous = Object.fromEntries(Object.keys(environment).map((key) => [key, process.env[key]]));
   Object.assign(process.env, environment);
-  fetchMock = mock.method(globalThis, "fetch", async () => { throw new Error("Outbound fetch forbidden in identity checks"); });
+  fetchMock = mock.method(globalThis, "fetch", async () => Response.json(providerSession()));
   output = [];
   for (const method of ["log", "warn", "error"]) mock.method(console, method, (...args) => { output.push(args); });
 });
 afterEach(() => {
-  const fetchCalls = fetchMock.mock.callCount();
+  const fetchCalls = fetchMock.mock.calls;
   const outputCount = output.length;
   mock.restoreAll();
   for (const [key, value] of Object.entries(previous)) {
     if (value === undefined) delete process.env[key]; else process.env[key] = value;
   }
-  assert.equal(fetchCalls, 0, "Verification must not fetch keys, refresh, or send telemetry");
+  for (const { arguments: [url, options] } of fetchCalls) {
+    assert.equal(url, "https://api.clerk.com/v1/sessions/sess_fixture", "Only the verified session may be looked up");
+    assert.equal(options.method, "GET");
+    assert.equal(options.headers.Authorization, `Bearer ${environment.CLERK_SECRET_KEY}`);
+    assert.equal(options.headers["Clerk-API-Version"], "2026-05-12");
+    assert.equal(options.redirect, "error");
+    assert.equal(options.cache, "no-store");
+    assert.ok(options.signal instanceof AbortSignal);
+    assert.equal(options.body, undefined);
+    assert.equal(options.headers.Cookie, undefined);
+  }
   assert.equal(outputCount, 0, "No SDK or application output may expose rejected-token details");
 });
 
@@ -78,20 +93,23 @@ function bearer(overrides = {}, headerOverrides = {}, privateKey = keys.privateK
   const data = [header, payload].map((value) => Buffer.from(JSON.stringify(value)).toString("base64url")).join(".");
   return `Bearer ${data}.${sign("RSA-SHA256", Buffer.from(data), privateKey).toString("base64url")}`;
 }
-async function rejected(value, status = 401) {
+async function rejected(value, status = 401, lookup = false) {
+  const before = fetchMock.mock.callCount();
   await assert.rejects(new DevelopmentIdentityService().verifyBearer(value), (error) => {
     assert.equal(error.getStatus(), status);
     assert.equal(error.message, status === 401 ? "Authentication is required" : "Development identity verification is unavailable");
     assert.equal(error.cause, undefined);
     return true;
   });
+  assert.equal(fetchMock.mock.callCount() - before, lookup ? 1 : 0, "Invalid local credentials must not reach the provider");
 }
 
-test("a locally signed active session returns only external identity, not account permissions", async () => {
+test("a signed token with active provider status returns only external identity, not account permissions", async () => {
   const identity = await new DevelopmentIdentityService().verifyBearer(bearer());
   assert.deepEqual(identity, { provider: "clerk", issuer, subject: "user_fixture", sessionId: "sess_fixture" });
   assert.ok(Object.isFrozen(identity));
   assert.equal((await new DevelopmentIdentityService().verifyBearer(bearer().replace("Bearer ", "bearer "))).subject, identity.subject);
+  assert.equal(fetchMock.mock.callCount(), 2, "Each verification checks current provider status");
 });
 
 test("configured audience can match one entry in a verified audience list", async () => {
@@ -170,8 +188,74 @@ test("pending/unknown session states, missing identity and actor tokens are reje
   for (const claims of [
     { sts: "pending" }, { sts: "revoked" }, { sts: undefined },
     { sub: "" }, { sub: " " }, { sid: "" }, { sid: " " }, { sid: 42 }, { sid: {} }, { sid: undefined },
+    { sid: ".." }, { sid: "sess_fixture/../users" }, { sid: "sess_fixture?private=marker" },
     { v: 1 }, { v: undefined }, { act: { sub: "actor_fixture" } },
   ]) await rejected(bearer(claims));
+});
+
+test("provider revocation is checked again even while the same signed JWT remains valid", async () => {
+  const token = bearer();
+  const service = new DevelopmentIdentityService();
+  await service.verifyBearer(token);
+  fetchMock.mock.mockImplementation(async () => Response.json(providerSession({ status: "revoked" })));
+  await rejected(token, 401, true);
+  assert.equal(fetchMock.mock.callCount(), 2);
+});
+
+test("non-active, missing and mismatched provider sessions do not authenticate", async () => {
+  for (const status of ["revoked", "ended", "expired", "removed", "abandoned", "replaced", "pending", "unknown", undefined]) {
+    fetchMock.mock.mockImplementation(async () => Response.json(providerSession({ status })));
+    await rejected(bearer(), 401, true);
+  }
+  for (const overrides of [
+    { id: "sess_other" }, { user_id: "user_other" }, { object: "user" },
+    { actor: { sub: "user_actor" } }, { id: undefined }, { user_id: undefined },
+    { expire_at: Date.now() - 1 }, { abandon_at: Date.now() - 1 },
+    { expire_at: undefined }, { abandon_at: undefined }, { expire_at: "future" }, { abandon_at: 1.5 },
+  ]) {
+    fetchMock.mock.mockImplementation(async () => Response.json(providerSession(overrides)));
+    await rejected(bearer(), 401, true);
+  }
+  for (const response of [null, [], {}, "private-fixture-marker"]) {
+    fetchMock.mock.mockImplementation(async () => Response.json(response));
+    await rejected(bearer(), 401, true);
+  }
+  fetchMock.mock.mockImplementation(async () => Response.json({ private: "private-fixture-marker" }, { status: 404 }));
+  await rejected(bearer(), 401, true);
+});
+
+test("provider credential errors, limits, server errors and malformed JSON fail unavailable without fallback", async () => {
+  for (const status of [301, 400, 401, 403, 429, 500, 503]) {
+    let response;
+    fetchMock.mock.mockImplementation(async () => {
+      response = Response.json({ private: "private-fixture-marker" }, { status });
+      return response;
+    });
+    await rejected(bearer(), 503, true);
+    assert.equal(response.bodyUsed, true, "Error response bodies are cancelled without parsing details");
+  }
+  fetchMock.mock.mockImplementation(async () => new Response("private-fixture-marker", { status: 200 }));
+  await rejected(bearer(), 503, true);
+  fetchMock.mock.mockImplementation(async () => { throw new Error("private-fixture-marker"); });
+  await rejected(bearer(), 503, true);
+});
+
+test("provider requests use a cancellable 2500ms deadline and abort fails unavailable", async () => {
+  mock.method(AbortSignal, "timeout", (milliseconds) => {
+    assert.equal(milliseconds, 2500);
+    return AbortSignal.abort(new DOMException("private-fixture-marker", "TimeoutError"));
+  });
+  fetchMock.mock.mockImplementation(async (_url, { signal }) => { signal.throwIfAborted(); });
+  await rejected(bearer(), 503, true);
+});
+
+test("a token expiring during the provider lookup cannot authenticate", async () => {
+  const now = Date.now();
+  fetchMock.mock.mockImplementation(async () => {
+    mock.method(Date, "now", () => now + 200000);
+    return Response.json(providerSession());
+  });
+  await rejected(bearer(), 401, true);
 });
 
 
@@ -193,6 +277,15 @@ test("HTTP consumers receive safe 401/503 errors without token or SDK details", 
   assert.equal(valid.status, 201);
   assert.deepEqual(await valid.json(), { verified: true });
   assert.equal(valid.headers.get("set-cookie"), null);
+  fetchMock.mock.mockImplementation(async () => Response.json(providerSession({ status: "revoked" })));
+  const revoked = await loopbackFetch(`${baseUrl}/identity-probe`, { method: "POST", headers: { Authorization: bearer() } });
+  assert.equal(revoked.status, 401);
+  await assertSharedErrorResponse(revoked);
+  fetchMock.mock.mockImplementation(async () => { throw new Error("private-provider-marker"); });
+  const down = await loopbackFetch(`${baseUrl}/identity-probe`, { method: "POST", headers: { Authorization: bearer() } });
+  assert.equal(down.status, 503);
+  const downBody = await assertSharedErrorResponse(down);
+  assert.ok(!JSON.stringify(downBody).includes("private-provider-marker"));
 });
 
 test("public liveness is available even when development identity is disabled", async () => {

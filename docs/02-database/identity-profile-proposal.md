@@ -42,6 +42,13 @@ secret even with the key, as recorded in ADR-018. Local generated-token tests ar
 not live-provider or account-status evidence. The account/profile/schema/recovery
 and revocation requirements above remain open and are not fulfilled by this adapter.
 
+On 2026-11-14, [ADR-020](../01-architecture/architecture-decisions/ADR-020-development-session-status.md)
+extends the adapter with a bounded read of current provider-session status after
+local validation. Mocked reads prove that a provider-reported revocation rejects
+the same still-valid JWT. Actual live revocation/native claims, Groupify account
+mapping/status, profiles and recovery remain unverified/unimplemented; no product
+access follows from this extension.
+
 
 ## Concrete review draft (2026-11-13)
 
