@@ -15,7 +15,8 @@
     "migrate:down": "node-pg-migrate down",
     "test:contract": "npm run build && node --test checks/openapi.mjs",
     "test:identity": "npm run build && node --test checks/development-identity.mjs",
-    "test:process": "npm run build && node --test checks/process-lifecycle.mjs"
+    "test:process": "npm run build && node --test checks/process-lifecycle.mjs",
+    "test:container": "node checks/container-smoke.mjs"
   },
   "dependencies": {
     "@clerk/backend": "3.28.0",

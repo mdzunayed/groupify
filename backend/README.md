@@ -123,3 +123,15 @@ Creator eligibility remains an open product decision, so exercise only with
 controlled development accounts. There is no app entry, listing, invitation,
 membership mutation or ride grant. Separate POSTs create separate communities:
 do not retry uncertain writes blindly. See [contract and remaining policy](../docs/03-api/development-community-creation.md).
+
+## Container artifact
+
+The digest-pinned Node26.13.0 multi-stage Dockerfile compiles from the backend
+lockfile and packages production dependencies/migrations as non-root. The context
+allowlist excludes environment files and local outputs; no provider key is baked
+in. Production mode keeps development APIs/transport unavailable. Startup does not
+apply migrations automatically. This is a review artifact, with hosting and
+deployment still unselected. `npm run test:container` builds its own UUID image
+and tests the actual service with loopback publication, read-only root, dropped
+capabilities, safe production failures and clean shutdown. See
+[configuration, evidence and limits](../docs/05-development/backend-container.md).

@@ -2,7 +2,7 @@
 
 All branches remain **in review**, not phase acceptance. Fresh fetches found main
 at f571eb8 with this stack unmerged. No main merge or force-push was performed.
-These sixteen tasks stack on the previously confirmed provider-status work at
+These seventeen tasks stack on the previously confirmed provider-status work at
 d2791c7, which itself contains the preceding unmerged phase branches. Review
 history/content before selecting a merge order; the latest head includes its
 parents but does not imply their acceptance.
@@ -24,7 +24,8 @@ parents but does not imply their acceptance.
 | 13 | [p2-expo58-patch-alignment](https://github.com/mdzunayed/groupify/tree/task/p2-expo58-patch-alignment): supported SDK58 update/CNG plugins | [43567907836](https://github.com/mdzunayed/groupify/actions/runs/43567907836), passed |
 | 14 | [p5-safe-authentication-errors](https://github.com/mdzunayed/groupify/tree/task/p5-safe-authentication-errors): fixed failure text/redaction/guard regressions | [43568414536](https://github.com/mdzunayed/groupify/actions/runs/43568414536), passed |
 | 15 | [p3-android-launch-identity](https://github.com/mdzunayed/groupify/tree/task/p3-android-launch-identity): approved vector PNG/native-resource integration | [43569325317](https://github.com/mdzunayed/groupify/actions/runs/43569325317), passed |
-| 16 | [p3-auth-theme-token-integration](https://github.com/mdzunayed/groupify/tree/task/p3-auth-theme-token-integration): light intro/Inter feedback | Local65 app checks/export passed; hosted result recorded in Drive after push |
+| 16 | [p3-auth-theme-token-integration](https://github.com/mdzunayed/groupify/tree/task/p3-auth-theme-token-integration): light intro/Inter feedback | [43570061472](https://github.com/mdzunayed/groupify/actions/runs/43570061472), passed |
+| 17 | [p4-backend-container-artifact](https://github.com/mdzunayed/groupify/tree/task/p4-backend-container-artifact): pinned non-root image and actual-container CI check | Local65 app/70 backend passed; actual image run requires hosted execution after push |
 
 Hosted integration uses real PostGIS/Redis, SQL/HTTP/WebSockets and stubbed upstream
 identity; it is not a live Clerk/native session. Latest parent suite has65 app,

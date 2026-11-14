@@ -17,7 +17,7 @@ See [open decisions](../00-product/open-decisions.md), the [architecture decisio
 
 ## Latest task
 
-See the newest dated entry for `task/p3-auth-theme-token-integration` and the
+See the newest dated entry for `task/p4-backend-container-artifact` and the
 [review branch index](review-branches.md). Entries below are
 historical commit snapshots; later recorded hosted results supersede their earlier
 pending CI statements. Implementations remain in review; acceptance belongs to the owner.
@@ -400,3 +400,15 @@ Node26.13.0 lint/typecheck and all65 existing app checks passed; Android JavaScr
 The overview and review index now reflect the actual current code rather than stale unfinished-app/old-test statements. Drive T024–T026 were reconciled to In Review from stale Not Started using the existing tested vector/tokens/fonts, with native acceptance still open. No phase was marked approved/complete. This branch's hosted checks and final tracker note follow push.
 
 Next dependencies remain explicit: community creator eligibility and safe unknown-write reconciliation before its app flow; configured development Clerk/HTTPS API/default-native claims plus physical Android for live proofs; media ownership/access/erasure and R1–R4 for complete profiles/lifecycle; ride/member transitions and provider/transport policy for downstream features. Nine low unpatched tooling audit entries and managed local Docker storage remain limitations. Future work should use the latest unmerged review head, preserve owner acceptance and continue only where the relevant dependencies are satisfied.
+
+## 2026-11-14 — portable backend container artifact
+
+Branch `task/p4-backend-container-artifact` stacks on `task/p3-auth-theme-token-integration` (`c52beea`). Exact parent [run43570061472](https://github.com/mdzunayed/groupify/actions/runs/43570061472) passed65 app,70 backend,all63 actual database/transport/HTTP integration cases and AndroidJS export. All sixteen preceding tasks are pushed/hosted-green, still in review with no phase acceptance.
+
+The [container guide](backend-container.md) records a multi-stage build pinned to the official Node26.13.0-bookworm-slim OCI index digest. Registry manifest inspection succeeded without layer extraction and confirmed the digest/platform metadata. A separate production dependency install, compiled code and migration files enter the non-root final stage; context allowlisting excludes environment/local output/test files. Container-only HOST enables port forwarding; source's loopback default is unchanged. Production mode, packaged liveness probe and explicit CMD preserve safe disabled development boundaries. No automatic migration, registry push, hosting/provider choice or deployment is added.
+
+The new CI smoke step builds a UUID-owned image/container, uses read-only root/dropped capabilities/no-new-privileges and loopback-only ephemeral publication, executes actual HTTP/health command, checks exact Node pin/non-root/compiler omission/migration names, production503 responses despite development flags, and clean SIGTERM/log redaction across stdout/stderr. Cleanup targets only its exact fixture resources. The separate PostGIS/Redis integration remains63 cases and does not itself prove container-store wiring, production TLS, OS security, database backup/restore or a provider session.
+
+Node26.13.0 local verification passed backend TypeScript build/all70 checks and root lint/typecheck/all65 app checks; smoke script syntax check passed. No app/native API, dependency/lockfile, migration or backend runtime source change. Local image build/run was not repeated against the known storage-blocked managed VFS daemon. Actual build/start/HTTP/shutdown and complete hosted regression evidence await push/CI; no image pass is inferred from the manifest, an open port or host-process unit checks. No verification was disabled and no shared Docker resources were pruned.
+
+Status: in review, not P4 acceptance. Drive/hosted evidence is updated after push. Current limitations remain managed local Docker storage, missing live development identity/HTTPS/native claims and physical Android, unresolved provider/media/lifecycle/creator/ride decisions, and nine low unpatched tooling audit entries. Next: inspect actual hosted image results and repair failures before treating the artifact ready for review; keep deployment and production operating decisions separate.
