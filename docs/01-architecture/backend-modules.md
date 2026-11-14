@@ -57,3 +57,8 @@ grant. See [creation scope and open dependencies](../02-database/community-creat
 The module also exports a current-membership management capability transaction
 using the approved Leader/Co-leader grants. It locks membership through protected
 SQL and adds no mutator, public controller or active-ride access. See [the matrix](../02-database/community-management-authorization.md).
+
+`RealtimeModule` owns a private opt-in development WebSocket adapter on the existing
+HTTP server. It uses account authorization before upgrade and each supported probe,
+cleans its owned listener/sockets and exports no product send/broadcast API.
+See [protocol scope](../03-api/development-websocket.md).

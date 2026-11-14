@@ -3,7 +3,9 @@
 **Status: implemented foundation, in review.** This service verifies an external
 Clerk token and the provider's current session status; it is not Groupify account authorization or a production provider
 selection. There is no new public endpoint or global authentication guard. The
-only public backend endpoints remain health probes.
+public HTTP routes remain health probes. The separate opt-in
+[development WebSocket probe](03-api/development-websocket.md) uses this verifier
+and current account SQL before upgrade and each supported diagnostic action.
 
 ## Server configuration
 

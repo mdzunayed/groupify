@@ -26,5 +26,6 @@ Records labeled **Proposed** are recommendations for evaluation, not selections 
 | [ADR-020](ADR-020-development-session-status.md) | In review | Current development provider-session status without product authorization |
 | [ADR-021](ADR-021-account-authorization-transaction.md) | In review | Internal account mapping/status and protected SQL transaction |
 | [ADR-022](ADR-022-community-creation-transaction.md) | In review | Atomic internal community creation and initial Leader membership |
+| [ADR-023](ADR-023-development-websocket-boundary.md) | In review | Opt-in pre-upgrade/account-checked development WebSocket probe |
 
 The [system architecture](../system-architecture.md), [flows](../flows-and-security.md), [operations](../operations-and-testing.md), and [research/cost model](../research-cost-capacity.md) use these records as their decision register. The owner requested work through the roadmap on separate phase branches for review; that request does not itself approve the proposed decisions.

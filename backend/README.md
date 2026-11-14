@@ -1,6 +1,6 @@
 # Groupify backend foundation
 
-This is the beginning of the approved NestJS modular monolith. It provides liveness and dependency-readiness checks, local PostgreSQL/PostGIS and Redis services, and a migration baseline. It also contains a development-only external-session verification service. It does not implement public product APIs, resource-specific permissions, WebSockets, or a production deployment.
+This is the beginning of the approved NestJS modular monolith. It provides health/readiness, local PostGIS/Redis, migrations, development identity and internal account/community boundaries. Public product workflows, ride-specific permissions, production realtime and deployment remain unfinished.
 
 An internal [account authorization transaction](../docs/02-database/account-authorization-foundation.md)
 now maps verified external identity to active accounts under database row locks.
@@ -18,6 +18,11 @@ It has no public endpoint, invitation, role-editing or ride/location permission.
 The internal [management authorization boundary](../docs/02-database/community-management-authorization.md)
 enforces the approved current-community Leader/Co-leader grants under membership
 row locks. Exact operation/resource rules and public mutators remain separate work.
+
+An [opt-in development WebSocket probe](../docs/03-api/development-websocket.md)
+authenticates before upgrade and each supported account-check message on the
+existing HTTP server. It is disabled by default and in production, and adds no
+product broadcast, room, chat/PTT/SOS/location or automatic account creation.
 
 Development verification checks local token validity and then current Clerk session
 status through a bounded, read-only provider request. It fails closed on revocation

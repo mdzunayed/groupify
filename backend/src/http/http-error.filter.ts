@@ -22,6 +22,13 @@ const errors: Record<number, { code: string; message: string }> = {
   504: { code: "GATEWAY_TIMEOUT", message: "An upstream service timed out." },
 };
 
+export function httpErrorBody(statusCode: number, requestId: string) {
+  const error = errors[statusCode] ?? (statusCode >= 500 ? errors[500] : {
+    code: "REQUEST_FAILED", message: "The request could not be completed.",
+  });
+  return { statusCode, ...error, requestId };
+}
+
 @Catch()
 export class HttpErrorFilter implements ExceptionFilter {
   private readonly logger = new Logger(HttpErrorFilter.name);
@@ -35,13 +42,11 @@ export class HttpErrorFilter implements ExceptionFilter {
     const adapter = this.adapterHost.httpAdapter;
     const candidate = exception instanceof HttpException ? exception.getStatus() : 500;
     const statusCode = Number.isInteger(candidate) && candidate >= 400 && candidate <= 599 ? candidate : 500;
-    const error = errors[statusCode] ?? (statusCode >= 500 ? errors[500] : {
-      code: "REQUEST_FAILED", message: "The request could not be completed.",
-    });
     // Body-parser failures can reach the filter before route middleware runs.
     const requestId = requestIdFor(request);
+    const body = httpErrorBody(statusCode, requestId);
     if (statusCode >= 500) {
-      this.logger.error({ event: "http_error", requestId, statusCode, code: error.code });
+      this.logger.error({ event: "http_error", requestId, statusCode, code: body.code });
     }
     if (adapter.isHeadersSent(response)) {
       adapter.end(response);
@@ -49,6 +54,6 @@ export class HttpErrorFilter implements ExceptionFilter {
     }
     adapter.setHeader(response, "X-Request-Id", requestId);
     adapter.setHeader(response, "Cache-Control", "no-store");
-    adapter.reply(response, { statusCode, ...error, requestId }, statusCode);
+    adapter.reply(response, body, statusCode);
   }
 }

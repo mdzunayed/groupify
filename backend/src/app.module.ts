@@ -5,6 +5,7 @@ import { CommunitiesModule } from "./communities/communities.module";
 import { HealthModule } from "./health.module";
 import { HttpInfrastructureModule } from "./http/http.module";
 import { IdentityModule } from "./identity/identity.module";
+import { RealtimeModule } from "./realtime/realtime.module";
 
-@Module({ imports: [HttpInfrastructureModule, HealthModule, IdentityModule, AccountsModule, CommunitiesModule] })
+@Module({ imports: [HttpInfrastructureModule, HealthModule, IdentityModule, AccountsModule, CommunitiesModule, RealtimeModule] })
 export class AppModule {}

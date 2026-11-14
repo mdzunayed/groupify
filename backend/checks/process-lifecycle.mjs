@@ -31,7 +31,7 @@ async function unusedPort() {
 function start(port) {
   // Preserve platform network/CA settings, but isolate application credentials/data.
   const environment = { ...process.env, PORT: String(port), HOST: "127.0.0.1", NODE_ENV: "test",
-    DATABASE_URL: "", REDIS_URL: "", GROUPIFY_DEV_AUTH_ENABLED: "false",
+    DATABASE_URL: "", REDIS_URL: "", GROUPIFY_DEV_AUTH_ENABLED: "false", GROUPIFY_DEV_WS_ENABLED: "false",
     CLERK_ISSUER: "", CLERK_AUDIENCE: "", CLERK_AUTHORIZED_PARTIES: "",
     CLERK_PUBLISHABLE_KEY: "", CLERK_SECRET_KEY: "", CLERK_JWT_KEY: "" };
   const child = spawn(process.execPath, [serverPath], { env: environment, stdio: ["ignore", "pipe", "pipe"] });
