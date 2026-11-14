@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Groupify development HTTP API",
-    "version": "0.3.1",
-    "description": "Implemented health, protected development account bootstrap and active-self profile text, in review. The app integrates development text editing. Pictures, recovery/deletion, production identity and live native/device evidence remain unfinished; no phase acceptance."
+    "version": "0.4.0",
+    "description": "Implemented health, protected development account/bootstrap and self-profile text, plus default-off non-production community creation preview with initial Leader. All in review. Pictures, community list/invitations/mutations/rides, recovery/deletion, production identity and live native/device evidence remain unfinished; no phase acceptance."
   },
   "security": [],
   "tags": [
@@ -18,6 +18,10 @@
     {
       "name": "Profiles",
       "description": "Active-self-only development profile text. Required picture/media support remains unfinished; no other-user access or profile-complete assertion."
+    },
+    {
+      "name": "Communities",
+      "description": "Development creation only, using current active account; no listing, invitations, role mutations or ride grants."
     }
   ],
   "paths": {
@@ -278,6 +282,54 @@
           }
         ]
       }
+    },
+    "/v1/communities": {
+      "post": {
+        "operationId": "createDevelopmentCommunity",
+        "tags": [
+          "Communities"
+        ],
+        "summary": "Create a community and its creator\u2019s initial Leader membership",
+        "description": "Default-off controlled preview only: exact GROUPIFY_DEV_COMMUNITY_CREATION_ENABLED=true plus development/test mode required; production stays unavailable. Creator eligibility remains unresolved; current active account creation is a preview assumption, not accepted production permission. Strict name-only JSON. Current verified development identity and active mapped account determine the creator; no implicit account bootstrap. Community and initial Leader commit atomically before 201. Role in response describes creation, not cached permission. Name bounds are reversible development choices in review. No listing/cross-user metadata, invitations, role assignments or ride grants. Separate POSTs create separate communities; after uncertain outcomes do not retry blindly. No idempotency/reconciliation policy or production availability is implied.",
+        "security": [
+          {
+            "DevelopmentBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommunityCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/CommunityCreated"
+          },
+          "400": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "401": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "403": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "415": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "503": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -481,6 +533,46 @@
             "description": "Server-generated profile identity; not accepted in writes and not an access token."
           }
         }
+      },
+      "CommunityCreate": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "NFC/trim normalized, 1\u2013100 Unicode code points; controls/isolated surrogates rejected. Reversible development bound in review, not a member/population cap."
+          }
+        }
+      },
+      "CommunityCreated": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "Leader"
+            ],
+            "description": "Initial creator role at commit; future actions must independently authorize the current membership."
+          }
+        }
       }
     },
     "headers": {
@@ -638,6 +730,33 @@
             "schema": {
               "type": "string",
               "pattern": "^\"profile-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-[1-9][0-9]{0,18}\"$"
+            }
+          }
+        }
+      },
+      "CommunityCreated": {
+        "description": "Committed new community with its initial Leader membership. No creator/account identity, cookie, complete-profile or ongoing authorization claim.",
+        "headers": {
+          "X-Request-Id": {
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RequestId"
+            }
+          },
+          "Cache-Control": {
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "no-store"
+              ]
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CommunityCreated"
             }
           }
         }

@@ -67,8 +67,9 @@ for status mappings, compatibility details and the unimplemented product contrac
 
 ## OpenAPI contract checks
 
-The checked-in [OpenAPI document](../docs/03-api/openapi.json) covers the health
-GET endpoints and shared errors. `npm run test:contract` builds and validates it
+The checked-in [OpenAPI document](../docs/03-api/openapi.json) covers health,
+development account bootstrap/self-profile text, the default-off community creation
+preview and shared errors. `npm run test:contract` builds and validates it
 against loopback HTTP responses; it is also included in `npm test` and existing
 CI. Swagger Parser/Ajv are development-only dependencies; no Swagger endpoint or
 production provider is added. Focused readiness success/failure checks stub the
@@ -86,7 +87,8 @@ and `npm run test:identity`. Health endpoints do not require identity configurat
 
 ## Module composition
 
-`AppModule` composes `HttpInfrastructureModule`, `HealthModule` and `IdentityModule`.
+`AppModule` composes HTTP infrastructure, health, identity, accounts, profiles,
+communities and the optional development realtime transport.
 Health owns its controller/private readiness service; HTTP infrastructure owns
 request IDs/global error formatting; identity explicitly exports its development
 verifier without product permissions. See [module boundaries](../docs/01-architecture/backend-modules.md).
@@ -108,5 +110,16 @@ Protected development GET/POST/PATCH `/v1/me/profile` reads/creates/edits only t
 current active caller's text attributes. A strong profile-identity/version ETag
 prevents lost updates and cross-representation stale edits. Missing/stale conditions
 are safe 428/412. There is no picture field/upload, other-rider lookup, lifecycle
-operation or profile-complete claim. Required picture support and app/live/native
-integration remain unfinished. See [actual contract and open policy](../docs/03-api/self-profile-text.md).
+operation or profile-complete claim. The app integrates text editing; required
+pictures and live/native proof remain unfinished. See [actual contract and open policy](../docs/03-api/self-profile-text.md).
+
+## Controlled community creation preview
+
+POST `/v1/communities` accepts only a name and atomically creates a community and
+its verified active caller's initial Leader membership. It requires separate exact
+`GROUPIFY_DEV_COMMUNITY_CREATION_ENABLED=true` plus development/test mode and
+configured development identity; default/unconfigured/production access stays 503.
+Creator eligibility remains an open product decision, so exercise only with
+controlled development accounts. There is no app entry, listing, invitation,
+membership mutation or ride grant. Separate POSTs create separate communities:
+do not retry uncertain writes blindly. See [contract and remaining policy](../docs/03-api/development-community-creation.md).

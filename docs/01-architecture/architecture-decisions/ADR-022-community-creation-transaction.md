@@ -34,6 +34,21 @@ Details: [implemented creation core](../../02-database/community-creation-core.m
 Binding inputs: [approved community/role rules](../../00-product/business-rules.md#community-and-ride-relationship),
 [PR-04/PR-05](../../00-product/product-requirements.md#approved-decisions-and-acceptance-checks).
 
+## Controlled HTTP preview extension — 2026-11-14
+
+A name-only POST now wraps the transaction for concrete contract review. It is
+unavailable by default, requires a separate exact development opt-in plus
+development/test mode, and remains unavailable in production even if enabled.
+The existing open question of who may create communities is not resolved: only
+controlled development accounts should exercise the preview's active-account
+assumption, with no app entry or production permission selected. Current identity
+and account checks still precede every write; no implicit provisioning, caller
+creator/role selector or privilege for later actions is added. Creation success
+follows both SQL commits and has no-store/request correlation. Separate requests
+remain distinct intentions; no blind retry/idempotency policy is inferred.
+
+See [actual preview contract and open decisions](../../03-api/development-community-creation.md).
+
 ## Current management grants extension — 2026-11-14
 
 An internal management service now enforces only the already-approved grants:

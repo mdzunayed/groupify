@@ -1,17 +1,18 @@
 # Implemented backend module boundaries
 
-**Status: P4 foundation in review.** This applies the approved NestJS modular
-monolith direction in ADR-002. It does not accept a phase, add product APIs or
-resolve the account/profile/lifecycle draft's R1–R4 decisions.
+**Status: foundation and development increments in review.** This applies the
+approved NestJS modular monolith direction in ADR-002. It does not accept a phase
+or resolve the account/profile/lifecycle draft's R1–R4 decisions. The table records
+the current narrow development APIs separately from unfinished product workflows.
 
 | Module | Owns | Exposes |
 | --- | --- | --- |
-| `AppModule` | Production composition of HTTP infrastructure, health and development identity | No controllers, business providers or authentication policy of its own |
+| `AppModule` | Composition of the implemented modules below | No controllers, business providers or authentication policy of its own |
 | `HttpInfrastructureModule` | Server-generated request-ID middleware on all HTTP routes and the global safe error filter through `APP_FILTER` | HTTP presentation only; no exported business service or identity/account grant |
 | `HealthModule` | `HealthController` and private `HealthService`; liveness and PostGIS/Redis/applied-migration-name readiness | Only the existing public `/health/live` and `/health/ready` routes; no exported readiness provider |
 | `IdentityModule` | Development verifier/configuration and pinned Clerk SDK integration | Exports verifier; no global role/resource grant |
 | `AccountsModule` | Account/link persistence, authorization/provisioning, explicit development bootstrap controller | Current account transactions; no implicit login provisioning/profile/recovery |
-| `CommunitiesModule` | Internal creation/initial Leader and management capability boundary | No public mutator, ride/location or invitation workflow |
+| `CommunitiesModule` | Atomic creation/initial Leader, default-off development creation controller and internal management capability boundary | No production creation eligibility, list/cross-user metadata, membership mutator, ride/location or invitation workflow |
 | `RealtimeModule` | Opt-in development upgrade/diagnostic protocol | Private owned transport; no product broadcast API |
 | `ProfilesModule` | Active-self text service/controller, ownership/versioned SQL | No cross-user/role override, photo or lifecycle grant |
 
@@ -33,11 +34,12 @@ must not duplicate SDK/client configuration or register another copy of a privat
 provider in the root. The contract tests' container lookup to stub readiness is
 test instrumentation, not a supported cross-module production dependency.
 
-Account/profile, community, ride, location, chat, PTT, SOS and entitlement modules
-are not implemented. No empty placeholder modules or shared product repositories
-are introduced. Their resource/account/role/active-ride/consent boundaries require
-actual contracts and tests before access is enabled. External-session verification
-alone remains insufficient. See [the current contract proposal](../02-database/account-profile-contract.md),
+Ride, location, chat, PTT, SOS and entitlement implementations remain absent. The
+account/profile/community increments above are narrower than complete workflows.
+No empty placeholder modules or shared product repositories are introduced.
+Resource/account/role/active-ride/consent boundaries require actual contracts and
+tests before access is enabled. External-session verification alone remains
+insufficient. See [the current contract proposal](../02-database/account-profile-contract.md),
 [development identity limits](../authentication-backend.md) and [implemented HTTP conventions](../03-api/api-conventions.md).
 
 HTTP infrastructure also owns `HttpLifecycleService`, which records an allowlisted
@@ -56,13 +58,15 @@ verification or authorization. Creation and concurrent-link resolution are atomi
 with no implicit reactivation or phone-based merge. Its single explicit development
 HTTP route never creates from an arbitrary login/protected request.
 
-`CommunitiesModule` imports accounts and owns internal atomic community/initial
-Leader creation. It has no public controller, membership mutation or ride/location
-grant. See [creation scope and open dependencies](../02-database/community-creation-core.md).
+`CommunitiesModule` imports accounts and owns atomic community/initial Leader
+creation. Its controller is a separately opted-in non-production preview;
+unresolved creator eligibility is not silently enabled by identity configuration.
+There is no membership mutation or ride/location grant. See
+[creation scope and open dependencies](../02-database/community-creation-core.md).
 
 The module also exports a current-membership management capability transaction
 using the approved Leader/Co-leader grants. It locks membership through protected
-SQL and adds no mutator, public controller or active-ride access. See [the matrix](../02-database/community-management-authorization.md).
+SQL and adds no management mutator/controller or active-ride access. See [the matrix](../02-database/community-management-authorization.md).
 
 `RealtimeModule` owns a private opt-in development WebSocket adapter on the existing
 HTTP server. It uses account authorization before upgrade and each supported probe,

@@ -77,7 +77,7 @@ This follows HTTP precondition semantics, replacing the earlier unaccepted draft
 Errors do not prove non-commit. There is no automatic retry or idempotency cache;
 reconcile uncertain creation/update with an explicit self read before a new attempt.
 
-[OpenAPI 0.3.1](openapi.json) is the implemented narrow contract. SQL tests cover
+[The implemented OpenAPI document](openapi.json) records the narrow contract. SQL tests cover
 actor isolation, duplicate/create races, same-version edits, profile-generation
 tags, optional-field handling, Unicode/parameterization, constraints/downgrade and
 bigint precision. External identity is stubbed only at that suite boundary; no real

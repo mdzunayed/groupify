@@ -1,9 +1,11 @@
 # Community creation core
 
-**Internal implementation in review, not P6 acceptance.** No public controller,
-app screen, invitation, join, role-editing, removal, succession or ride permission
-is exposed. This implements the approved initial community-creator/Leader rule
-using the existing active-account transaction.
+**Implementation in review, not P6 acceptance.** An explicitly enabled, default-off
+[development HTTP preview](../03-api/development-community-creation.md) now wraps
+the core. Production creation eligibility remains unresolved; no app screen,
+invitation, join, role-editing, removal, succession or ride permission is exposed.
+The core implements the approved initial community-creator/Leader rule using the
+existing active-account transaction.
 
 `CommunitiesModule` exports `CommunityCreationService.create(authorization, name)`
 to trusted backend callers. It resolves the verified active account, then creates
@@ -28,8 +30,9 @@ valid supplementary characters such as emoji remain supported. A 1–100 Unicode
 chosen reversible development validation/storage bound; it is not an accepted
 product naming limit or a community/membership/concurrency quota. Database character
 count matches the normalized code-point representation. SQL is parameterized;
-punctuation is accepted as literal text. Public metadata/validation API design
-still requires review when a controller/UI is added.
+punctuation is accepted as literal text. The development creation response exposes
+only the new ID/name/initial Leader role; list/cross-user metadata, public access
+policy and UI still require their relevant review/implementation.
 
 Restricted foreign keys prevent silent cascading deletion of accounts, communities
 or memberships. Populated downgrade locks and refuses rather than discarding data;
