@@ -23,6 +23,15 @@ are mocked. The suite covers:
 - pending sessions and outstanding tasks preventing home access;
 - sign-out busy/disabled behavior, duplicate presses, failure and successful retry.
 
+The profile suite exercises the actual screen, client and Router with fixture
+Expo fetch responses: protected deep links, explicit bootstrap/read, missing or
+unsafe API configuration, create/edit with complete ETags, required fields,
+pending-request deduplication, conflict/unknown-save reconciliation, access-denial
+clearing and account/session changes ignoring aborted late results. Token calls
+use the default Clerk arguments. The separate Node client suite verifies
+credential/redirect policy, strict response parsing, safe errors and cancellation.
+No fixture transport performs a network request or proves native fetch behavior.
+
 `clerk.tsx` supplies a reactive, in-memory identity and sign-out function. The
 setup mocks Clerk/token storage, loaded fonts and native safe-area measurements.
 Phone send/verify/finalize responses are controllable Jest mocks; successful fixture finalization updates only the in-memory identity. No real key, SMS, private

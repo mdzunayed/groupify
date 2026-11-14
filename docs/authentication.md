@@ -33,13 +33,13 @@ npx --yes clerk@latest link --app app_3LvhoAC44iCweTxKAX052qniNm3
 - Clerk sends and verifies SMS codes for both new and existing accounts.
 - Resend repeats the Clerk request and starts a 30-second cooldown after a successful send.
 - Verification finalizes a session only when Clerk reports `complete`.
-- `Stack.Protected` guards `/home` and sends signed-in users away from the auth screen. Session loading is resolved before rendering either route.
+- `Stack.Protected` guards `/home` and `/profile` and sends signed-in users away from the auth screen. Session loading is resolved before rendering routes. Profile drafts and requests reset when the account or session changes.
 - SecureStore persists native sessions; Clerk manages its normal browser session storage on web.
 - Sign out clears Clerk's session before protected navigation returns to authentication.
 - Additional MFA/device-trust requirements and pending session tasks do not grant access. They currently show an explanation; dedicated task/MFA screens are outside this phone-only flow.
 - The web sign-up form includes Clerk's CAPTCHA container when required by the instance's bot protection settings.
 
-Protected screens only guard client navigation. Future backend endpoints must independently validate Clerk session tokens before returning private data.
+Protected screens guard client navigation. The development backend independently verifies provider tokens and current active account mappings for its protected endpoints; see [the profile client guide](05-development/profile-client.md). Live compatibility between the default native token and the strict development verifier is still unverified.
 
 ## Run and verify
 

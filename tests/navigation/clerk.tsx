@@ -3,13 +3,17 @@ import { useSyncExternalStore, type ReactNode } from 'react';
 type Identity = {
   isLoaded: boolean;
   isSignedIn: boolean;
+  userId: string | null;
+  sessionId: string | null;
   session: null | { status?: string; currentTask?: { key: string } };
 };
-const initial: Identity = { isLoaded: true, isSignedIn: false, session: null };
+const initial: Identity = { isLoaded: true, isSignedIn: false, session: null, userId: null, sessionId: null };
 let identity = initial;
 const listeners = new Set<() => void>();
 
 export function setIdentity(next: Partial<Identity>) {
+  if (next.isSignedIn === true) next = { userId: 'fixture_user_a', sessionId: 'fixture_session_a', ...next };
+  if (next.isSignedIn === false) next = { userId: null, sessionId: null, ...next };
   identity = { ...identity, ...next };
   listeners.forEach((listener) => listener());
 }
@@ -22,6 +26,7 @@ function useIdentity() {
 }
 
 export const signOut = jest.fn<Promise<void>, []>();
+export const getToken = jest.fn<Promise<string | null>, []>();
 type Outcome = { error: unknown | null };
 function phoneResource() {
   return {
@@ -49,7 +54,9 @@ export const providerRendered = jest.fn();
 export function resetIdentity(next: Partial<Identity> = {}) {
   signInResource = phoneResource();
   signUpResource = phoneResource();
-  identity = { ...initial, ...next };
+  identity = { ...initial, ...(next.isSignedIn ? { userId: 'fixture_user_a', sessionId: 'fixture_session_a' } : {}), ...next };
+  getToken.mockReset();
+  getToken.mockResolvedValue('fixture_only_not_a_credential');
   signOut.mockReset();
   signOut.mockImplementation(async () => {
     setIdentity({ isSignedIn: false, session: null });
@@ -60,7 +67,7 @@ export function ClerkProvider({ children }: { children: ReactNode }) {
   providerRendered();
   return children;
 }
-export const useAuth = () => useIdentity();
+export const useAuth = () => ({ ...useIdentity(), getToken });
 export const useSession = () => ({ session: useIdentity().session });
 export const useUser = () => ({ user: { firstName: 'Test Rider' } });
 export const useClerk = () => ({ signOut });

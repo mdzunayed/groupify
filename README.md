@@ -31,6 +31,8 @@ You can start developing by editing the files inside the **src/app** directory. 
 
 The current app requires `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY` at runtime. Copy the blank [.env.example](.env.example) to `.env` and supply a development publishable key from the configured provider. Variables prefixed `EXPO_PUBLIC_` are included in the client bundle; do not put secrets in them. The example contains no key.
 
+The optional development rider-details screen also needs a trusted HTTPS `EXPO_PUBLIC_GROUPIFY_API_URL` and a separately configured development backend. Opening that screen makes no request until the rider chooses **Open rider details**. See [the profile client guide](docs/05-development/profile-client.md) for setup, partial text-profile behavior and validation limits.
+
 ## Verify the project
 
 ```bash
@@ -41,9 +43,9 @@ This runs lint, TypeScript checking, and the existing automated tests. The authe
 
 For an Android JavaScript and asset bundle, run `npm run bundle:android`. This does not produce an installable APK or validate native device behavior.
 
-A NestJS backend foundation with local PostGIS and Redis setup is documented in [backend/README.md](backend/README.md). Product APIs and authentication are not implemented there yet.
+A NestJS backend foundation with PostGIS/Redis, opt-in development identity/account authorization, account bootstrap, self-profile text APIs and internal community boundaries is documented in [backend/README.md](backend/README.md). Production identity, complete profiles, public community/ride workflows and deployment remain unfinished.
 
-A GitHub Actions workflow is prepared for the repository's GitHub origin; its first hosted run and owner review are still pending.
+The GitHub Actions workflow verifies locked installs, app/backend checks, actual PostGIS/Redis integration and Android JavaScript export. Recent results and review branches are recorded in [implementation status](docs/05-development/implementation-status.md); passing CI does not mean a phase is accepted or a physical device has been validated.
 
 ### Other setup steps
 

@@ -39,6 +39,7 @@ function AuthNavigator() {
       </Stack.Protected>
       <Stack.Protected guard={!!isSignedIn}>
         <Stack.Screen name="home" />
+        <Stack.Screen name="profile" />
       </Stack.Protected>
     </Stack>
   );
