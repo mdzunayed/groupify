@@ -15,7 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { TextField } from "../components/TextField";
 import { Button } from "../components/Button";
-import { colors } from "../theme/tokens";
+import { colors, spacing, typography } from "../theme/tokens";
 
 import { BrandMark } from "../components/BrandMark";
 import { ReferenceBackdrop } from "../components/ReferenceBackdrop";
@@ -151,9 +151,9 @@ export default function Index() {
   if (step === "splash") {
     return (
       <Pressable accessibilityRole="button" accessibilityLabel="Continue to welcome" style={styles.splash} onPress={() => setStep("onboarding")}>
-        <StatusBar style="light" />
+        <StatusBar style="dark" />
         <View style={styles.splashCenter}>
-          <BrandMark size={76} showName showTagline light />
+          <BrandMark size={76} showName showTagline />
           <Text style={styles.splashCaption}>Ride. Explore. Belong.</Text>
         </View>
         <Text style={[styles.version, { bottom: Math.max(insets.bottom, 24) }]}>v1.0.0</Text>
@@ -310,7 +310,7 @@ export default function Index() {
 const styles = StyleSheet.create({
   splash: {
     alignItems: "center",
-    backgroundColor: "#070B12",
+    backgroundColor: colors.background,
     flex: 1,
     justifyContent: "center",
     maxWidth: 430,
@@ -322,16 +322,16 @@ const styles = StyleSheet.create({
     marginTop: -24,
   },
   splashCaption: {
-    color: "#D9E4F2",
-    fontSize: 15,
+    ...typography.bodySmall,
+    color: colors.textMuted,
     fontStyle: "italic",
     fontFamily: "Inter_600SemiBold",
     letterSpacing: 0.3,
-    marginTop: 17,
+    marginTop: spacing.lg,
   },
   version: {
-    color: "#748196",
-    fontSize: 11,
+    ...typography.caption,
+    color: colors.textMuted,
     letterSpacing: 0.8,
     position: "absolute",
   },
@@ -360,17 +360,14 @@ const styles = StyleSheet.create({
     marginBottom: 28,
   },
   onboardingTitle: {
-    color: "#FFFFFF",
-    fontSize: 32,
-    fontFamily: "Inter_800ExtraBold",
+    ...typography.heading1,
+    color: colors.onBrand,
     letterSpacing: -0.8,
-    lineHeight: 34,
   },
   onboardingSubtitle: {
-    color: "#E5ECF5",
-    fontSize: 14,
-    lineHeight: 20,
-    marginTop: 12,
+    ...typography.bodySmall,
+    color: colors.onBrand,
+    marginTop: spacing.md,
     maxWidth: 350,
   },
   loginPrompt: { minHeight: 48, justifyContent: "center", paddingHorizontal: 8, paddingVertical: 16 },
@@ -411,26 +408,23 @@ const styles = StyleSheet.create({
     marginTop: 55,
   },
   formTitle: {
+    ...typography.heading2,
     color: INK,
-    fontSize: 25,
-    fontFamily: "Inter_800ExtraBold",
     letterSpacing: -0.6,
-    lineHeight: 31,
   },
   formSubtitle: {
+    ...typography.bodySmall,
     color: MUTED,
-    fontSize: 14,
-    lineHeight: 21,
-    marginTop: 9,
+    marginTop: spacing.sm,
     maxWidth: 320,
   },
   phoneRow: { gap: 16, marginTop: 32 },
   switchMode: { alignItems: "center", padding: 16, minHeight: 48 },
-  switchModeText: { color: BLUE, fontSize: 13, fontFamily: "Inter_600SemiBold" },
+  switchModeText: { ...typography.bodySmall, color: BLUE, fontFamily: "Inter_600SemiBold" },
   errorText: {
+    ...typography.bodySmall,
     color: colors.dangerText,
-    fontSize: 12,
-    marginTop: 8,
+    marginTop: spacing.sm,
   },
   formAction: { marginTop: 20 },
   otpRow: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 31 },

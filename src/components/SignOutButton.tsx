@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { Button } from "./Button";
 
-import { colors } from "../theme/tokens";
+import { colors, spacing, typography } from "../theme/tokens";
 
 import { getAuthError } from "../lib/phone-auth";
 
@@ -39,6 +39,6 @@ export function SignOutButton() {
 }
 
 const styles = StyleSheet.create({
-  container: { alignItems: "center", marginTop: 22 },
-  error: { color: colors.dangerText, fontSize: 13, textAlign: "center" },
+  container: { alignItems: "center", marginTop: spacing.xl, gap: spacing.sm },
+  error: { ...typography.bodySmall, color: colors.dangerText, textAlign: "center" },
 });
