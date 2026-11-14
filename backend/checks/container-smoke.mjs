@@ -88,12 +88,16 @@ try {
   const ready = await fetch(`${url}/health/ready`);
   assert.equal(ready.status, network === undefined ? 503 : 200);
   await assertDocumentedResponse(ready, "/health/ready");
-  for (const [path, method, body] of [["/v1/accounts/bootstrap", "POST", {}], ["/v1/me/profile", "GET", undefined],
-    ["/v1/communities", "POST", { name: "container-fixture-private-marker" }]]) {
+  const community = "11111111-1111-4111-8111-111111111111";
+  const ride = "22222222-2222-4222-8222-222222222222";
+  for (const [path, method, body, documentedPath = path] of [["/v1/accounts/bootstrap", "POST", {}], ["/v1/me/profile", "GET", undefined],
+    ["/v1/communities", "POST", { name: "container-fixture-private-marker" }],
+    [`/v1/communities/${community}/rides`, "POST", { mode: "immediate" }, "/v1/communities/{communityId}/rides"],
+    ...["start", "end"].map((action) => [`/v1/communities/${community}/rides/${ride}/${action}`, "POST", {}, `/v1/communities/{communityId}/rides/{rideId}/${action}`])]) {
     const response = await fetch(`${url}${path}`, { method, headers: { Authorization: "Bearer container-fixture-private-marker", "Content-Type": "application/json" },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
     assert.equal(response.status, 503);
-    assert.ok(!JSON.stringify(await assertDocumentedResponse(response, path, method.toLowerCase())).includes("container-fixture-private-marker"));
+    assert.ok(!JSON.stringify(await assertDocumentedResponse(response, documentedPath, method.toLowerCase())).includes("container-fixture-private-marker"));
   }
   await docker("stop", "--time", "10", container);
   const stopped = JSON.parse(await docker("inspect", "--format", "{{json .State}}", container));

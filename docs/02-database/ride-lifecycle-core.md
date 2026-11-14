@@ -41,7 +41,8 @@ constraint/FK history protection and deferred commit rollback for start and end.
 Only upstream identity is stubbed. SQL fixture mutation/trigger injection is test
 instrumentation, not an application endpoint or bypass.
 
-This module has no ride HTTP controller/app action. Starting does not auto-enroll
+The subsequent [scoped development HTTP commands](../03-api/development-rides.md)
+present this internal service. No app action is implemented. Starting does not auto-enroll
 any rider, enable tracking or grant access to location/chat/PTT/SOS. Those require
 their own current participant/active-ride/consent predicates. Join/leave eligibility,
 other role assignment, complete ride history visibility, offline reconciliation,

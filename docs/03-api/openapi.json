@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Groupify development HTTP API",
-    "version": "0.4.0",
-    "description": "Implemented health, protected development account/bootstrap and self-profile text, plus default-off non-production community creation preview with initial Leader. All in review. Pictures, community list/invitations/mutations/rides, recovery/deletion, production identity and live native/device evidence remain unfinished; no phase acceptance."
+    "version": "0.5.0",
+    "description": "Implemented health, protected development account/bootstrap, self-profile text and community-scoped ride create/start/end, plus default-off community creation preview. All in review. Community Leader/Co-leader start/end authority confirmed2026-11-14. Pictures, community/ride listing, invitations, join/leave, tracking, recovery/deletion, production identity and live native/device evidence remain unfinished; no phase acceptance."
   },
   "security": [],
   "tags": [
@@ -330,6 +330,213 @@
           }
         }
       }
+    },
+    "/v1/communities/{communityId}/rides": {
+      "post": {
+        "operationId": "createDevelopmentRide",
+        "tags": [
+          "Rides"
+        ],
+        "summary": "Create a community ride",
+        "description": "Current verified development session, active mapped account and current community Leader/Co-leader membership required. Disabled/misconfigured or production identity unavailable. No query/actor/role/participant selectors. No implicit bootstrap or active communication/location access. Strict immediate or canonical UTC-millisecond scheduled intent; future checked by database clock. Separate POSTs create separate drafts; uncertain outcomes must not be blindly retried. No idempotency/reconciliation contract yet.",
+        "security": [
+          {
+            "DevelopmentBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "communityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RideCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/RideCreated"
+          },
+          "400": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "401": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "403": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "415": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "503": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        }
+      }
+    },
+    "/v1/communities/{communityId}/rides/{rideId}/start": {
+      "post": {
+        "operationId": "startDevelopmentRide",
+        "tags": [
+          "Rides"
+        ],
+        "summary": "Start a community ride",
+        "description": "Current verified development session, active mapped account and current community Leader/Co-leader membership required. Disabled/misconfigured or production identity unavailable. No query/actor/role/participant selectors. No implicit bootstrap or active communication/location access. Empty body or JSON object only. Explicit manual action, including scheduled rides before planned time. Freshly authorized start on active/end on completed preserves metadata; end on draft/start on completed conflicts. No auto-enrollment, tracking or role assignment.",
+        "security": [
+          {
+            "DevelopmentBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "communityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "rideId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyRideCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RideActive"
+          },
+          "400": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "401": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "403": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "404": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "409": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "415": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "503": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        }
+      }
+    },
+    "/v1/communities/{communityId}/rides/{rideId}/end": {
+      "post": {
+        "operationId": "endDevelopmentRide",
+        "tags": [
+          "Rides"
+        ],
+        "summary": "End a community ride",
+        "description": "Current verified development session, active mapped account and current community Leader/Co-leader membership required. Disabled/misconfigured or production identity unavailable. No query/actor/role/participant selectors. No implicit bootstrap or active communication/location access. Empty body or JSON object only. Explicit manual action, including scheduled rides before planned time. Freshly authorized start on active/end on completed preserves metadata; end on draft/start on completed conflicts. No auto-enrollment, tracking or role assignment.",
+        "security": [
+          {
+            "DevelopmentBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "communityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "rideId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyRideCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RideCompleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "401": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "403": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "404": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "409": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "415": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "503": {
+            "$ref": "#/components/responses/HttpError"
+          },
+          "default": {
+            "$ref": "#/components/responses/HttpError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -573,6 +780,209 @@
             "description": "Initial creator role at commit; future actions must independently authorize the current membership."
           }
         }
+      },
+      "RideCreate": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "mode"
+            ],
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "immediate"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "mode",
+              "scheduledFor"
+            ],
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "scheduled"
+                ]
+              },
+              "scheduledFor": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?!0000)[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+              }
+            }
+          }
+        ]
+      },
+      "EmptyRideCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "RideCreated": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "communityId",
+              "mode",
+              "scheduledFor",
+              "state"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "communityId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "immediate"
+                ]
+              },
+              "scheduledFor": {
+                "type": "string",
+                "nullable": true,
+                "enum": [
+                  null
+                ]
+              },
+              "state": {
+                "type": "string",
+                "enum": [
+                  "draft"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "communityId",
+              "mode",
+              "scheduledFor",
+              "state"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "communityId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "scheduled"
+                ]
+              },
+              "scheduledFor": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?!0000)[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+              },
+              "state": {
+                "type": "string",
+                "enum": [
+                  "draft"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "RideActive": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "communityId",
+          "state",
+          "startedAt",
+          "endedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "communityId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "active"
+            ]
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?!0000)[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+          },
+          "endedAt": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              null
+            ]
+          }
+        }
+      },
+      "RideCompleted": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "communityId",
+          "state",
+          "startedAt",
+          "endedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "communityId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "completed"
+            ]
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?!0000)[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+          },
+          "endedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?!0000)[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+          }
+        }
       }
     },
     "headers": {
@@ -757,6 +1167,87 @@
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/CommunityCreated"
+            }
+          }
+        }
+      },
+      "RideCreated": {
+        "description": "Committed ride metadata only; no actor/profile data, role, participation or tracking grant. Current authorization required for every command.",
+        "headers": {
+          "X-Request-Id": {
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RequestId"
+            }
+          },
+          "Cache-Control": {
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "no-store"
+              ]
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RideCreated"
+            }
+          }
+        }
+      },
+      "RideActive": {
+        "description": "Committed ride metadata only; no actor/profile data, role, participation or tracking grant. Current authorization required for every command.",
+        "headers": {
+          "X-Request-Id": {
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RequestId"
+            }
+          },
+          "Cache-Control": {
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "no-store"
+              ]
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RideActive"
+            }
+          }
+        }
+      },
+      "RideCompleted": {
+        "description": "Committed ride metadata only; no actor/profile data, role, participation or tracking grant. Current authorization required for every command.",
+        "headers": {
+          "X-Request-Id": {
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RequestId"
+            }
+          },
+          "Cache-Control": {
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "no-store"
+              ]
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RideCompleted"
             }
           }
         }

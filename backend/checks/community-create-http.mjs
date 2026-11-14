@@ -92,9 +92,9 @@ test("community preview is unavailable by default and requires exact opt-in plus
   }
 });
 
-test("community creation adds no listing, membership, role or ride route", async () => {
+test("community creation adds no listing, membership or role route", async () => {
   const { url, calls } = await start();
-  for (const [method, suffix] of [["GET", ""], ["GET", `/${fixture.id}`], ["PATCH", `/${fixture.id}`], ["POST", `/${fixture.id}/invitations`], ["PATCH", `/${fixture.id}/members/fixture/role`], ["POST", `/${fixture.id}/rides`]]) {
+  for (const [method, suffix] of [["GET", ""], ["GET", `/${fixture.id}`], ["PATCH", `/${fixture.id}`], ["POST", `/${fixture.id}/invitations`], ["PATCH", `/${fixture.id}/members/fixture/role`]]) {
     const result = await fetch(`${url}${path}${suffix}`, { method });
     assert.equal(result.status, 404); await assertSharedErrorResponse(result);
   }

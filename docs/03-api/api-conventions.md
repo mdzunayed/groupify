@@ -6,6 +6,8 @@ a production deployment. Health and protected
 [development bootstrap](development-account-bootstrap.md) currently exist;
 [active-self profile text](self-profile-text.md) is an additional development slice;
 the opt-in [development WebSocket protocol](development-websocket.md) is separate.
+Community-scoped [development ride commands](development-rides.md) present current
+Leader/Co-leader create/start/end transactions without participant/location grants.
 
 ## Responses and correlation
 

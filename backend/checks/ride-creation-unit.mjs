@@ -57,7 +57,7 @@ test("denied management never enters a write and database-rejected schedule is a
   assert.equal(queries.length, 1);
 });
 
-test("internal ride composition exposes no ride, participant or lifecycle HTTP route", async () => {
+test("ride composition exposes no unscoped ride or participant HTTP route", async () => {
   const previous = process.env.GROUPIFY_DEV_WS_ENABLED;
   process.env.GROUPIFY_DEV_WS_ENABLED = "false";
   const app = await NestFactory.create(AppModule, { logger: false });
@@ -65,7 +65,7 @@ test("internal ride composition exposes no ride, participant or lifecycle HTTP r
     await app.listen(0, "127.0.0.1");
     const url = await app.getUrl();
     for (const [method, route] of [["POST", "/v1/rides"], ["GET", `/v1/rides/${id}`],
-      ["POST", `/v1/communities/${communityId}/rides`], ["POST", `/v1/rides/${id}/join`], ["POST", `/v1/rides/${id}/start`], ["POST", `/v1/rides/${id}/end`]]) {
+      ["POST", `/v1/rides/${id}/join`], ["POST", `/v1/rides/${id}/start`], ["POST", `/v1/rides/${id}/end`]]) {
       const response = await fetch(`${url}${route}`, { method });
       assert.equal(response.status, 404); await assertSharedErrorResponse(response);
     }

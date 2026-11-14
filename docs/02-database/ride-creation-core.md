@@ -11,15 +11,16 @@ to internal consumers. It imports the existing community authorization transacti
 the provider identity must map to a current active account, with current Leader or
 Co-leader membership in the requested community. Account/link and membership share
 locks remain held through insertion and commit. Creator metadata or another
-community's role cannot substitute for membership. There is no HTTP controller,
-app entry, implicit account/community creation or new production identity policy.
+community's role cannot substitute for membership. The subsequent scoped
+[development HTTP commands](../03-api/development-rides.md) expose this transaction.
+There is no app entry, implicit account/community creation or new production identity policy.
 
 The intent has exactly one of these internal shapes:
 
 - `{ mode: "immediate" }` stores no scheduled timestamp.
 - `{ mode: "scheduled", scheduledFor: Date }` accepts a finite Date in years1–9999,
   copies it to UTC milliseconds and requires a future database instant. Strings
-  are not an internal date contract; a future HTTP API needs explicit parsing.
+  are not an internal date contract; the HTTP controller parses canonical UTC milliseconds.
 
 The insert captures PostgreSQL `clock_timestamp()` once for both the future check
 and `created_at`. Elapsed/equal schedules fail with a safe400 and no write. No

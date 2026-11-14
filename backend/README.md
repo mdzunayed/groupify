@@ -22,8 +22,10 @@ The internal [ride draft core](../docs/02-database/ride-creation-core.md) reuses
 current Leader/Co-leader ride management to commit immediate or future scheduled
 drafts. The [internal lifecycle](../docs/02-database/ride-lifecycle-core.md) adds
 explicit start/end under owner-confirmed community Leader/Co-leader authority.
-It exposes no ride HTTP/app entry, participant or tracking capability; remaining
-participation, role and complete lifecycle policy stays open.
+The [scoped development HTTP commands](../docs/03-api/development-rides.md) expose
+create/start/end under the existing identity gate. No app entry, participant or
+tracking capability is added; remaining participation, role and complete lifecycle
+policy stays open.
 
 An [opt-in development WebSocket probe](../docs/03-api/development-websocket.md)
 authenticates before upgrade and each supported account-check message on the

@@ -2,7 +2,7 @@
 
 All branches remain **in review**, not phase acceptance. Fresh fetches found main
 at f571eb8 with this stack unmerged. No main merge or force-push was performed.
-These twenty-one tasks stack on the previously confirmed provider-status work at
+These twenty-two tasks stack on the previously confirmed provider-status work at
 d2791c7, which itself contains the preceding unmerged phase branches. Review
 history/content before selecting a merge order; the latest head includes its
 parents but does not imply their acceptance.
@@ -30,11 +30,13 @@ parents but does not imply their acceptance.
 | 19 | [p4-container-store-readiness](https://github.com/mdzunayed/groupify/tree/task/p4-container-store-readiness): actual runtime image with owned PostGIS/Redis | [43573450197](https://github.com/mdzunayed/groupify/actions/runs/43573450197), passed including both actual-image readiness modes |
 | 20 | [p7-ride-draft-creation-core](https://github.com/mdzunayed/groupify/tree/task/p7-ride-draft-creation-core): internal immediate/scheduled non-active creation | [43594874890](https://github.com/mdzunayed/groupify/actions/runs/43594874890), passed including72 real cases and both image modes |
 
-| 21 | [p7-community-ride-lifecycle](https://github.com/mdzunayed/groupify/tree/task/p7-community-ride-lifecycle): owner-confirmed community start/end authority, internal serialized transitions | Local65 app/77 backend pass; hosted80 real cases/image modes pending |
+| 21 | [p7-community-ride-lifecycle](https://github.com/mdzunayed/groupify/tree/task/p7-community-ride-lifecycle): owner-confirmed community start/end authority, internal serialized transitions | [43595486779](https://github.com/mdzunayed/groupify/actions/runs/43595486779), passed including80 real cases and both image modes |
+
+| 22 | [p7-development-ride-commands](https://github.com/mdzunayed/groupify/tree/task/p7-development-ride-commands): strict scoped development create/start/end HTTP | Hosted87 real cases/image modes pending after push |
 
 Hosted integration uses real PostGIS/Redis, SQL/HTTP/WebSockets and stubbed upstream
 identity; it is not a live Clerk/native session. Latest parent suite has65 app,
-74 backend and72 real integration checks. Native launch resource generation was
+77 backend and80 real integration checks. Native launch resource generation was
 tested separately in a temporary CNG fixture, without an APK or device. Full
 per-task evidence/constraints live in [implementation status](implementation-status.md)
 and the existing [Drive tracker](https://docs.google.com/spreadsheets/d/1b__35uk0LqXWKjUfO9_TMHCadurFBflXbuVo4U0YQss/edit).
