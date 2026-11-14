@@ -1,6 +1,6 @@
 # ADR-017: Repository CI checks
 
-**Status: Proposed for owner review.** The product owner authorized Phase 2 foundation work, and the existing Git repository now has a GitHub origin. A local GitHub Actions workflow has been prepared against that observed repository; it has not been activated or verified by a hosted run.
+**Status: Proposed for owner review.** The product owner authorized Phase 2 foundation work, and the existing Git repository now has a GitHub origin. A local GitHub Actions workflow has been prepared against that observed repository; hosted [run 43541591598](https://github.com/mdzunayed/groupify/actions/runs/43541591598) verified implementation commit `7aaf588` on 2026-11-14, including app/backend checks, PostGIS/Redis integration and Android JavaScript bundling. This is evidence, not owner acceptance or a branch-protection change.
 
 **Options considered:** GitHub Actions using GitHub-hosted runners; GitLab CI/CD; provider-neutral local checks until a CI provider is selected.
 

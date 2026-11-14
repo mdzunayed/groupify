@@ -23,7 +23,7 @@ for exact parent commit `ae4e13bb6838cc43241583f3108dab026e69a020` completed suc
 The `verify` job reports successful app checks, backend tests, real PostGIS/Redis
 integration and Android JavaScript bundling. This is hosted test evidence for that
 commit, not physical Android, live Clerk, production hosting or phase acceptance.
-Current-branch CI must be checked separately after push.
+Implementation commit `7aaf58878c1c6ec6089a69a9a2ea717c214fc219` subsequently passed [run 43541591598](https://github.com/mdzunayed/groupify/actions/runs/43541591598), including the new process suite and all four real dependency integration checks. Android JavaScript bundling also passed. This follow-up records that exact implementation commit, rather than inferring results for later commits.
 
 The connector's combined-status read returned no legacy statuses; its workflow-run
 lookup filters pull-request runs. The push run was located with GitHub's read-only
@@ -51,7 +51,7 @@ and no PTT speaking-duration timeout or other product limit is introduced.
 
 ## Next work
 
-Use current-branch hosted CI to validate its real dependency suite when available.
+The current implementation has hosted real-dependency evidence as recorded above. Extend development verification to check current provider-session status without granting product access; local JWT validity cannot detect provider revocation.
 Repair local Docker storage through the managed environment before claiming local
 PostGIS/Redis/migration validation again. Confirm the account/profile draft's
 R1–R4 decisions before dependent P5 endpoints/migrations; obtain live development

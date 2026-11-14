@@ -32,7 +32,7 @@ Every question in the tables is an **Open question**. None is an approved produc
 | OD-21 | What are the precise ride lifecycle, route/breakpoint, and basic-navigation behaviors beyond the capabilities already approved? |
 | OD-25 | What Expo-native boundary will retain Room, Coroutines, Flow and the Kotlin direction, and what Material 3 implementation and Android device range will be approved? |
 | OD-26 | What observability, backup/restore, release, support and incident responsibilities and evidence are required for the eventual deployment? No owners or targets are assigned. |
-| OD-27 | Is the prepared GitHub Actions workflow and its branch-protection use approved for the observed GitHub repository? A hosted run has not yet verified it. |
+| OD-27 | Is the prepared GitHub Actions workflow and its branch-protection use approved for the observed GitHub repository? Hosted run [43541591598](https://github.com/mdzunayed/groupify/actions/runs/43541591598) passed at `7aaf588`; this evidence does not approve branch-protection settings or accept a phase. |
 
 ## Resolved decisions
 
