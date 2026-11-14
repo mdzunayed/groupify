@@ -22,14 +22,14 @@ Every question in the tables is an **Open question**. None is an approved produc
 | OD-11 | What are subscription prices and feature limits, and what is the final free/premium feature matrix? SOS, essential communication, and basic navigation remain free. |
 | OD-12 | How are offline synchronization conflicts detected and resolved, including delayed location data? |
 | OD-13 | How does PTT priority work, including interruption or queuing, and how are stale or disconnected speaking sessions recovered without an automatic speaking-duration timeout? |
-| OD-14 | How are community and ride membership, leadership assignment, role changes, succession, and invitations handled? Are community and ride leadership separate? How do the approved Leader/Co-leader ride-management permissions apply to the exact ride lifecycle? |
+| OD-14 | How are community and ride membership, other leadership assignments, role changes, succession, and invitations handled? Community Leader/Co-leader start/end authority was confirmed2026-11-14; other role boundaries remain open. |
 | OD-15 | Which roles can make announcements beyond the approved Leader capability or resolve emergencies beyond the approved Leader and Co-leader capabilities? What are the access boundaries for historical locations? Active ride participants may use chat, trigger SOS, and view opted-in live locations. |
 | OD-16 | What event starts the 30-day detailed-location retention period? How are local copies, last-known location, already recorded data, and delayed synchronization handled, including after a member leaves or a ride ends, while preserving the approved active-ride sharing boundary? |
 | OD-17 | How does account recovery work, what data must be retained for legal reasons, and how do deletion and recovery affect shared community, ride, and emergency records? |
 | OD-18 | What happens when a manual SOS has neither a live nor a last-known location, what is the retention duration of emergency history, and what does “Cancel SOS” in the design reference mean relative to emergency resolution? |
 | OD-19 | Which remaining design details are approved, including the reference's “Admin” label, dark mode, and any interpretation of “Nearby riders” that would breach the active-ride location boundary? The reference's PTT “Release to stop” conflicts with the approved tap-again interaction. The owner selected the helmet-and-road logo and Inter typography. |
 | OD-20 | What are the approved profile details, OTP interaction parameters, and country-code defaults? Existing screen behavior does not by itself approve them. |
-| OD-21 | What are the precise ride lifecycle, route/breakpoint, and basic-navigation behaviors beyond the capabilities already approved? |
+| OD-21 | What are the remaining ride lifecycle, route/breakpoint, and basic-navigation behaviors beyond approved community Leader/Co-leader start/end authority? |
 | OD-25 | What Expo-native boundary will retain Room, Coroutines, Flow and the Kotlin direction, and what Material 3 implementation and Android device range will be approved? |
 | OD-26 | What observability, backup/restore, release, support and incident responsibilities and evidence are required for the eventual deployment? No owners or targets are assigned. |
 | OD-27 | Is the prepared GitHub Actions workflow and its branch-protection use approved for the observed GitHub repository? Hosted run [43541591598](https://github.com/mdzunayed/groupify/actions/runs/43541591598) passed at `7aaf588`; this evidence does not approve branch-protection settings or accept a phase. |
@@ -47,6 +47,8 @@ Every question in the tables is an **Open question**. None is an approved produc
 **Approved starter permissions — OD-14 and OD-15 partially resolved on 2026-11-11:** The community creator becomes Leader; Leaders manage roles and membership; Leaders and Co-leaders manage rides and invitations; active ride participants can use chat/PTT, trigger SOS, and view each other's opted-in live location; Leaders and Co-leaders can resolve SOS. Other role assignments, historical access, and detailed lifecycle behavior remain open.
 
 **Approved visual direction — OD-19 partially resolved on 2026-11-11:** The owner selected the helmet-and-road logo and Inter typography from the design-system reference. This does not change the approved PTT interaction, role vocabulary, or active-ride location boundary.
+
+**Approved ride authority — OD-14/OD-21 partially resolved on2026-11-14:** Asked whether community or separately assigned ride leadership should control start/end, the owner answered “Community Leader/Co-leaders manage start and end”. Participation, tracking consent, other role assignments, cancellation/reopening, notifications and remaining route/lifecycle details are not resolved by that answer. See [ADR-026](../01-architecture/architecture-decisions/ADR-026-community-ride-lifecycle.md) for the narrow internal implementation direction in review.
 
 ## Dependency on decisions
 

@@ -65,7 +65,7 @@ test("internal ride composition exposes no ride, participant or lifecycle HTTP r
     await app.listen(0, "127.0.0.1");
     const url = await app.getUrl();
     for (const [method, route] of [["POST", "/v1/rides"], ["GET", `/v1/rides/${id}`],
-      ["POST", `/v1/communities/${communityId}/rides`], ["POST", `/v1/rides/${id}/join`], ["POST", `/v1/rides/${id}/start`]]) {
+      ["POST", `/v1/communities/${communityId}/rides`], ["POST", `/v1/rides/${id}/join`], ["POST", `/v1/rides/${id}/start`], ["POST", `/v1/rides/${id}/end`]]) {
       const response = await fetch(`${url}${route}`, { method });
       assert.equal(response.status, 404); await assertSharedErrorResponse(response);
     }

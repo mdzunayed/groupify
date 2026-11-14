@@ -3,6 +3,8 @@
 Status: partial P7 creation increment in review, not phase acceptance. See
 [ADR-025](../01-architecture/architecture-decisions/ADR-025-internal-ride-draft-creation.md).
 Immediate and scheduled ride workflows remain unfinished.
+The subsequent [lifecycle increment](ride-lifecycle-core.md) supersedes the initial
+draft-only schema with explicit start/end; creation itself still returns only draft.
 
 `RidesModule` exports `RideCreationService.create(authorization, communityId, intent)`
 to internal consumers. It imports the existing community authorization transaction:
@@ -22,7 +24,7 @@ The intent has exactly one of these internal shapes:
 The insert captures PostgreSQL `clock_timestamp()` once for both the future check
 and `created_at`. Elapsed/equal schedules fail with a safe400 and no write. No
 scheduling horizon, timezone UI or automatic activation is chosen. All rides have
-SQL-enforced `draft` state, including immediate rides. Creation returns only the
+`draft` initial state, including immediate rides. Creation returns only the
 immutable committed ID, canonical community ID, mode, scheduledFor and draft state.
 Unknown fields, caller account/leader/participant/state/tracking selection are
 refused. Creator identity is derived from current authorization and stored only
@@ -44,8 +46,9 @@ identity, permanent communities with multiple drafts, SQL/downgrade/FK guards,
 deferred commit failure and observed row-lock contention during demotion.
 Fixture SQL membership/cleanup is test setup, not a product mutation API.
 
-Participants, join/leave, ride-specific leadership/start/end authority (OD-14/
-OD-21), activation/end transitions, destinations/breakpoints, notifications and
-visibility/listing contracts remain separate work. Draft creation grants no
+Participants, join/leave, other ride-specific roles, destinations/breakpoints,
+notifications and visibility/listing contracts remain separate work. Community
+Leader/Co-leader start/end authority was confirmed2026-11-14 and is implemented
+only by the internal lifecycle service. Draft creation grants no
 location, chat, PTT, SOS or other active-ride capability. Hosted SQL evidence is
 required while managed local Docker storage is blocked; stubs are not that proof.

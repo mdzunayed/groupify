@@ -8,8 +8,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "start": "node dist/main.js",
-    "test": "npm run build && node --test checks/health-unit.mjs checks/http-errors.mjs checks/openapi.mjs checks/development-identity.mjs checks/process-lifecycle.mjs checks/account-authorization-unit.mjs checks/realtime-unit.mjs checks/account-bootstrap-http.mjs checks/profile-text-http.mjs checks/community-create-http.mjs checks/ride-creation-unit.mjs",
-    "test:integration": "npm run build && node --test --test-concurrency=1 checks/health-integration.mjs checks/account-authorization-integration.mjs checks/community-creation-integration.mjs checks/realtime-integration.mjs checks/account-bootstrap-integration.mjs checks/profile-text-integration.mjs checks/community-create-integration.mjs checks/ride-creation-integration.mjs checks/migration-cycle-integration.mjs",
+    "test": "npm run build && node --test checks/health-unit.mjs checks/http-errors.mjs checks/openapi.mjs checks/development-identity.mjs checks/process-lifecycle.mjs checks/account-authorization-unit.mjs checks/realtime-unit.mjs checks/account-bootstrap-http.mjs checks/profile-text-http.mjs checks/community-create-http.mjs checks/ride-creation-unit.mjs checks/ride-lifecycle-unit.mjs",
+    "test:integration": "npm run build && node --test --test-concurrency=1 checks/health-integration.mjs checks/account-authorization-integration.mjs checks/community-creation-integration.mjs checks/realtime-integration.mjs checks/account-bootstrap-integration.mjs checks/profile-text-integration.mjs checks/community-create-integration.mjs checks/ride-creation-integration.mjs checks/ride-lifecycle-integration.mjs checks/migration-cycle-integration.mjs",
     "test:integration:docker": "bash scripts/test-integration.sh",
     "migrate:up": "node-pg-migrate up",
     "migrate:down": "node-pg-migrate down",

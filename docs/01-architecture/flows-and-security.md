@@ -12,6 +12,12 @@ All mechanisms here are **Proposed** unless described as an approved product con
 
 **Approved:** A permanent community can have multiple rides, immediate or scheduled, with routes and breakpoints; completed rides have history. Leaders and Co-leaders manage rides and invitations. **Proposed:** keep community membership, ride participation and tracking consent distinct, and authorize each active-ride action against current server state. Scheduled, active and completed are concepts needed to discuss approved capabilities, not a final state machine or transition contract. Exact transition rules, separate ride leadership, membership eligibility, cancellation, offline transitions and role succession remain open.
 
+The owner confirmed2026-11-14 that community Leaders/Co-leaders manage start/end.
+The [internal lifecycle increment](../02-database/ride-lifecycle-core.md) implements
+explicit serialized transitions under that authority without participation,
+tracking consent or active-ride communication/location grants. Other role,
+invitation, offline and lifecycle details in the preceding proposal remain open.
+
 ## Active location and later synchronization
 
 ```mermaid

@@ -20,8 +20,10 @@ row locks. Exact operation/resource rules and public mutators remain separate wo
 
 The internal [ride draft core](../docs/02-database/ride-creation-core.md) reuses
 current Leader/Co-leader ride management to commit immediate or future scheduled
-drafts. It exposes no ride HTTP/app entry, participant, activation or tracking
-capability; ride-specific leadership/start/end policy remains open.
+drafts. The [internal lifecycle](../docs/02-database/ride-lifecycle-core.md) adds
+explicit start/end under owner-confirmed community Leader/Co-leader authority.
+It exposes no ride HTTP/app entry, participant or tracking capability; remaining
+participation, role and complete lifecycle policy stays open.
 
 An [opt-in development WebSocket probe](../docs/03-api/development-websocket.md)
 authenticates before upgrade and each supported account-check message on the

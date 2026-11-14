@@ -8,6 +8,7 @@ Each bullet below is explicitly labeled as an **Approved decision** or **Open qu
 - **Approved decision:** A ride may be immediate or scheduled and may have a route and breakpoints. A completed ride is represented in ride history.
 - **Approved decision:** The role vocabulary is exactly **Leader**, **Co-leader**, and **Member**. A separate Owner role is not approved.
 - **Approved decision:** A community creator becomes its Leader. Leaders manage roles and membership; Leaders and Co-leaders manage rides and invitations.
+- **Approved decision — 2026-11-14:** The community's Leaders and Co-leaders manage ride start and end. The owner explicitly selected community authority for these operations.
 - **Open question:** Are community and ride leadership assigned separately? Role-assignment details, succession, invitation methods, and community-to-ride membership boundaries remain open. Separate leadership is an assumption requiring confirmation, not an established relationship.
 
 ## Active-ride location and data lifecycle
@@ -45,6 +46,7 @@ Each bullet below is explicitly labeled as an **Approved decision** or **Open qu
 | Trigger an active-ride SOS | ✓ | ✓ | ✓ | Approved for active ride participants. |
 | Send or receive group chat | ✓ | ✓ | ✓ | Approved for active ride participants. |
 | Manage rides and invitations | ✓ | ✓ | ? | Leader and Co-leader capability approved; invitation methods and other roles remain open. |
+| Start and end a community ride | ✓ | ✓ | ? | Community Leader/Co-leader authority explicitly confirmed2026-11-14; no participation or tracking consent is implied. |
 | Manage community roles and membership | ✓ | ? | ? | Leader capability approved; detailed assignment and other roles remain open. |
 | View another rider's live location | ✓ | ✓ | ✓ | Approved for active ride participants when the other rider has opted in. |
 | View location history | ? | ? | ? | Historical access rules have not been specified. |

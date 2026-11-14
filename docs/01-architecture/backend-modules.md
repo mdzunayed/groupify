@@ -15,7 +15,7 @@ the current narrow development APIs separately from unfinished product workflows
 | `CommunitiesModule` | Atomic creation/initial Leader, default-off development creation controller and internal management capability boundary | No production creation eligibility, list/cross-user metadata, membership mutator, ride/location or invitation workflow |
 | `RealtimeModule` | Opt-in development upgrade/diagnostic protocol | Private owned transport; no product broadcast API |
 | `ProfilesModule` | Active-self text service/controller, ownership/versioned SQL | No cross-user/role override, photo or lifecycle grant |
-| `RidesModule` | Internal immediate/scheduled draft creation through community management authorization | Exports creation service; no controller, participant, activation or active-ride capability |
+| `RidesModule` | Internal immediate/scheduled draft creation and community-authorized start/end | Exports creation/lifecycle services; no controller, participant or communication/location capability |
 
 The root composes modules rather than redeclaring their providers/controllers.
 HTTP filtering remains global at the application boundary. Request-ID middleware
@@ -75,5 +75,8 @@ cleans its owned listener/sockets and exports no product send/broadcast API.
 See [protocol scope](../03-api/development-websocket.md).
 
 `RidesModule` imports communities and reuses its current Leader/Co-leader
-manage_rides transaction for non-active draft insertion only. It does not turn
+manage_rides transaction for draft insertion and explicit start/end. It does not turn
 creator metadata into ride leadership or participation. See [creation scope](../02-database/ride-creation-core.md).
+The owner confirmed community start/end authority2026-11-14; the separate
+[lifecycle scope](../02-database/ride-lifecycle-core.md) records serialized transitions
+and remaining participant/active-capability boundaries.
