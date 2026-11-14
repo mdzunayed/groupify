@@ -22,7 +22,9 @@ No ride owns a community or can remove it on completion. Actual multi-ride behav
 still needs the later ride implementation and integration evidence.
 
 Names normalize to NFC, trim surrounding whitespace, preserve internal spelling,
-and reject control characters. A 1–100 Unicode-code-point bound is an explicitly
+and reject control characters and isolated UTF-16 surrogates. The latter must fail
+before SQL writes rather than silently become replacement characters during UTF-8 encoding;
+valid supplementary characters such as emoji remain supported. A 1–100 Unicode-code-point bound is an explicitly
 chosen reversible development validation/storage bound; it is not an accepted
 product naming limit or a community/membership/concurrency quota. Database character
 count matches the normalized code-point representation. SQL is parameterized;

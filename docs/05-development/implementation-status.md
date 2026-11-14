@@ -17,7 +17,7 @@ See [open decisions](../00-product/open-decisions.md), the [architecture decisio
 
 ## Latest task
 
-See the 2026-11-14 entries below for `task/p4-process-lifecycle-checks`, its [gap review](../01-architecture/foundation-gap-review.md), hosted evidence, and subsequent `task/p5-provider-session-status`, `task/p5-account-authorization-foundation` `task/p5-explicit-account-provisioning` and `task/p6-community-creation-core` / `task/p6-community-management-authorization`. Entries below are dated historical snapshots; later evidence supersedes their then-unverified CI and networkless-verification statements.
+See the 2026-11-14 entries below for `task/p4-process-lifecycle-checks`, its [gap review](../01-architecture/foundation-gap-review.md), hosted evidence, and subsequent `task/p5-provider-session-status`, `task/p5-account-authorization-foundation` `task/p5-explicit-account-provisioning` and `task/p6-community-creation-core`, `task/p6-community-management-authorization` and `task/p6-unicode-community-names`. Entries below are dated historical snapshots; later evidence supersedes their then-unverified CI and networkless-verification statements.
 
 ## 2026-11-11 — migration readiness
 
@@ -242,3 +242,16 @@ The internal CommunityAuthorizationService enforces only approved starter manage
 Node 26.13.0: backend npm test passed TypeScript build and 42 checks; root npm run check passed lint/typecheck and 40 app tests. Six added real-PostgreSQL groups cover all three roles/four management capabilities, cross-community isolation, unknown/ride/location capability refusal, creator-without-membership/inactive refusal, UUID safety/canonicalization and database-observed row-lock contention during role revocation/removal. The combined committed integration count is now 34; this branch's real execution awaits hosted CI after push. No dependency/lockfile, migration, implemented public API or native API changes. Local Docker storage/native PostgreSQL limitations remain; no local integration/live-provider/device pass is claimed.
 
 Status: in review, not phase acceptance or permission to invent unresolved grants. Next: inspect current hosted results; harden the existing strict bearer parser's terminal-whitespace boundary if a focused reproduction confirms the suspected JavaScript end-anchor edge case. Public profile/lifecycle and downstream product workflows remain subject to their existing consequential decisions and live/device evidence.
+
+
+## 2026-11-14 — reject malformed Unicode community names
+
+Branch `task/p6-unicode-community-names` stacks on `task/p6-community-management-authorization` (`2cbe622`). The exact parent passed [run 43546670446](https://github.com/mdzunayed/groupify/actions/runs/43546670446), including all 34 real database cases, backend/app checks and Android JavaScript bundling. That establishes current-community management/role-lock evidence at the recorded commit, without public mutator, live session/device or phase acceptance claims.
+
+Investigation reproduced acceptance of an isolated UTF-16 surrogate by CommunityCreationService: the pre-fix isolated callback/UTF-8 round-trip harness recorded two write calls and changed the input to a replacement character. SQL responses were stubbed in that harness; the encoding round trip was real. Validation now rejects Unicode surrogate code points before community/membership SQL writes, alongside control characters. Valid supplementary characters still pass. The existing real-database invalid-name/no-write test now includes high/low isolated surrogates, alone and inside text, while the valid 100-emoji case remains. No product naming bound, schema, role, API or provider policy changed.
+
+A separate suspected JavaScript bearer end-anchor issue was tested with terminal CR/LF/U+2028/U+2029 in signed bearer/session values. All cases were already rejected before provider lookup; that hypothesis was not reproduced, its temporary probe was removed and identity runtime is unchanged. No authentication vulnerability or fix is claimed.
+
+Verification: the rebuilt isolated encoding reproduction rejects malformed names with safe 400 and zero write callbacks, and preserves a valid emoji. Node 26.13.0 full verification passed: backend TypeScript build and 42 checks; root lint/typecheck and 40 app tests. The updated 34-case integration suite awaits hosted CI after push; no new local database pass is claimed. Local Docker storage/native PostgreSQL and live Clerk/device limitations remain; the isolated harness is not actual PostgreSQL or live-provider evidence.
+
+Status: in review, not phase acceptance. Next independent foundation work is the remaining P4 WebSocket transport/authentication boundary; public product/profile/lifecycle workflows still require their relevant policy, configuration and device evidence. No new chat/PTT/SOS/location or membership capability is inferred.

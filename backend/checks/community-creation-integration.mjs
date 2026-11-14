@@ -71,7 +71,7 @@ test("community names normalize Unicode and count code points consistently with 
 
 test("invalid names produce no community or membership writes", async () => {
   const before = await communityCount();
-  for (const name of [undefined, null, {}, "", "   ", "🚲".repeat(101), "Group\nname", "Group\u0085name"]) {
+  for (const name of [undefined, null, {}, "", "   ", "🚲".repeat(101), "Group\nname", "Group\u0085name", "\ud800", "\udc00", "A\ud800B", "A\udc00B"]) {
     await assert.rejects(service.create("fixture", name), (error) => error.getStatus() === 400);
   }
   assert.equal(await communityCount(), before);

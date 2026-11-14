@@ -12,7 +12,7 @@ export class CommunityCreationService {
     return this.accounts.withActiveAccount(authorization, async (client, account) => {
       if (typeof name !== "string") throw new BadRequestException("Community name is invalid");
       const normalized = name.normalize("NFC").trim();
-      if (!normalized || Array.from(normalized).length > 100 || /\p{Cc}/u.test(normalized)) {
+      if (!normalized || Array.from(normalized).length > 100 || /[\p{Cc}\p{Cs}]/u.test(normalized)) {
         throw new BadRequestException("Community name is invalid");
       }
       const result = await client.query<{ id: string; name: string }>(
